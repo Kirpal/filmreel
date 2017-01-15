@@ -2,7 +2,30 @@
 var fs = require("fs"),
   path = require("path"),
   appData = require("electron").app.getPath("appData"),
+  settings;
+try {
   settings = JSON.parse(fs.readFileSync(path.join(appData, "cascade", "config.json")));
+}catch(err){
+  if(err.code === "ENOENT"){
+    settings = {
+        "port": {
+            "name": "Remote Control Port",
+            "type": "number",
+            "value": 3000
+        },
+        "library": {
+            "name": "Download Location",
+            "type": "directory",
+            "value": "./movies"
+        },
+        "notify": {
+            "name": "Notifications",
+            "type": "boolean",
+            "value": true
+        }
+    };
+  }
+}
 
 //store and retreive settings
 

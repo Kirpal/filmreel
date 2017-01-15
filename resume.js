@@ -4,13 +4,18 @@ var fs = require("fs"),
   torrent = require("./torrent"),
   appData = require("electron").app.getPath("appData"),
   downloads = {},
-  storedDownloads = {};
+  storedDownloads;
+try{
+  storedDownloads = JSON.parse(fs.readFileSync(path.join(appData, "cascade", "downloads.json")));
+}catch(err){
+  if(err.code === "ENOENT"){
+    storedDownloads = {"complete": [], "incomplete": [], "movies": {}};
+  }
+}
 
 //resume all incomplete downloads
 
 module.exports = function(){
-  storedDownloads = JSON.parse(fs.readFileSync(path.join(appData, "cascade", "downloads.json")));
-
   Object.keys(storedDownloads.incomplete).forEach(function(id){
     movie = storedDownloads.incomplete[id];
     downloads[movie.id] = torrent(movie, true);

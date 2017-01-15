@@ -74,7 +74,15 @@ function createWindow () {
   ipcMain.on("getPage", function(event, page){
     if(page === "home"){
       //get template html file
-      event.returnValue = fs.readFileSync(path.join(app.getPath("appData"), "cascade", "home.html"), "utf8");
+      var templateHtml;
+      try{
+        templateHtml = fs.readFileSync(path.join(app.getPath("appData"), "cascade", "home.html"), "utf8");
+      }catch(err){
+        if(err.code === "ENOENT"){
+          templateHtml = "";
+        }
+      }
+      event.returnValue = templateHtml;
     }else if(page === "library"){
       //get torrents
       event.returnValue = store.get();
