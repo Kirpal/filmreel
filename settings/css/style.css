@@ -1,0 +1,212 @@
+@import '../../fonts/opensans.css';
+body {
+  margin: 0;
+  background: #282C34;
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #21252B;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: darkgray;
+  border-radius: 2px;
+}
+*::-webkit-scrollbar-button {
+  display: none;
+}
+*::-webkit-scrollbar-corner {
+  display: none;
+}
+
+h1 {
+  font: 30px "Open Sans", sans-serif;
+  width: 100%;
+  height: 80px;
+  text-align: center;
+  color: #fff;
+  background: #1e232d;
+  margin: 0;
+  box-sizing: border-box;
+  padding-top: 16px;
+}
+#settings {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+}
+.setting {
+  position: relative;
+  height: 44px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.setting.text input {
+  width: 100%;
+  font: 20px "Open Sans", sans-serif;
+  color: #fff;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #3e4755;
+  height: 30px;
+  position: relative;
+  top: 14px;
+}
+.setting.text input:focus {
+  outline: none;
+}
+.setting.text label {
+  position: absolute;
+  left: 0px;
+  top: 16px;
+  font: 20px "Open Sans", sans-serif;
+  color: #fff;
+  transition: 0.3s all;
+}
+.setting.text input:focus ~ label {
+  top: 0px;
+  font-size: 11px;
+}
+.setting.text input:valid ~ label {
+  top: 0px;
+  font-size: 11px;
+}
+.setting.number input {
+  width: 100%;
+  font: 20px "Open Sans", sans-serif;
+  color: #fff;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #3e4755;
+  height: 30px;
+  position: relative;
+  top: 14px;
+}
+.setting.number input:focus {
+  outline: none;
+}
+.setting.number label {
+  position: absolute;
+  left: 0px;
+  top: 16px;
+  font: 20px "Open Sans", sans-serif;
+  color: #fff;
+  transition: 0.3s all;
+}
+.setting.number input:focus ~ label {
+  top: 0px;
+  font-size: 11px;
+}
+.setting.number input:valid ~ label {
+  top: 0px;
+  font-size: 11px;
+}
+.setting.number input::-webkit-outer-spin-button,
+.setting.number input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.setting.directory input {
+  width: 100%;
+  font: 20px "Open Sans", sans-serif;
+  color: #fff;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #3e4755;
+  height: 30px;
+  position: relative;
+  top: 14px;
+}
+.setting.directory input:focus {
+  outline: none;
+}
+.setting.directory label {
+  position: absolute;
+  left: 0px;
+  top: 16px;
+  font: 20px "Open Sans", sans-serif;
+  color: #fff;
+  transition: 0.3s all;
+}
+.setting.directory input:focus ~ label {
+  top: 0px;
+  font-size: 11px;
+}
+.setting.directory input:valid ~ label {
+  top: 0px;
+  font-size: 11px;
+}
+.setting.directory .icon {
+  position: absolute;
+  right: 10px;
+  top: 16px;
+  fill: #fff;
+  stroke: none;
+  height: 20px;
+  cursor: pointer;
+}
+.setting.boolean h2 {
+  width: 100%;
+  font: 20px "Open Sans", sans-serif;
+  color: #fff;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #3e4755;
+  height: 30px;
+  position: relative;
+  top: 14px;
+}
+.setting.boolean input {
+  position: absolute;
+  right: 10px;
+  top: 16px;
+  height: 20px;
+  width: 40px;
+  border-radius: 10px;
+  transition: 0.2s all;
+}
+.setting.boolean input::before {
+	position: absolute;
+	content: "";
+	width: 40px;
+	height: 20px;
+	border-radius: 10px;
+	background: #485061;
+	transition: 0.2s all;
+}
+.setting.boolean input::after {
+	position: absolute;
+	left: 3px;
+	top: 3px;
+	content: "";
+	width: 14px;
+	height: 14px;
+	border-radius: 7px;
+	background: #fff;
+	transition: 0.2s all;
+}
+.setting.boolean input:checked::before {
+	position: absolute;
+	content: "";
+	width: 40px;
+	height: 20px;
+	border-radius: 10px;
+	background: #647495;
+	transition: 0.2s all;
+}
+.setting.boolean input:checked::after {
+	position: absolute;
+	left: 23px;
+	top: 3px;
+	content: "";
+	width: 14px;
+	height: 14px;
+	border-radius: 7px;
+	background: #fff;
+	transition: 0.2s all;
+}

@@ -1,0 +1,211 @@
+@import '../../fonts/opensans.css';
+
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+*:focus {
+  outline: none;
+}
+
+#video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #000;
+}
+#video video {
+  position: absolute;
+}
+
+#controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #21252B;
+  height: 50px;
+  transition: 0.15s opacity;
+}
+#playback {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  height: 40px;
+  width: 40px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+#playback svg {
+  width: 80%;
+  fill: #fff;
+}
+#playback.play svg rect {
+  fill-opacity: 0;
+}
+#playback.play svg path {
+  fill-opacity: 1;
+}
+#playback.pause svg rect {
+  fill-opacity: 1;
+}
+#playback.pause svg path {
+  fill-opacity: 0;
+}
+#volume-icon {
+  width: 16px;
+  position: absolute;
+  bottom: 12px;
+  left: 45px;
+}
+#volume-icon polygon {
+  stroke: #fff;
+  stroke-width: 5;
+  stroke-linejoin: round;
+  fill: #fff;
+}
+#volume-icon path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 5;
+  stroke-linecap: round
+}
+.volume-icon-waves {
+  stroke-opacity: 1;
+  transition: 0.2s stroke-opacity;
+}
+#volume {
+  -webkit-appearance: none;
+  position: absolute;
+  left: 65px;
+  bottom: 13px;
+  width: 60px;
+  height: 14px;
+  background: none;
+  cursor: pointer;
+}
+#volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  margin-top: -5px;
+}
+#volume::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  background: #404754;
+  border-radius: 2px;
+  height: 4px;
+  margin-top: 3px;
+}
+#time {
+  font: 12px "Open Sans", sans-serif;
+  color: #fff;
+  position: absolute;
+  bottom: 13px;
+  left: 140px;
+}
+#time-elapsed{
+  color: #fff;
+}
+#time-duration{
+  color: #666;
+}
+#title {
+  padding-left: 1em;
+  font: 14px "Open Sans", sans-serif;
+  font-style: bold;
+  color: #fff;
+}
+#exit {
+  display: inline-block;
+  height: 20px;
+  fill: #525b6b;
+  position: relative;
+  bottom: -5px;
+  cursor: pointer;
+}
+#fullscreen {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  height: 40px;
+  width: 40px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+#fullscreen svg {
+  width: 80%;
+  fill: #fff;
+}
+#fullscreen.enter svg .svg-exit {
+  fill-opacity: 0;
+}
+#fullscreen.enter svg .svg-enter {
+  fill-opacity: 1;
+}
+#fullscreen.exit svg .svg-exit {
+  fill-opacity: 1;
+}
+#fullscreen.exit svg .svg-enter {
+  fill-opacity: 0;
+}
+#progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: #282C34;
+  cursor: pointer;
+}
+#progress-elapsed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 10px;
+  background: #fff;
+}
+#progress-marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 10px;
+  background: #888;
+  opacity: 0;
+  transition: 0.1s opacity;
+}
+#progress-marker-arrow {
+  position: absolute;
+  bottom: 55px;
+  left: 0;
+  width: 10px;
+  cursor: default;
+}
+#progress-marker-arrow polygon {
+  fill: #111;
+  fill-opacity: 0;
+  transition: 0.1s fill-opacity;
+}
+#progress-text {
+  font: 15px "Open Sans", sans-serif;
+  color: #fff;
+  border-radius: 4px;
+  padding: 6px;
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  background: #111;
+  opacity: 0;
+  transition: 0.1s opacity;
+  cursor: default;
+}

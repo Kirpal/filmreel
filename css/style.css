@@ -1,0 +1,257 @@
+@import '../fonts/opensans.css';
+body {
+  margin: 0;
+  background: #282C34;
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #21252B;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: darkgray;
+  border-radius: 2px;
+}
+*::-webkit-scrollbar-button {
+  display: none;
+}
+*::-webkit-scrollbar-corner {
+  display: none;
+}
+
+header {
+  height: 80px;
+  width: 100%;
+  background: #1e232d;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+#header-icon {
+  position: relative;
+  display: inline-block;
+  height: 40px;
+  top: 15px;
+  padding-right: 10px;
+}
+
+#nav {
+  display: inline-block;
+  border: none;
+}
+
+.nav-item {
+  position: relative;
+  display: inline-block;
+  font: 20px "Open Sans", sans-serif;
+  color: #fff;
+  height: 80px;
+  box-sizing: border-box;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 25px;
+  background: none;
+  cursor: pointer;
+  transition: 0.2s all;
+}
+
+.nav-item::after {
+  content: "";
+  width: 0;
+  height: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: 0.2s all;
+}
+
+.nav-item.selected::after {
+  content: "";
+  width: 100%;
+  height: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: #fff;
+}
+
+.nav-item:hover::after{
+  left: 0;
+  width: 100%;
+}
+
+#search-box {
+  display: inline-block;
+  font: 15px "Open Sans", sans-serif;
+  color: #fff;
+  height: 40px;
+  margin-top: 20px;
+  box-sizing: border-box;
+  width: 30%;
+  padding-left: 5px;
+  padding-right: 5px;
+  float: right;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  transition: 0.2s all;
+}
+
+#search-box:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+#search-box::-webkit-input-placeholder {
+  color: #fff;
+}
+
+#settings {
+  display: inline-block;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1px;
+  height: 30px;
+  margin-top: 25px;
+  margin-left: 10px;
+  box-sizing: border-box;
+  float: right;
+  border-radius: 2px;
+  border: none;
+  transition: 0.05s all;
+  cursor: pointer;
+}
+#settings:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+#contents {
+  padding: 44px;
+  text-align: center;
+}
+#contents h1 {
+  color: #aaa;
+  font: 30px "Open Sans", sans-serif;
+}
+.movie {
+  display: inline-block;
+  position: relative;
+  width: 200px;
+  height: 407px;
+  overflow: hidden;
+  margin: 10px;
+  margin-bottom: 6px;
+  color: #fff;
+}
+.movie img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+.movie .play-circle {
+  opacity: 0;
+  position: absolute;
+  width: 100px;
+  left: 50px;
+  top: 100px;
+  transition: 0.2s all linear;
+}
+.movie .play-circle path {
+  fill: #fff;
+}
+.movie .play-circle circle {
+  fill: rgba(0, 0, 0, 0.75);
+  transition: 0.2s all;
+}
+.movie .play-circle g {
+  cursor: pointer;
+}
+.movie .play-circle g:hover > circle {
+  fill: rgba(0, 0, 0, 0.9);
+}
+.movie .download-circle {
+  opacity: 0;
+  position: absolute;
+  width: 25px;
+  left: 87.5px;
+  top: 252px;
+  transition: 0.2s all linear;
+}
+.movie .download-circle rect {
+  fill: #000;
+  cursor: pointer;
+}
+.movie .download-circle circle {
+  fill: #fff;
+  cursor: pointer;
+}
+.movie:hover > .play-circle {
+  opacity: 1;
+}
+.movie:hover > .download-circle {
+  opacity: 1;
+}
+.movie .movie-info {
+  position: relative;
+  text-align: left;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 200px;
+  max-height: 110px;
+  top: 297px;
+}
+.movie .title {
+  font: 18px "Open Sans", sans-serif;
+  position: relative;
+  margin: 0;
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+.movie .subtitle {
+  display: inline-block;
+  font: 12px "Open Sans", sans-serif;
+  position: relative;
+  margin: 0;
+}
+.movie .imdb {
+  color: #5ea8ff;
+}
+.movie .stars {
+  position: relative;
+  width: 88px;
+  left: -2px;
+  display: inline-block;
+  margin: 0;
+}
+.movie .stars .star {
+  width: 20%;
+  stroke-width: 15;
+  fill: #ffffff;
+}
+.movie .stars.one .star.one, .movie .stars.two .star.one, .movie .stars.three .star.one, .movie .stars.four .star.one, .movie .stars.five .star.one {
+  fill: #f8d64e;
+}
+.movie .stars.two .star.two, .movie .stars.three .star.two, .movie .stars.four .star.two, .movie .stars.five .star.two {
+  fill: #f8d64e;
+}
+.movie .stars.three .star.three, .movie .stars.four .star.three, .movie .stars.five .star.three {
+  fill: #f8d64e;
+}
+.movie .stars.four .star.four, .movie .stars.five .star.four {
+  fill: #f8d64e;
+}
+.movie .stars.five .star.five {
+  fill: #f8d64e;
+}

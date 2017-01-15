@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Cascade</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div id="video">
+    	<video>
+    	</video>
+    </div>
+    <div id="controls">
+    	<button id="playback" class="play">
+    		<svg viewBox="0 0 500 500">
+    			<rect ry="15" width="75" height="300" x="135" y="100" />
+    			<rect ry="15" width="75" height="300" x="290" y="100" />
+    			<path d="M 170,115 Q 165,120 165,125 L 165,375 Q 165,380 170,385 Q 175,387.5 180,385 L 330,260 Q 335,255 335,250 Q 335,245 330,240 L 180,115 Q 175,112.5 170,115 z" />
+    		</svg>
+    	</button>
+      <svg id="volume-icon" viewBox="0 0 75 75">
+        <polygon points="39.389,13.769 22.235,28.606 6,28.606 6,47.699 21.989,47.699 39.389,62.75 39.389,13.769" />
+        <path class="volume-icon-waves" d="M 48.128,49.03 C 50.057,45.934 51.19,42.291 51.19,38.377 C 51.19,34.399 50.026,30.703 48.043,27.577" />
+        <path class="volume-icon-waves" d="M 55.082,20.537 C 58.777,25.523 60.966,31.694 60.966,38.377 C 60.966,44.998 58.815,51.115 55.178,56.076" />
+        <path class="volume-icon-waves" d="M 61.71,62.611 C 66.977,55.945 70.128,47.531 70.128,38.378 C 70.128,29.161 66.936,20.696 61.609,14.01" />
+      </svg>
+    	<input id="volume" type="range" step="0.001" max="1" value="0.75">
+      <div id="time">
+        <span id="time-elapsed">00:00:00</span>
+        /
+        <span id="time-duration">00:00:00</span>
+        <span id="title"></span>
+        <svg id="exit" viewBox="0 0 48 48">
+          <path d="M0 0h48v48h-48z" fill="none"/>
+          <path d="M20.17 31.17l2.83 2.83 10-10-10-10-2.83 2.83 5.17 5.17h-19.34v4h19.34l-5.17 5.17zm17.83-25.17h-28c-2.21 0-4 1.79-4 4v8h4v-8h28v28h-28v-8h-4v8c0 2.21 1.79 4 4 4h28c2.21 0 4-1.79 4-4v-28c0-2.21-1.79-4-4-4z"/>
+        </svg>
+      </div>
+      <button id="fullscreen" class="enter">
+    		<svg viewBox="0 0 500 500">
+    			<path class="svg-enter" d="M 75,300 L 100,300 L 100,350 L 150,350 L 150,375 L 100,375 Q 75,375 75,350z" />
+    			<path class="svg-enter" d="M 75,200 L 100,200 L 100,150 L 150,150 L 150,125 L 100,125 Q 75,125 75,150z" />
+    			<path class="svg-enter" d="M 425,200 L 400,200 L 400,150 L 350,150 L 350,125 L 400,125 Q 425,125 425,150z" />
+    			<path class="svg-enter" d="M 425,300 L 400,300 L 400,350 L 350,350 L 350,375 L 400,375 Q 425,375 425,350z" />
+    			<path class="svg-exit" d="M 75,300 L 75,325 L 125,325 L 125,375 L 150,375  L 150,325 Q 150,300 125,300 L 75,300z" />
+    			<path class="svg-exit" d="M 75,200 L 75,175 L 125,175 L 125,125 L 150,125  L 150,175 Q 150,200 125,200 L 75,200z" />
+    			<path class="svg-exit" d="M 425,200 L 425,175 L 375,175 L 375,125 L 350,125  L 350,175 Q 350,200 375,200 L 425,200z" />
+    			<path class="svg-exit" d="M 425,300 L 425,325 L 375,325 L 375,375 L 350,375  L 350,325 Q 350,300 375,300 L 425,300z" />
+    		</svg>
+    	</button>
+    	<div id="progress">
+    		<div id="progress-elapsed"></div>
+        <div id="progress-marker"></div>
+    	</div>
+    </div>
+    <div id="progress-text"></div>
+    <svg id="progress-marker-arrow" viewbox="0 0 10 5">
+      <polygon points="0,0 5,5 10,0" />
+    </svg>
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <script src='../jquery.min.js'></script>
+    <script src="js/index.js"></script>
+
+    <script>if (window.module) module = window.module;</script>
+  </body>
+</html>
