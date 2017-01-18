@@ -19,6 +19,58 @@ body {
   position: absolute;
 }
 
+#loading-animation {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+}
+#drips-icon {
+  position: absolute;
+  left: 40vw;
+  top: -webkit-calc((100vh - 20vw) / 2);
+  width: 20vw;
+}
+
+#drips{
+  filter: url('#goo');
+  position: absolute;
+  top: -webkit-calc((100vh - 20vw) / 2);
+  left: -webkit-calc(40vw + (20vw / 4.55));
+  width: 20vw;
+  height: 20vw;
+}
+#drip1 {
+	position: absolute;
+	top: -webkit-calc(20vw / 3.5);
+	width: -webkit-calc(20vw / 7.6);
+	height: -webkit-calc(20vw / 3.5);
+	background: #28f;
+	border-radius: -webkit-calc((20vw / 7.6) / 2);
+}
+#drip2 {
+	position: absolute;
+	top: -webkit-calc((20vw / 1.75) - (20vw / 7));
+	width: -webkit-calc(20vw / 7.6);
+	height: -webkit-calc(20vw / 7);
+	background: #28f;
+	border-radius: -webkit-calc((20vw / 7.6) / 2);
+	animation: drip infinite ease-in 1s;
+}
+@keyframes drip {
+	0% {
+		transform: translateY(0);
+		opacity: 1;
+	}80%{
+		opacity: 1;
+	}100%{
+		transform: translateY(-webkit-calc(20vw / 3.5));
+		opacity: 0;
+	}
+}
+
 #controls {
   position: absolute;
   bottom: 0;
@@ -172,7 +224,7 @@ body {
   left: 0;
   width: 0;
   height: 10px;
-  background: #fff;
+  background: #28f;
 }
 #progress-marker {
   position: absolute;
@@ -180,7 +232,7 @@ body {
   left: 0;
   width: 1px;
   height: 10px;
-  background: #888;
+  background: #fff;
   opacity: 0;
   transition: 0.1s opacity;
 }

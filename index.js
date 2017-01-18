@@ -42,16 +42,16 @@ let win
 let settingsWin
 
 function createWindow () {
-  torrents = resume();
   // Create the browser window.
   win = new BrowserWindow({
     autoHideMenuBar: true,
     icon: path.join(__dirname, "icons", "512x512.png")
   })
+  torrents = resume(win);
 
   // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/index.html`)
-  win.setMenu(null)
+  //win.setMenu(null)
   win.webContents.on('new-window', function(e, url) {
     e.preventDefault();
     require('electron').shell.openExternal(url);
@@ -61,11 +61,9 @@ function createWindow () {
   win.on('closed', () => {
     //stop all torrents
     Object.keys(torrents).forEach(function(id){
-      torrents[id].destroy();
+      torrents[id].end();
       delete torrents[id]
     });
-    //save incomplete/complete torrents to downloads.json
-    store.save()
     //dereference window object
     win = null
   })
@@ -76,7 +74,7 @@ function createWindow () {
       //get template html file
       var templateHtml;
       try{
-        templateHtml = fs.readFileSync(path.join(app.getPath("appData"), "cascade", "home.html"), "utf8");
+        templateHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}" + fs.readFileSync(path.join(app.getPath("appData"), "cascade", "home.html"), "utf8");
       }catch(err){
         if(err.code === "ENOENT"){
           templateHtml = "";
@@ -123,7 +121,7 @@ function createWindow () {
             event.returnValue = storeConfig.get(config.setting).value;
           }
         }else if(storeConfig.get(config.setting).type === "directory"){
-          if(fs.existsSync(config.value)){
+          if(fs.existsSync(config.value) && fs.accessSync(config.value, fs.constants.R_OK | fs.constants.W_OK)){
             storeConfig.store(config.setting, "value", config.value);
             event.returnValue = config.value;
           }else{
@@ -142,16 +140,26 @@ function createWindow () {
   })
 
   ipcMain.on('stream', function(event, movie){
+    //movie is already downloaded
+    var downloaded = (store.get().complete.indexOf(movie.id.toString()) !== -1);
     //when play button is clicked on a movie
-    if(!torrents[movie.id]){
-      torrents[movie.id] = torrent(movie, false);
+    if(!torrents[movie.id] && !downloaded){
+      torrents[movie.id] = torrent(movie, false, win);
     }
     win.loadURL(`file://${__dirname}/player/index.html`);
 
     ipcMain.on("exitStreaming", function(event){
+      win.setFullScreen(false);
+      ipcMain.removeAllListeners("playMovie");
+      ipcMain.removeAllListeners("metadata");
+      ipcMain.removeAllListeners("playback");
+      ipcMain.removeAllListeners("volume");
+      ipcMain.removeAllListeners("progress");
+      ipcMain.removeAllListeners("fullscreen");
+      ipcMain.removeAllListeners("exitStreaming");
       win.loadURL(`file://${__dirname}/index.html`);
-      if(!torrents[movie.id].download){
-        torrents[movie.id].destroy();
+      if(!downloaded && !torrents[movie.id].download){
+        torrents[movie.id].end();
         delete torrents[movie.id]
       }
     })
@@ -159,10 +167,15 @@ function createWindow () {
     //sent to get the movie object
     ipcMain.on("playMovie", function(event){
       //respond with movie object and streaming port once torrent is ready
-      torrents[movie.id].on("ready", function(){
+      if(!downloaded){
+        torrents[movie.id].on("ready", function(){
+          event.sender.send("playMovie", movie)
+          event.sender.send("streamPort", streamPort)
+        })
+      }else{
         event.sender.send("playMovie", movie)
         event.sender.send("streamPort", streamPort)
-      })
+      }
     });
     //when metadata for video is loaded
     ipcMain.on("metadata", function(event, duration){
@@ -197,9 +210,11 @@ function createWindow () {
   ipcMain.on('download', function(event, movie){
     //when download button on movie is pressed
     if(torrents[movie.id] && !torrents[movie.id].download){
-      torrents[movie.id].destroy()
+      torrents[movie.id].end()
     }
-    torrents[movie.id] = torrent(movie, true);
+    if(store.get().complete.indexOf(movie.id.toString()) === -1){
+      torrents[movie.id] = torrent(movie, true, win);
+    }
   })
 }
 //ready to make windows
@@ -244,10 +259,11 @@ api.post('/fullscreen/:state', function(req, res){
 
 api.all('/stream/:id', function (req, res) {
   if(store.get().complete.indexOf(req.params.id) !== -1){
+    console.log("LIBRARY")
     var file = {
       name: req.params.id + ".mp4",
-      path: path.join(libraryLocation, req.params.id + ".mp4"),
-      length: fs.statSync(path.join(libraryLocation, req.params.id + ".mp4")).size
+      path: path.join(libraryLocation, req.params.id + "." + store.getFormat(req.params.id)),
+      length: fs.statSync(path.join(libraryLocation, req.params.id + "." + store.getFormat(req.params.id))).size
     }
     var range = req.headers.range;
     range = range && rangeParser(file.length, range)[0];

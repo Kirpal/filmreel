@@ -6,6 +6,7 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.14.0",
+    "mv": "^2.1.1",
     "node-notifier": "^4.6.1",
     "pump": "^1.0.2",
     "range-parser": "^1.2.0",

@@ -7,7 +7,7 @@ try{
   toStore = JSON.parse(fs.readFileSync(path.join(appData, "cascade", "progress.json")));
 }catch(err){
   if(err.code === "ENOENT"){
-    toStore = {};
+    toStore = {"recent":[], "progress":{}};
   }
 }
 
@@ -15,10 +15,23 @@ try{
 
 module.exports = {
   store: function(progress, total, id){
-    toStore[id] = progress/total;
+    toStore.progress[id] = progress/total;
+    if(toStore.recent.indexOf(id) === -1){
+      if(toStore.recent.length < 5){
+        toStore.recent.push(id);
+      }else{
+        for(var i = 4; i > 0; i--){
+          toStore.recent[i] = toStore.recent[i-1];
+        }
+        toStore.recent[0] = id;
+      }
+    }
     fs.writeFileSync(path.join(appData, "cascade", "progress.json"), JSON.stringify(toStore));
   },
   get: function(id){
-    return toStore[id];
+    return toStore.progress[id];
+  },
+  getRecent: function(){
+    return toStore.recent;
   }
 }

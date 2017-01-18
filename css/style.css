@@ -193,10 +193,7 @@ header {
   fill: #fff;
   cursor: pointer;
 }
-.movie:hover > .play-circle {
-  opacity: 1;
-}
-.movie:hover > .download-circle {
+.movie:hover > .download-circle, .movie:hover > .play-circle {
   opacity: 1;
 }
 .movie .movie-info {
@@ -254,4 +251,22 @@ header {
 }
 .movie .stars.five .star.five {
   fill: #f8d64e;
+}
+
+.download-progress-outer {
+  display: none;
+  position: absolute;
+  left: 10px;
+  top: 277px;
+  height: 10px;
+  width: 180px;
+  background: #393e4a;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+.download-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 10px;
+  background: #28f;
 }

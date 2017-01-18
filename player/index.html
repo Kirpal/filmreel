@@ -56,6 +56,23 @@
     <svg id="progress-marker-arrow" viewbox="0 0 10 5">
       <polygon points="0,0 5,5 10,0" />
     </svg>
+    <div id="loading-animation">
+      <object id="drips-icon" data="../icons/icon-nodrip.svg" type="image/svg+xml"></object>
+      <div id="drips">
+        <div id="drip1"></div>
+        <div id="drip2"></div>
+      </div>
+
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+            <feBlend in="SourceGraphic" in2="goo" />
+        	</filter>
+        </defs>
+      </svg>
+    </div>
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
     <script src='../jquery.min.js'></script>

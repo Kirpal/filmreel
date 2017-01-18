@@ -15,10 +15,11 @@ try{
 
 //resume all incomplete downloads
 
-module.exports = function(){
-  Object.keys(storedDownloads.incomplete).forEach(function(id){
-    movie = storedDownloads.incomplete[id];
-    downloads[movie.id] = torrent(movie, true);
+module.exports = function(win){
+  storedDownloads.incomplete.forEach(function(id){
+    if(Object.keys(storedDownloads.movies).indexOf(id) !== -1){
+      downloads[id] = torrent(storedDownloads.movies[id], true, win);
+    }
   })
   return downloads
 }

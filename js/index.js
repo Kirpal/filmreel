@@ -7,6 +7,7 @@ var numbers = ["one", "two", "three", "four", "five"];
 var oldRawHtml = "";
 var homeHtml = {};
 var downloaded = [];
+var downloading = [];
 
 //returns each movie's html
 var movieHtml = function(movie){
@@ -16,17 +17,18 @@ var movieHtml = function(movie){
 		<svg class="play-circle" viewbox="0 0 500 500">\
 			<g>\
 				<circle cx="250" cy="250" r="250"/>\
-				<path d="M 180,115 Q 175,120 175,125 L 175,375 Q 175,380 180,385 Q 185,387.5 190,385 L 340,260 Q 345,255 345,250 Q 345,245 340,240 L 190,115 Q 185,112.5 180,115 z" />\
+				<path d="M 180,115 Q 175,120 175,125 L 175,375 Q 175,380 180,385 Q 185,387.5 190,385 L 350,260 Q 355,255 355,250 Q 355,245 350,240 L 190,115 Q 185,112.5 180,115 z" />\
 			</g>\
 		</svg>' +
-		((downloaded.indexOf(parseInt(movie.id)) === -1)? '<svg class="download-circle" viewbox="0 0 50 50">\
+		((downloaded.indexOf(parseInt(movie.id)) === -1 && downloading.indexOf(parseInt(movie.id)) === -1)? '<svg class="download-circle" viewbox="0 0 50 50">\
 			<circle cx="25" cy="25" r="25"/>\
 			<rect x="22.5" y="7.5" width="5" height="25"/>\
 			<rect x="20" y="17.5" transform="rotate(-45, 20, 32.5)" width="5" height="20"/>\
 			<rect x="25" y="17.5" transform="rotate(45, 30, 32.5)" width="5" height="20"/>\
 			<rect x="15" y="37.5" width="20" height="5"/>\
 		</svg>' : '') +
-		'<div class="movie-info">\
+		'<div ' + ((downloading.indexOf(parseInt(movie.id)) !== -1)? 'style="display: block;"' : '') + 'class="download-progress-outer"><div class="download-progress"></div></div>\
+		<div class="movie-info">\
 			<h2 class="title">' + movie.title + '</h2>\
 			<h3 class="subtitle">' + movie.mpa_rating+" / "+movie.year+" / "+movie.runtime+"m" + ' / <a class="imdb" target="_blank" href="http://www.imdb.com/title/' + movie.imdb_code + '">IMDB</a></h3><br>\
 			<div class="stars ' + numbers[Math.round(Math.round(movie.rating)/2)-1] + '">\
@@ -60,6 +62,8 @@ var addMovie = function(movie){
 		ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
 	});
 	$(".movie .download-circle").click(function(){
+		$(this).css("display", "none");
+		$(this).siblings(".download-progress-outer").css("display", "block");
 		ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
 	});
 }
@@ -101,6 +105,8 @@ var changeTab = function(tab){
 							ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
 						});
 						$(".movie .download-circle").click(function(){
+							$(this).css("display", "none");
+							$(this).siblings(".download-progress-outer").css("display", "block");
 							ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
 						});
 					}
@@ -118,6 +124,8 @@ var changeTab = function(tab){
 				ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
 			});
 			$(".movie .download-circle").click(function(){
+				$(this).css("display", "none");
+				$(this).siblings(".download-progress-outer").css("display", "block");
 				ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
 			});
 		}
@@ -125,17 +133,28 @@ var changeTab = function(tab){
 		//clear page contents
 		$("#contents").html("");
 		var library = ipcRenderer.sendSync("getPage", tab);
+		console.log(library);
 		downloaded = [];
-		Object.keys(library.movies).forEach(function(id){
-			if(library.complete.indexOf(id) == -1){
-				delete library.movies[id]
+		downloading = [];
+		if(library.incomplete.length > 0 || library.complete.length > 0){
+			if(library.incomplete.length > 0){
+				library.incomplete.forEach(function(id){
+					console.log(Object.keys(library.movies));
+					if(Object.keys(library.movies).indexOf(id) !== -1){
+						console.log("incomplete")
+						downloading.push(parseInt(id));
+						addMovie(library.movies[id]);
+					}
+				});
 			}
-		})
-		if(Object.keys(library.movies).length > 0){
-			Object.keys(library.movies).forEach(function(id){
-				downloaded.push(parseInt(id));
-				addMovie(library.movies[id]);
-			});
+			if(library.complete.length > 0){
+				library.complete.forEach(function(id){
+					if(Object.keys(library.movies).indexOf(id) !== -1){
+						downloaded.push(parseInt(id));
+						addMovie(library.movies[id]);
+					}
+				});
+			}
 		}else{
 			$("#contents").html("<h1>Nothing Found :(</h1>");
 		}
@@ -150,18 +169,29 @@ var changeTab = function(tab){
 				//add all search results to page
 				addMovie(movie);
 			});
+		}).fail(function(){
+			var libraryMovies = ipcRenderer.sendSync("getPage", "library").movies
+			Object.keys(libraryMovies).filter(function(id){
+				return downloaded.indexOf(libraryMovies[id].id) !== -1 && libraryMovies[id].title.includes($("#search-box").val());
+			}).forEach(function(id){
+				addMovie(libraryMovies[id]);
+			});
 		});
 	}
 }
 
 //hide search tab
 $("#nav-item-search").fadeOut(0);
-//get list of downloaded movies
+//get list of downloaded and downloading movies
 var library = ipcRenderer.sendSync("getPage", "library");
 downloaded = [];
+downloading = [];
 Object.keys(library.movies).forEach(function(id){
 	if(library.complete.indexOf(id) !== -1){
 		downloaded.push(parseInt(id));
+	}
+	if(library.incomplete.indexOf(id) !== -1){
+		downloading.push(parseInt(id));
 	}
 })
 //start on "home" tab
@@ -208,4 +238,12 @@ $("#search-box").click(function(){
 		//clear page contents
 		$("#contents").html("");
 	}
+})
+
+ipcRenderer.on("downloadProgress", function(event, data){
+	$("[data-id='" + data.id + "']").children(".download-progress-outer").css("display", "block");
+	$("[data-id='" + data.id + "']").children(".download-progress-outer").children(".download-progress").css("width", ((data.progress <= 1) ? (100 * data.progress) : 100) + "%");
+})
+ipcRenderer.on("downloadFinished", function(event, id){
+	$("[data-id='" + id + "']").children(".download-progress-outer").css("display", "none");
 })
