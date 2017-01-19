@@ -41,6 +41,18 @@ var torrent = require("./torrent"),
 let win
 let settingsWin
 
+var shouldQuit = app.makeSingleInstance(function(){
+  if(win){
+    if(win.isMinimized()) win.restore();
+    win.focus();
+  }
+});
+
+if(shouldQuit){
+  app.quit();
+  return;
+}
+
 function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({
