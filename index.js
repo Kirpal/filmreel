@@ -63,7 +63,8 @@ function createWindow () {
 
   // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/index.html`)
-  //win.setMenu(null)
+  win.setMenu(null)
+
   win.webContents.on('new-window', function(e, url) {
     e.preventDefault();
     require('electron').shell.openExternal(url);
@@ -89,7 +90,7 @@ function createWindow () {
         templateHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}" + fs.readFileSync(path.join(app.getPath("appData"), "cascade", "home.html"), "utf8");
       }catch(err){
         if(err.code === "ENOENT"){
-          templateHtml = "";
+          templateHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}";
         }
       }
       event.returnValue = templateHtml;

@@ -1,7 +1,6 @@
 'use strict'
 var torrentStream = require("torrent-stream"),
     request = require("request"),
-    notifier = require("node-notifier"),
     path = require("path"),
     fs = require("fs"),
     mv = require("mv"),
@@ -91,11 +90,13 @@ module.exports = function(movie, download, win){
           rmDir(opts.path);
         });
         if(storeConfig.get("notify").value){
-          notifier.notify({
-            title: "Movie Downloaded",
-            message: movie.title + " has finished downloading!",
-            icon: path.join(__dirname, "images", "icon.png")
-          })
+          var notification = new win.Notification("Download Complete", {
+            body: movie.title
+            //icon: path.join(__dirname, "images", "icon.png")
+          });
+          notification.onclick = function(){
+            ipcRenderer.send("focusWindow", "main")
+          }
         }
       }
     })
