@@ -1,10 +1,10 @@
 'use strict'
 var fs = require("fs"),
   path = require("path"),
-  appData = require("electron").app.getPath("appData"),
+  userData = require("electron").app.getPath("userData"),
   toStore;
 try{
-  toStore = JSON.parse(fs.readFileSync(path.join(appData, "cascade", "progress.json")));
+  toStore = JSON.parse(fs.readFileSync(path.join(userData, "progress.json")));
 }catch(err){
   if(err.code === "ENOENT"){
     toStore = {"recent":[], "progress":{}};
@@ -26,7 +26,7 @@ module.exports = {
         toStore.recent[0] = id;
       }
     }
-    fs.writeFileSync(path.join(appData, "cascade", "progress.json"), JSON.stringify(toStore));
+    fs.writeFileSync(path.join(userData, "progress.json"), JSON.stringify(toStore));
   },
   get: function(id){
     return toStore.progress[id];

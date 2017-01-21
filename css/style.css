@@ -2,6 +2,7 @@
 body {
   margin: 0;
   background: #282C34;
+  -webkit-user-select: none;
 }
 
 *::-webkit-scrollbar {

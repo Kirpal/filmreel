@@ -244,6 +244,14 @@ ipcRenderer.on("downloadProgress", function(event, data){
 	$("[data-id='" + data.id + "']").children(".download-progress-outer").css("display", "block");
 	$("[data-id='" + data.id + "']").children(".download-progress-outer").children(".download-progress").css("width", ((data.progress <= 1) ? (100 * data.progress) : 100) + "%");
 })
-ipcRenderer.on("downloadFinished", function(event, id){
-	$("[data-id='" + id + "']").children(".download-progress-outer").css("display", "none");
+ipcRenderer.on("downloadFinished", function(event, data){
+	$("[data-id='" + data.movie.id + "']").children(".download-progress-outer").css("display", "none");
+	if(data.notify){
+		var notification = new window.Notification("Download Complete", {
+			body: data.movie.title
+		});
+		notification.onclick(function(){
+			ipcRenderer.send("stream", data.movie);
+		})
+	}
 })

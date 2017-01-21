@@ -24,6 +24,10 @@ body {
   display: none;
 }
 
+.select-none {
+  -webkit-user-select: none;
+}
+
 h1 {
   font: 30px "Open Sans", sans-serif;
   width: 100%;
@@ -34,6 +38,13 @@ h1 {
   margin: 0;
   box-sizing: border-box;
   padding-top: 16px;
+}
+#footer {
+  font: 12px "Open Sans", sans-serif;
+  color: #3e4755;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
 }
 #settings {
   width: 100%;

@@ -57,12 +57,17 @@ function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({
     autoHideMenuBar: true,
-    icon: path.join(__dirname, "icons", "512x512.png")
+    icon: path.join(__dirname, "icons", "icon.png"),
+    backgroundColor: "#282C34",
+    show: false
   })
   torrents = resume(win);
 
   // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/index.html`)
+  win.once('ready-to-show', function(){
+    win.show();
+  });
   win.setMenu(null)
 
   win.webContents.on('new-window', function(e, url) {
@@ -87,7 +92,7 @@ function createWindow () {
       //get template html file
       var templateHtml;
       try{
-        templateHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}" + fs.readFileSync(path.join(app.getPath("appData"), "cascade", "home.html"), "utf8");
+        templateHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}" + fs.readFileSync(path.join(app.getPath("userData"), "home.html"), "utf8");
       }catch(err){
         if(err.code === "ENOENT"){
           templateHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}";
@@ -104,11 +109,19 @@ function createWindow () {
     //new settings window
     settingsWin = new BrowserWindow({
       autoHideMenuBar: true,
-      icon: path.join(__dirname, "icons", "512x512.png")
+      icon: path.join(__dirname, "icons", "icon.png"),
+      backgroundColor: "#282C34",
+      parent: win,
+      show: false
     })
 
     // and load settings of the app.
     settingsWin.loadURL(`file://${__dirname}/settings/index.html`)
+    settingsWin.setMenu(null)
+    
+    settingsWin.once('ready-to-show', function(){
+      settingsWin.show();
+    });
     // Emitted when the window is closed.
     settingsWin.on('closed', () => {
       //dereference window object
@@ -171,6 +184,7 @@ function createWindow () {
       ipcMain.removeAllListeners("fullscreen");
       ipcMain.removeAllListeners("exitStreaming");
       win.loadURL(`file://${__dirname}/index.html`);
+      win.setThumbarButtons([]);
       if(!downloaded && !torrents[movie.id].download){
         torrents[movie.id].end();
         delete torrents[movie.id]
@@ -197,8 +211,35 @@ function createWindow () {
       event.sender.send("progress", {progress: (typeof storeProgress.get(movie.id) === 'undefined') ? 0 : storeProgress.get(movie.id) * duration, total: duration, update: true})
       event.sender.send("playback", true)
 
+      function setThumbar(state){
+        if(state){
+          win.setThumbarButtons([
+            {
+              tooltip: "Pause",
+              icon: path.join(__dirname, "icons", "thumbar-pause.svg"),
+              click(){
+                setThumbar(false);
+                win.webContents.send("playback", false);
+              }
+            }
+          ])
+        }else{
+          win.setThumbarButtons([
+            {
+              tooltip: "Play",
+              icon: path.join(__dirname, "icons", "thumbar-play.svg"),
+              click(){
+                setThumbar(true);
+                win.webContents.send("playback", true);
+              }
+            }
+          ])
+        }
+      }
+
       ipcMain.on('playback', function(event, state){
         //play/pause
+        setThumbar(state)
         event.sender.send("playback", state)
       })
       ipcMain.on('volume', function(event, data){
@@ -226,7 +267,7 @@ function createWindow () {
       torrents[movie.id].end()
     }
     if(store.get().complete.indexOf(movie.id.toString()) === -1){
-      torrents[movie.id] = torrent(movie, true, win);
+      torrents[movie.id] = torrent(movie, true, win, (Object.keys(torrents).filter(function(id){return torrents[id].download}).length >= 1));
     }
   })
 }
@@ -250,6 +291,7 @@ app.on('activate', () => {
 
 api.post('/playback/', function(req, res){
   var state = (req.query.state === "play") ? true : (req.query.state === "pause") ? false : null;
+  setThumbar(state)
   win.webContents.send("playback", state)
 })
 api.post('/volume/:volume', function(req, res){

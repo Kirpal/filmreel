@@ -1,10 +1,10 @@
 'use strict'
 var fs = require("fs"),
   path = require("path"),
-  appData = require("electron").app.getPath("appData"),
+  userData = require("electron").app.getPath("userData"),
   settings;
 try {
-  settings = JSON.parse(fs.readFileSync(path.join(appData, "cascade", "config.json")));
+  settings = JSON.parse(fs.readFileSync(path.join(userData, "config.json")));
 }catch(err){
   if(err.code === "ENOENT"){
     settings = {
@@ -34,7 +34,7 @@ module.exports = {
   store: function(setting, prop, value){
     settings[setting] = (typeof settings[setting] === 'undefined') ? {} : settings[setting];
     settings[setting][prop] = value;
-    fs.writeFileSync(path.join(appData, "cascade", "config.json"), JSON.stringify(settings));
+    fs.writeFileSync(path.join(userData, "config.json"), JSON.stringify(settings));
   },
   //get specific setting
   get: function(setting){

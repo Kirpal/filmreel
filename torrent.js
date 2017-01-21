@@ -1,15 +1,12 @@
 'use strict'
 var torrentStream = require("torrent-stream"),
     request = require("request"),
+    notifier = require("node-notifier"),
     path = require("path"),
     fs = require("fs"),
     mv = require("mv"),
     store = require("./store"),
-    storeConfig = require("./storeConfig"),
-    chosenTorrent = false,
-    magnet = "",
-    opts = {},
-    library = storeConfig.get("library").value;
+    storeConfig = require("./storeConfig");
 
 //modified from http://stackoverflow.com/a/32197381
 function rmDir(rmPath){
@@ -26,7 +23,11 @@ function rmDir(rmPath){
   }
 }
 
-module.exports = function(movie, download, win){
+module.exports = function(movie, download, win, showProgressBar){
+  var chosenTorrent = false,
+    magnet = "",
+    opts = {},
+    library = storeConfig.get("library").value;
   download = !!download;
   chosenTorrent = movie.torrents.reduce(function(a, b){
     if(a.quality.toUpperCase() != "3D"){
@@ -82,22 +83,13 @@ module.exports = function(movie, download, win){
     engine.on("idle", function(){
       engine.complete = true;
       console.log("completed: " + movie.id)
-      win.webContents.send("downloadFinished", movie.id);
+      win.webContents.send("downloadFinished", {movie: movie, notify: storeConfig.get("notify").value});
       if(download){
         store.complete(movie);
         mv(path.join(opts.path, engine.file.path), path.join(library, (movie.id + "." + engine.file.name.split(".")[engine.file.name.split(".").length-1])), {mkdirp: false}, function(err){
           console.log(err);
           rmDir(opts.path);
         });
-        if(storeConfig.get("notify").value){
-          var notification = new win.Notification("Download Complete", {
-            body: movie.title
-            //icon: path.join(__dirname, "images", "icon.png")
-          });
-          notification.onclick = function(){
-            ipcRenderer.send("focusWindow", "main")
-          }
-        }
       }
     })
     engine.end = function(){
@@ -111,6 +103,9 @@ module.exports = function(movie, download, win){
     }
     engine.on("download", function(){
       if(download){
+        if(showProgressBar){
+          win.setProgressBar(engine.getProgress());
+        }
         win.webContents.send("downloadProgress", {id: movie.id, progress: engine.getProgress()});
       }
     });

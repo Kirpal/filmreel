@@ -3,7 +3,7 @@ var fs = require("fs"),
   path = require("path"),
   storeConfig = require("./storeConfig"),
   supportedFormats = ["mp4", "mkv", "avi"],
-  appData = require("electron").app.getPath("appData"),
+  userData = require("electron").app.getPath("userData"),
   libraryLocation = storeConfig.get("library").value,
   movies,
   library;
@@ -21,7 +21,7 @@ try{
 }
 
 try{
-  movies = JSON.parse(fs.readFileSync(path.join(appData, "cascade", "downloads.json"))).movies;
+  movies = JSON.parse(fs.readFileSync(path.join(userData, "downloads.json"))).movies;
 }catch(err){
   if(err.code === "ENOENT"){
     movies = {}
@@ -35,14 +35,14 @@ module.exports = {
   incomplete: function(movie){
     toStore.movies[movie.id] = movie;
     toStore.incomplete.push(movie.id.toString());
-    fs.writeFileSync(path.join(appData, "cascade", "downloads.json"), JSON.stringify(toStore));
+    fs.writeFileSync(path.join(userData, "downloads.json"), JSON.stringify(toStore));
   },
   //on completion add to complete and remove from incomplete
   complete: function(movie){
     toStore.movies[movie.id] = movie;
     toStore.complete.push(movie.id);
     delete toStore.incomplete[toStore.incomplete.indexOf(movie.id.toString())];
-    fs.writeFileSync(path.join(appData, "cascade", "downloads.json"), JSON.stringify(toStore));
+    fs.writeFileSync(path.join(userData, "downloads.json"), JSON.stringify(toStore));
   },
   //returns both complete and incomplete torrents
   get: function(){
