@@ -118,7 +118,7 @@ function createWindow () {
     // and load settings of the app.
     settingsWin.loadURL(`file://${__dirname}/settings/index.html`)
     settingsWin.setMenu(null)
-    
+
     settingsWin.once('ready-to-show', function(){
       settingsWin.show();
     });
@@ -165,6 +165,31 @@ function createWindow () {
     })
   })
 
+  function setThumbar(state){
+    if(state){
+      win.setThumbarButtons([
+        {
+          tooltip: "Pause",
+          icon: path.join(__dirname, "icons", "thumbar-pause.png"),
+          click(){
+            setThumbar(false);
+            win.webContents.send("playback", false);
+          }
+        }
+      ])
+    }else{
+      win.setThumbarButtons([
+        {
+          tooltip: "Play",
+          icon: path.join(__dirname, "icons", "thumbar-play.png"),
+          click(){
+            setThumbar(true);
+            win.webContents.send("playback", true);
+          }
+        }
+      ])
+    }
+  }
   ipcMain.on('stream', function(event, movie){
     //movie is already downloaded
     var downloaded = (store.get().complete.indexOf(movie.id.toString()) !== -1);
@@ -210,32 +235,6 @@ function createWindow () {
       event.sender.send("volume", {volume: 0.75, update: true})
       event.sender.send("progress", {progress: (typeof storeProgress.get(movie.id) === 'undefined') ? 0 : storeProgress.get(movie.id) * duration, total: duration, update: true})
       event.sender.send("playback", true)
-
-      function setThumbar(state){
-        if(state){
-          win.setThumbarButtons([
-            {
-              tooltip: "Pause",
-              icon: path.join(__dirname, "icons", "thumbar-pause.svg"),
-              click(){
-                setThumbar(false);
-                win.webContents.send("playback", false);
-              }
-            }
-          ])
-        }else{
-          win.setThumbarButtons([
-            {
-              tooltip: "Play",
-              icon: path.join(__dirname, "icons", "thumbar-play.svg"),
-              click(){
-                setThumbar(true);
-                win.webContents.send("playback", true);
-              }
-            }
-          ])
-        }
-      }
 
       ipcMain.on('playback', function(event, state){
         //play/pause
