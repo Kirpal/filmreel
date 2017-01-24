@@ -139,7 +139,6 @@ var changeTab = function(tab){
 		if(library.incomplete.length > 0 || library.complete.length > 0){
 			if(library.incomplete.length > 0){
 				library.incomplete.forEach(function(id){
-					console.log(Object.keys(library.movies));
 					if(Object.keys(library.movies).indexOf(id) !== -1){
 						console.log("incomplete")
 						downloading.push(parseInt(id));
@@ -148,7 +147,17 @@ var changeTab = function(tab){
 				});
 			}
 			if(library.complete.length > 0){
-				library.complete.forEach(function(id){
+				library.complete.sort(function(a, b){
+					if(Object.keys(library.movies).indexOf(a) !== -1 && Object.keys(library.movies).indexOf(b) !== -1){
+						var titleA = library.movies[a].title.toLowerCase(), titleB = library.movies[b].title.toLowerCase();
+						if(titleA < titleB)
+							return -1;
+						if(titleA > titleB)
+							return 1;
+						return 0;
+					}
+					return 0;
+				}).forEach(function(id){
 					if(Object.keys(library.movies).indexOf(id) !== -1){
 						downloaded.push(parseInt(id));
 						addMovie(library.movies[id]);
