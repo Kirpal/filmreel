@@ -14,7 +14,6 @@ try{
     return val.replace(new RegExp(".(" + supportedFormats.join("|") + ")", "gi"), "");
   });
 }catch(err){
-  console.log(err);
   if(err.code === "ENOENT"){
     library = [];
   }

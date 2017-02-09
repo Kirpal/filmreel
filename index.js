@@ -30,6 +30,7 @@ var torrent = require("./torrent"),
   pump = require("pump"),
   rangeParser = require("range-parser"),
   express = require("express"),
+  request = require("request"),
   api = express(),
   torrents = {},
   isFullscreen = false,
@@ -319,7 +320,6 @@ api.post('/fullscreen/:state', function(req, res){
 
 api.all('/stream/:id', function (req, res) {
   if(store.get().complete.indexOf(req.params.id) !== -1){
-    console.log("LIBRARY")
     var file = {
       name: req.params.id + ".mp4",
       path: path.join(libraryLocation, req.params.id + "." + store.getFormat(req.params.id)),

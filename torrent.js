@@ -81,12 +81,10 @@ module.exports = function(movie, download, win, showProgressBar){
     engine.complete = false;
     engine.on("idle", function(){
       engine.complete = true;
-      console.log("completed: " + movie.id)
       win.webContents.send("downloadFinished", {movie: movie, notify: storeConfig.get("notify").value});
       if(download){
         store.complete(movie);
         mv(path.join(opts.path, engine.file.path), path.join(library, (movie.id + "." + engine.file.name.split(".")[engine.file.name.split(".").length-1])), {mkdirp: false}, function(err){
-          console.log(err);
           rmDir(opts.path);
         });
       }

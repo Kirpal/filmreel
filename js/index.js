@@ -67,6 +67,28 @@ var addMovie = function(movie){
 		ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
 	});
 }
+var addHomeHtml = function(rawHtml){
+	//replace placeholders with movies' html
+	var newHtml = rawHtml.replace(/\{\{[0-9]+\}\}/g, function(x){
+		if(Object.keys(movies).indexOf(x.replace(/\{|\}/g, "")) === -1){
+			return "";
+		}
+		return movieHtml(movies[x.replace(/\{|\}/g, "")]);
+	});
+	$("#contents").html(newHtml);
+	//remove old click listeners and add new ones
+	$(".movie .play-circle").off("click");
+	$(".movie .download-circle").off("click");
+
+	$(".movie .play-circle").click(function(){
+		ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
+	});
+	$(".movie .download-circle").click(function(){
+		$(this).css("display", "none");
+		$(this).siblings(".download-progress-outer").css("display", "block");
+		ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
+	});
+}
 //changes tab and displayed page
 var changeTab = function(tab){
 	//remove selection class from all tabs
@@ -84,63 +106,39 @@ var changeTab = function(tab){
 			oldRawHtml = rawHtml;
 			//list of movies in home template
 			var homeList = rawHtml.match(/\{\{[0-9]+\}\}/g);
-			homeHtml = {};
+			var homeLength = 0;
 			homeList.forEach(function(id, index){
 				//get information on all movies in home template
-				$.get("https://yts.ag/api/v2/movie_details.json?movie_id=" + id.replace(/\{|\}/g, ""), function(response){
-					//make movie's html
-					homeHtml[response.data.movie.id] = movieHtml(response.data.movie);
-					//add movie to list
-					movies[response.data.movie.id] = response.data.movie;
-					//if it is the last movie in the template
-					if(Object.keys(homeHtml).length === homeList.length){
-						//replace placeholders with movies' html
-						var newHtml = rawHtml.replace(/\{\{[0-9]+\}\}/g, function(x){return homeHtml[x.replace(/\{|\}/g, "")]});
-						$("#contents").html(newHtml);
-						//remove old click listeners and add new ones
-						$(".movie .play-circle").off("click");
-						$(".movie .download-circle").off("click");
-
-						$(".movie .play-circle").click(function(){
-							ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
-						});
-						$(".movie .download-circle").click(function(){
-							$(this).css("display", "none");
-							$(this).siblings(".download-progress-outer").css("display", "block");
-							ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
-						});
+				if(Object.keys(movies).indexOf(id.replace(/\{|\}/g, "")) === -1){
+					$.get("https://yts.ag/api/v2/movie_details.json?movie_id=" + id.replace(/\{|\}/g, ""), function(response){
+						//add movie to list
+						movies[response.data.movie.id] = response.data.movie;
+						homeLength += 1;
+						//if it is the last movie in the template
+						if(homeLength === homeList.length){
+							addHomeHtml(rawHtml);
+						}
+					});
+				}else{
+					homeLength += 1;
+					if(homeLength === homeList.length){
+						addHomeHtml(rawHtml);
 					}
-				});
+				}
 			});
 		}else{
-			//replace placeholders with movies' html
-			var newHtml = rawHtml.replace(/\{\{[0-9]+\}\}/g, function(x){return homeHtml[x.replace(/\{|\}/g, "")]});
-			$("#contents").html(newHtml);
-			//remove old click listeners and add new ones
-			$(".movie .play-circle").off("click");
-			$(".movie .download-circle").off("click");
-
-			$(".movie .play-circle").click(function(){
-				ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
-			});
-			$(".movie .download-circle").click(function(){
-				$(this).css("display", "none");
-				$(this).siblings(".download-progress-outer").css("display", "block");
-				ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
-			});
+			addHomeHtml(rawHtml);
 		}
 	}else if(tab === "library"){
 		//clear page contents
 		$("#contents").html("");
 		var library = ipcRenderer.sendSync("getPage", tab);
-		console.log(library);
 		downloaded = [];
 		downloading = [];
 		if(library.incomplete.length > 0 || library.complete.length > 0){
 			if(library.incomplete.length > 0){
 				library.incomplete.forEach(function(id){
 					if(Object.keys(library.movies).indexOf(id) !== -1){
-						console.log("incomplete")
 						downloading.push(parseInt(id));
 						addMovie(library.movies[id]);
 					}
@@ -204,7 +202,7 @@ Object.keys(library.movies).forEach(function(id){
 	}
 })
 //start on "home" tab
-changeTab("home")
+changeTab("home");
 
 //change to selected tab
 $(".nav-item").click(function(){
