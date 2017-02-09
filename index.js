@@ -89,7 +89,13 @@ function createWindow () {
   //get data for the browsing page's windows
   ipcMain.on("getPage", function(event, page){
     if(page === "home"){
-      //get template html file
+      //get template html file from server
+      request("https://kirpal.github.io/cascade/home.html", function(error, response, body){
+        if(!error && response.statusCode == 200){
+          fs.writeFileSync(path.join(app.getPath("userData"), "home.html"), body);
+        }
+      })
+      //get template html file from file
       var templateHtml;
       try{
         templateHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}" + fs.readFileSync(path.join(app.getPath("userData"), "home.html"), "utf8");

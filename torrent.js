@@ -1,6 +1,5 @@
 'use strict'
 var torrentStream = require("torrent-stream"),
-    request = require("request"),
     notifier = require("node-notifier"),
     path = require("path"),
     fs = require("fs"),
