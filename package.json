@@ -3,6 +3,8 @@
   "description": "A torrent based video streaming client",
   "version": "0.1.0",
   "author": "Kirpal Demian",
+  "repository": "Kirpal/cascade",
+  "bugs": "https://github.com/Kirpal/cascade/issues",
   "main": "index.js",
   "dependencies": {
     "express": "^4.14.0",
