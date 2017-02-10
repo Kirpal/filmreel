@@ -98,11 +98,16 @@ function createWindow () {
       })
       //get template html file from file
       var templateHtml;
+      if(storeProgress.getRecent().length > 0){
+        var recentHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}";
+      }else{
+        var recentHtml = "";
+      }
       try{
-        templateHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}" + fs.readFileSync(path.join(app.getPath("userData"), "home.html"), "utf8");
+        templateHtml = recentHtml + fs.readFileSync(path.join(app.getPath("userData"), "home.html"), "utf8");
       }catch(err){
         if(err.code === "ENOENT"){
-          templateHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}";
+          templateHtml = recentHtml;
         }
       }
       event.returnValue = templateHtml;
