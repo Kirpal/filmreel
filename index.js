@@ -321,7 +321,7 @@ api.post('/fullscreen/:state', function(req, res){
 api.all('/stream/:id', function (req, res) {
   if(store.get().complete.indexOf(req.params.id) !== -1){
     var file = {
-      name: req.params.id + ".mp4",
+      name: req.params.id + "." + store.getFormat(req.params.id),
       path: path.join(libraryLocation, req.params.id + "." + store.getFormat(req.params.id)),
       length: fs.statSync(path.join(libraryLocation, req.params.id + "." + store.getFormat(req.params.id))).size
     }

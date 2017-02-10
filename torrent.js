@@ -59,7 +59,13 @@ module.exports = function(movie, download, win, showProgressBar){
     if(download){
       opts.path = path.join(library, movie.id.toString());
       if(!fs.existsSync(opts.path)){
-        fs.mkdirSync(opts.path);
+        opts.path.split(path.sep).forEach(function(dir, idx, full){
+          var parent = full.splice(0, idx).join(path.sep);
+          var dirPath = path.join(parent, dir);
+          if(!fs.existsSync(dirPath)){
+            fs.mkdirSync(dirPath);
+          }
+        });
       }
     }
     var engine = torrentStream(magnet, opts);

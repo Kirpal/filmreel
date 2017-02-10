@@ -16,7 +16,7 @@ try {
         "library": {
             "name": "Download Location",
             "type": "directory",
-            "value": "./movies"
+            "value": path.join(userData, "movies")
         },
         "notify": {
             "name": "Notifications",
