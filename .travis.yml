@@ -1,4 +1,8 @@
 language: node_js
 node_js:
   - "node"
+addons:
+  apt:
+    sources:
+      - icns2png
 script: node_modules/.bin/build
