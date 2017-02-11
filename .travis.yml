@@ -1,0 +1,4 @@
+language: node_js
+node_js:
+  - "node"
+script: bundle exec node_modules/.bin/build
