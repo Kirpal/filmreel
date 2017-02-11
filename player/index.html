@@ -57,20 +57,81 @@
       <polygon points="0,0 5,5 10,0" />
     </svg>
     <div id="loading-animation">
-      <object id="drips-icon" data="../icons/icon-nodrip.svg" type="image/svg+xml"></object>
-      <div id="drips">
-        <div id="drip1"></div>
-        <div id="drip2"></div>
-      </div>
+      <svg id="loading-strip" viewbox="0 0 980 230">
+      	<defs>
+      		<linearGradient id="blue-gradient">
+      			<stop offset="40%" stop-color="#018cff" />
+      			<stop offset="100%" stop-color="#00a4ff" />
+      		</linearGradient>
+      	</defs>
+      	<rect id="strip-background" x="0" y="0" width="980" height="230"/>
+      	<rect id="strip-hole-big" class="strip-hole" x="-140" y="40" width="140" height="150" ry="3.5"/>
+      	<use xlink:href="#strip-hole-big" x="160" />
+      	<use xlink:href="#strip-hole-big" x="320" />
+      	<use xlink:href="#strip-hole-big" x="480" />
+      	<use xlink:href="#strip-hole-big" x="640" />
+      	<use xlink:href="#strip-hole-big" x="800" />
+      	<use xlink:href="#strip-hole-big" x="960" />
+      	<use xlink:href="#strip-hole-big" x="1120" />
+      	<rect id="strip-hole-small" class="strip-hole" x="-20" y="10" width="20" height="20" ry="0.5"/>
+      	<use xlink:href="#strip-hole-small" x="40" />
+      	<use xlink:href="#strip-hole-small" x="80" />
+      	<use xlink:href="#strip-hole-small" x="120" />
+      	<use xlink:href="#strip-hole-small" x="160" />
+      	<use xlink:href="#strip-hole-small" x="200" />
+      	<use xlink:href="#strip-hole-small" x="240" />
+      	<use xlink:href="#strip-hole-small" x="280" />
+      	<use xlink:href="#strip-hole-small" x="320" />
+      	<use xlink:href="#strip-hole-small" x="360" />
+      	<use xlink:href="#strip-hole-small" x="400" />
+      	<use xlink:href="#strip-hole-small" x="440" />
+      	<use xlink:href="#strip-hole-small" x="480" />
+      	<use xlink:href="#strip-hole-small" x="520" />
+      	<use xlink:href="#strip-hole-small" x="560" />
+      	<use xlink:href="#strip-hole-small" x="600" />
+      	<use xlink:href="#strip-hole-small" x="640" />
+      	<use xlink:href="#strip-hole-small" x="680" />
+      	<use xlink:href="#strip-hole-small" x="720" />
+      	<use xlink:href="#strip-hole-small" x="760" />
+      	<use xlink:href="#strip-hole-small" x="800" />
+      	<use xlink:href="#strip-hole-small" x="840" />
+      	<use xlink:href="#strip-hole-small" x="880" />
+      	<use xlink:href="#strip-hole-small" x="920" />
+      	<use xlink:href="#strip-hole-small" x="960" />
+      	<use xlink:href="#strip-hole-small" x="1000" />
+      	<use xlink:href="#strip-hole-small" x="1040" />
+      	<use xlink:href="#strip-hole-small" x="1080" />
+      	<use xlink:href="#strip-hole-small" x="1120" />
 
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-        <defs>
-          <filter id="goo">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
-            <feBlend in="SourceGraphic" in2="goo" />
-        	</filter>
-        </defs>
+      	<use xlink:href="#strip-hole-small" x="0" y="190" />
+      	<use xlink:href="#strip-hole-small" x="40" y="190" />
+      	<use xlink:href="#strip-hole-small" x="80" y="190" />
+      	<use xlink:href="#strip-hole-small" x="120" y="190" />
+      	<use xlink:href="#strip-hole-small" x="160" y="190" />
+      	<use xlink:href="#strip-hole-small" x="200" y="190" />
+      	<use xlink:href="#strip-hole-small" x="240" y="190" />
+      	<use xlink:href="#strip-hole-small" x="280" y="190" />
+      	<use xlink:href="#strip-hole-small" x="320" y="190" />
+      	<use xlink:href="#strip-hole-small" x="360" y="190" />
+      	<use xlink:href="#strip-hole-small" x="400" y="190" />
+      	<use xlink:href="#strip-hole-small" x="440" y="190" />
+      	<use xlink:href="#strip-hole-small" x="480" y="190" />
+      	<use xlink:href="#strip-hole-small" x="520" y="190" />
+      	<use xlink:href="#strip-hole-small" x="560" y="190" />
+      	<use xlink:href="#strip-hole-small" x="600" y="190" />
+      	<use xlink:href="#strip-hole-small" x="640" y="190" />
+      	<use xlink:href="#strip-hole-small" x="680" y="190" />
+      	<use xlink:href="#strip-hole-small" x="720" y="190" />
+      	<use xlink:href="#strip-hole-small" x="760" y="190" />
+      	<use xlink:href="#strip-hole-small" x="800" y="190" />
+      	<use xlink:href="#strip-hole-small" x="840" y="190" />
+      	<use xlink:href="#strip-hole-small" x="880" y="190" />
+      	<use xlink:href="#strip-hole-small" x="920" y="190" />
+      	<use xlink:href="#strip-hole-small" x="960" y="190" />
+      	<use xlink:href="#strip-hole-small" x="1000" y="190" />
+      	<use xlink:href="#strip-hole-small" x="1040" y="190" />
+      	<use xlink:href="#strip-hole-small" x="1080" y="190" />
+      	<use xlink:href="#strip-hole-small" x="1120" y="190" />
       </svg>
     </div>
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
