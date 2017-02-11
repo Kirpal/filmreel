@@ -262,7 +262,8 @@ ipcRenderer.on("downloadFinished", function(event, data){
 	$("[data-id='" + data.movie.id + "']").children(".download-progress-outer").css("display", "none");
 	if(data.notify){
 		var notification = new window.Notification("Download Complete", {
-			body: data.movie.title
+			body: data.movie.title,
+			icon: data.movie.small_cover_image
 		});
 		notification.onclick(function(){
 			ipcRenderer.send("stream", data.movie);
