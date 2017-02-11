@@ -1,0 +1,4 @@
+install:
+  - npm install
+build_script:
+  - node_modules\.bin\build
