@@ -5,7 +5,7 @@ var typingTimer;
 var movies = {};
 var numbers = ["one", "two", "three", "four", "five"];
 var oldRawHtml = "";
-var homeHtml = {};
+var currentTab = "home";
 var downloaded = [];
 var downloading = [];
 
@@ -67,30 +67,33 @@ var addMovie = function(movie){
 		ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
 	});
 }
-var addHomeHtml = function(rawHtml){
-	//replace placeholders with movies' html
-	var newHtml = rawHtml.replace(/\{\{[0-9]+\}\}/g, function(x){
-		if(Object.keys(movies).indexOf(x.replace(/\{|\}/g, "")) === -1){
-			return "";
-		}
-		return movieHtml(movies[x.replace(/\{|\}/g, "")]);
-	});
-	$("#contents").html(newHtml);
-	//remove old click listeners and add new ones
-	$(".movie .play-circle").off("click");
-	$(".movie .download-circle").off("click");
+var addHomeHtml = function(rawHtml, currentTab){
+	if(currentTab === "home"){
+		//replace placeholders with movies' html
+		var newHtml = rawHtml.replace(/\{\{[0-9]+\}\}/g, function(x){
+			if(Object.keys(movies).indexOf(x.replace(/\{|\}/g, "")) === -1){
+				return "";
+			}
+			return movieHtml(movies[x.replace(/\{|\}/g, "")]);
+		});
+		$("#contents").html(newHtml);
+		//remove old click listeners and add new ones
+		$(".movie .play-circle").off("click");
+		$(".movie .download-circle").off("click");
 
-	$(".movie .play-circle").click(function(){
-		ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
-	});
-	$(".movie .download-circle").click(function(){
-		$(this).css("display", "none");
-		$(this).siblings(".download-progress-outer").css("display", "block");
-		ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
-	});
+		$(".movie .play-circle").click(function(){
+			ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
+		});
+		$(".movie .download-circle").click(function(){
+			$(this).css("display", "none");
+			$(this).siblings(".download-progress-outer").css("display", "block");
+			ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
+		});
+	}
 }
 //changes tab and displayed page
 var changeTab = function(tab){
+	currentTab = tab;
 	//remove selection class from all tabs
 	$(".nav-item").removeClass("selected");
 	//hide search tab
@@ -116,18 +119,18 @@ var changeTab = function(tab){
 						homeLength += 1;
 						//if it is the last movie in the template
 						if(homeLength === homeList.length){
-							addHomeHtml(rawHtml);
+							addHomeHtml(rawHtml, currentTab);
 						}
 					});
 				}else{
 					homeLength += 1;
 					if(homeLength === homeList.length){
-						addHomeHtml(rawHtml);
+						addHomeHtml(rawHtml, currentTab);
 					}
 				}
 			});
 		}else{
-			addHomeHtml(rawHtml);
+			addHomeHtml(rawHtml, currentTab);
 		}
 	}else if(tab === "library"){
 		//clear page contents
@@ -135,7 +138,7 @@ var changeTab = function(tab){
 		var library = ipcRenderer.sendSync("getPage", tab);
 		downloaded = [];
 		downloading = [];
-		if(library.incomplete.length > 0 || library.complete.length > 0){
+		if(library.incomplete.length > 0 || library.complete.length > 0 && currentTab === "library"){
 			if(library.incomplete.length > 0){
 				library.incomplete.forEach(function(id){
 					if(Object.keys(library.movies).indexOf(id) !== -1){
@@ -162,7 +165,7 @@ var changeTab = function(tab){
 					}
 				});
 			}
-		}else{
+		}else if(currentTab === "library"){
 			$("#contents").html("<h1>Nothing Found :(</h1>");
 		}
 	}else if(tab === "search"){
@@ -170,19 +173,23 @@ var changeTab = function(tab){
 		$("#contents").html("");
 		//search for term
 		$.get("https://yts.ag/api/v2/list_movies.json?query_term=" + $("#search-box").val(), function(response){
-			//clear page contents
-			$("#contents").html("");
-			response.data.movies.forEach(function(movie){
-				//add all search results to page
-				addMovie(movie);
-			});
+			if(currentTab === "search"){
+				//clear page contents
+				$("#contents").html("");
+				response.data.movies.forEach(function(movie){
+					//add all search results to page
+					addMovie(movie);
+				});
+			}
 		}).fail(function(){
 			var libraryMovies = ipcRenderer.sendSync("getPage", "library").movies
-			Object.keys(libraryMovies).filter(function(id){
-				return downloaded.indexOf(libraryMovies[id].id) !== -1 && libraryMovies[id].title.includes($("#search-box").val());
-			}).forEach(function(id){
-				addMovie(libraryMovies[id]);
-			});
+			if(currentTab === "search"){
+				Object.keys(libraryMovies).filter(function(id){
+					return downloaded.indexOf(libraryMovies[id].id) !== -1 && libraryMovies[id].title.includes($("#search-box").val());
+				}).forEach(function(id){
+					addMovie(libraryMovies[id]);
+				});
+			}
 		});
 	}
 }
