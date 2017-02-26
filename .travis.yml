@@ -1,9 +1,10 @@
 language: node_js
 node_js:
   - "node"
-sudo: required
-dist: trusty
+os: osx
 before_install:
-  - sudo apt-get install icnsutils
-  - sudo apt-get install graphicsmagick
-script: node_modules/.bin/build
+  - brew update
+  - brew install wine --without-x11
+  - brew install mono
+  - brew install gnu-tar graphicsmagick xz
+script: node_modules/.bin/build -mwl
