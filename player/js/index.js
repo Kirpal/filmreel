@@ -32,6 +32,34 @@ function resize(){
 //call resize on window resize
 $(window).resize(resize)
 
+function animation($elm, $par){
+  var translate = 0;
+  var minTranslate = -160;
+  var frameRate = 100;
+  var stop = false;
+  function timeFrame(){
+    $elm.attr("transform", "translate(" + translate + ", 0)");
+    translate -= 8;
+    if(translate < minTranslate){
+      translate = 0;
+    }
+    if(stop){
+      frameRate -= 5;
+    }
+    if(frameRate >= 1){
+      setTimeout(timeFrame, 1000/frameRate);
+    }else{
+      $par.fadeOut(200);
+    }
+  }
+  timeFrame();
+  this.stop = function(){
+    stop = true;
+  }
+}
+
+var loadingAnimation = new animation($("#strip-hole-group"), $("#loading-animation"));
+
 //array of control hide timeouts
 var moveCount = 1;
 var controlHide = [];
@@ -78,7 +106,7 @@ ipcRenderer.on("playMovie", function(event, movie){
     //call resize when metadata is ready
     resize()
     //hide loading animation
-    $("#loading-animation").fadeOut(200);
+    loadingAnimation.stop();
     //tell main that metadata is ready
     ipcRenderer.send("metadata", $video.duration);
   })

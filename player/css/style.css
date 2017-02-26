@@ -40,15 +40,6 @@ body {
 }
 .strip-hole {
 	fill: #000;
-	animation: strip-move 0.3s linear infinite;
-}
-@keyframes strip-move {
-	from{
-		transform: translate(0px);
-	}
-	to{
-		transform: translate(-160px);
-	}
 }
 
 #controls {
