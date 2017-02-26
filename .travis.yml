@@ -1,11 +1,11 @@
 language: node_js
 node_js:
   - "node"
+os: linux
+dist: trusty
+sudo: required
 matrix:
   include:
-    - os: linux
-      dist: trusty
-      sudo: required
     - os: osx
       osx_image: xcode8
 before_install:
