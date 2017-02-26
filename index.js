@@ -113,6 +113,7 @@ function createWindow () {
       event.returnValue = templateHtml;
     }else if(page === "library"){
       //get torrents
+      store.reload();
       event.returnValue = store.get();
     }
   })
@@ -124,7 +125,9 @@ function createWindow () {
       icon: path.join(__dirname, "icons", "icon.png"),
       backgroundColor: "#282C34",
       parent: win,
-      show: false
+      show: false,
+      width: ((win.width === 500) ? 400 : 500),
+      height: ((win.height === 600) ? 500 : 600)
     })
 
     // and load settings of the app.
@@ -159,7 +162,13 @@ function createWindow () {
             event.returnValue = storeConfig.get(config.setting).value;
           }
         }else if(storeConfig.get(config.setting).type === "directory"){
-          if(fs.existsSync(config.value) && fs.accessSync(config.value, fs.constants.R_OK | fs.constants.W_OK)){
+          try{
+            fs.accessSync(config.value, fs.constants.R_OK | fs.constants.W_OK);
+            var access = true;
+          }catch(err){
+            var access = false;
+          }
+          if(fs.existsSync(config.value) && access){
             storeConfig.store(config.setting, "value", config.value);
             event.returnValue = config.value;
           }else{
@@ -279,6 +288,15 @@ function createWindow () {
     }
     if(store.get().complete.indexOf(movie.id.toString()) === -1){
       torrents[movie.id] = torrent(movie, true, win, (Object.keys(torrents).filter(function(id){return torrents[id].download}).length >= 1));
+    }
+  })
+  ipcMain.on('delete', function(event, movie){
+    //when delete button on movie is pressed
+    if(torrents[movie.id]){
+      torrents[movie.id].end()
+    }
+    if(store.get().complete.indexOf(movie.id.toString()) !== -1){
+      store.remove(movie.id);
     }
   })
 }

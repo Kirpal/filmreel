@@ -194,7 +194,23 @@ header {
   fill: #fff;
   cursor: pointer;
 }
-.movie:hover > .download-circle, .movie:hover > .play-circle {
+.movie .delete-circle {
+  opacity: 0;
+  position: absolute;
+  width: 25px;
+  left: 87.5px;
+  top: 252px;
+  transition: 0.2s all linear;
+}
+.movie .delete-circle rect {
+  fill: #000;
+  cursor: pointer;
+}
+.movie .delete-circle circle {
+  fill: #fff;
+  cursor: pointer;
+}
+.movie:hover > .download-circle, .movie:hover > .play-circle, .movie:hover > .delete-circle {
   opacity: 1;
 }
 .movie .movie-info {

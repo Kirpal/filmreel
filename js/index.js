@@ -20,14 +20,28 @@ var movieHtml = function(movie){
 				<path d="M 180,115 Q 175,120 175,125 L 175,375 Q 175,380 180,385 Q 185,387.5 190,385 L 350,260 Q 355,255 355,250 Q 355,245 350,240 L 190,115 Q 185,112.5 180,115 z" />\
 			</g>\
 		</svg>' +
-		((downloaded.indexOf(parseInt(movie.id)) === -1 && downloading.indexOf(parseInt(movie.id)) === -1)? '<svg class="download-circle" viewbox="0 0 50 50">\
-			<circle cx="25" cy="25" r="25"/>\
-			<rect x="22.5" y="7.5" width="5" height="25"/>\
-			<rect x="20" y="17.5" transform="rotate(-45, 20, 32.5)" width="5" height="20"/>\
-			<rect x="25" y="17.5" transform="rotate(45, 30, 32.5)" width="5" height="20"/>\
-			<rect x="15" y="37.5" width="20" height="5"/>\
-		</svg>' : '') +
-		'<div ' + ((downloading.indexOf(parseInt(movie.id)) !== -1)? 'style="display: block;"' : '') + 'class="download-progress-outer"><div class="download-progress"></div></div>\
+		((downloading.indexOf(parseInt(movie.id)) === -1) ?
+			((downloaded.indexOf(parseInt(movie.id)) === -1) ?
+				'<svg class="download-circle" viewbox="0 0 50 50">\
+					<circle cx="25" cy="25" r="25"/>\
+					<rect x="22.5" y="7.5" width="5" height="25"/>\
+					<rect x="20" y="17.5" transform="rotate(-45, 20, 32.5)" width="5" height="20"/>\
+					<rect x="25" y="17.5" transform="rotate(45, 30, 32.5)" width="5" height="20"/>\
+					<rect x="15" y="37.5" width="20" height="5"/>\
+					<circle cx="25" cy="25" r="25" style="fill:transparent">\
+						<title>Download</title>\
+					</circle>\
+				</svg>' :
+				'<svg class="delete-circle" viewbox="0 0 50 50">\
+					<circle cx="25" cy="25" r="25"/>\
+					<rect x="22.5" y="10" transform="rotate(-45, 25, 25)" width="5" height="30"/>\
+					<rect x="22.5" y="10" transform="rotate(45, 25, 25)" width="5" height="30"/>\
+					<circle cx="25" cy="25" r="25" style="fill:transparent">\
+						<title>Delete</title>\
+					</circle>\
+				</svg>') : ''
+		) +
+		'<div title="Downloading"' + ((downloading.indexOf(parseInt(movie.id)) !== -1)? 'style="display: block;"' : '') + 'class="download-progress-outer"><div class="download-progress"></div></div>\
 		<div class="movie-info">\
 			<h2 class="title">' + movie.title + '</h2>\
 			<h3 class="subtitle">' + movie.mpa_rating+" / "+movie.year+" / "+movie.runtime+"m" + ' / <a class="imdb" target="_blank" href="http://www.imdb.com/title/' + movie.imdb_code + '">IMDB</a></h3><br>\
@@ -57,6 +71,7 @@ var addMovie = function(movie){
 	//remove old click listeners and add new ones
 	$(".movie .play-circle").off("click");
 	$(".movie .download-circle").off("click");
+	$(".movie .delete-circle").off("click");
 
 	$(".movie .play-circle").click(function(){
 		ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
@@ -65,6 +80,15 @@ var addMovie = function(movie){
 		$(this).css("display", "none");
 		$(this).siblings(".download-progress-outer").css("display", "block");
 		ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
+	});
+	$(".movie .delete-circle").click(function(){
+		ipcRenderer.send("delete", movies[$(this).parents(".movie").data("id")]);
+		downloaded.splice(downloaded.indexOf($(this).parents(".movie").data("id")));
+		if(currentTab === "library"){
+			$(this).parents(".movie").css("display", "none");
+		}else{
+			$(this).parents(".movie").replaceWith(movieHtml(movies[$(this).parents(".movie").data("id")]))
+		}
 	});
 }
 var addHomeHtml = function(rawHtml, currentTab){
@@ -80,6 +104,7 @@ var addHomeHtml = function(rawHtml, currentTab){
 		//remove old click listeners and add new ones
 		$(".movie .play-circle").off("click");
 		$(".movie .download-circle").off("click");
+		$(".movie .delete-circle").off("click");
 
 		$(".movie .play-circle").click(function(){
 			ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
@@ -88,6 +113,10 @@ var addHomeHtml = function(rawHtml, currentTab){
 			$(this).css("display", "none");
 			$(this).siblings(".download-progress-outer").css("display", "block");
 			ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
+		});
+		$(".movie .delete-circle").click(function(){
+			changeTab(currentTab);
+			ipcRenderer.send("delete", movies[$(this).parents(".movie").data("id")]);
 		});
 	}
 }
@@ -209,7 +238,7 @@ Object.keys(library.movies).forEach(function(id){
 	}
 })
 //start on "home" tab
-changeTab("home");
+changeTab(currentTab);
 
 //change to selected tab
 $(".nav-item").click(function(){
