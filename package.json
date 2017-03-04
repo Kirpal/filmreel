@@ -25,7 +25,7 @@
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "files": [
       "**/*",
-      "!web/*"
+      "!web${/*}"
     ],
     "nsis": {
       "artifactName": "${productName} Setup.${ext}"
