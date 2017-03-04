@@ -11,5 +11,5 @@ matrix:
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install icnsutils graphicsmagick; fi
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then node_modules/.bin/build --linux deb tar.gz -p "onTagOrDraft"; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then node_modules/.bin/build -m -p "onTagOrDraft"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then node_modules/.bin/build --linux deb tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then node_modules/.bin/build -m; fi

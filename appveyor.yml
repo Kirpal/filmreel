@@ -1,4 +1,4 @@
 install:
   - npm install
 build_script:
-  - node_modules\.bin\build --win --ia32 --x64 -p "onTagOrDraft"
+  - node_modules\.bin\build --win --ia32 --x64
