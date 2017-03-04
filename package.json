@@ -1,10 +1,10 @@
 {
-  "name": "cascade",
+  "name": "filmreel",
   "description": "A torrent based video streaming client",
   "version": "0.1.0",
   "author": "Kirpal Demian",
-  "repository": "Kirpal/cascade",
-  "bugs": "https://github.com/Kirpal/cascade/issues",
+  "repository": "Kirpal/filmreel",
+  "bugs": "https://github.com/Kirpal/filmreel/issues",
   "main": "index.js",
   "dependencies": {
     "express": "^4.14.0",
@@ -16,14 +16,14 @@
     "torrent-stream": "^1.0.3"
   },
   "build": {
-    "appId": "com.kirpal.cascade",
+    "appId": "com.kirpal.filmreel",
     "mac": {
       "category": "public.app-category.video"
     }
   },
   "scripts": {
-    "pack": "build --dir",
-    "dist": "build"
+    "pack": "./node_modules/.bin/build --dir",
+    "dist": "./node_modules/.bin/build"
   },
   "devDependencies": {
     "electron": "^1.4.13",

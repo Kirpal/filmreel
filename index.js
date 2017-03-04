@@ -10,11 +10,10 @@
              |/        \______\
 
 +++++++++++++++++++++++++++++++++++++++++++++++
- _  _____ ____  ____   _    _       ____ ____
-| |/ /_ _|  _ \|  _ \ / \  | |     / ___/ _  \
-| ' / | || |_) | |_) / _ \ | |    | |  | | | |
-| . \ | ||  _ <|  __/ ___ \| |___ | |__| |_| |
-|_|\_\___|_| \_\_| /_/   \_\_____(_)____\___/
+ _  _  _  ____  ____   __   _        _  _  ____
+| |/ /| || __ \| __ \ /  \ | |      | \/ || ___|
+|   ( | ||    /|  __/| /\ || |__    |    || __|
+|_|\_\|_||_|\_\|_|   |_||_||____|(_)|_||_||____|
 
 */
 'use strict'
@@ -91,7 +90,7 @@ function createWindow () {
   ipcMain.on("getPage", function(event, page){
     if(page === "home"){
       //get template html file from server
-      request("https://kirpal.github.io/cascade/home.html", function(error, response, body){
+      request("https://filmreelapp.com/home.html", function(error, response, body){
         if(!error && response.statusCode == 200){
           fs.writeFileSync(path.join(app.getPath("userData"), "home.html"), body);
         }

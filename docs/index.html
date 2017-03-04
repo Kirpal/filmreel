@@ -2,13 +2,13 @@
 <html >
   <head>
     <meta charset="UTF-8">
-    <title>Cascade</title>
+    <title>Film Reel</title>
     <link rel="stylesheet" href="css/style.css">
   </head>
 
   <body>
     <div id="header">
-    	<img src="images/icon.svg" alt="Cascade Logo" id="header-logo" />
+    	<img src="images/icon.svg" alt="Film Reel Logo" id="header-logo" />
     	<a href="#downloads" class="header-links">Downloads</a>
     	<a href="#features" class="header-links">Features</a>
     </div>
@@ -16,15 +16,15 @@
       <div id="hero-background"></div>
       <div id="hero-overlay"></div>
       <div id="hero-content">
-        <h1 id="hero-title">Cascade</h1>
-        <h2 id="hero-description">Download or stream 1000's of movies with Cascade. </h2>
+        <h1 id="hero-title">Film Reel</h1>
+        <h2 id="hero-description">Download or stream 1000's of movies with Film Reel. </h2>
         <a href="" id="hero-download">Download</a><br>
         <p class="hero-platforms" id="current-platform"></p><a href="#downloads" class="hero-platforms">More Platforms</a>
       </div>
     </div>
     <div id="features">
       <div id="hero-screenshot">
-        <img src="images/screenshot.png" alt="Cascade Screenshot">
+        <img src="images/screenshot.png" alt="Film Reel Screenshot">
       </div>
       <a name="features"></a>
       <h1>Features</h1>
@@ -52,7 +52,7 @@
         <div class="feature">
           <img src="images/phone.png" alt="Phone Icon">
           <h2>Remote App</h2>
-          <p>Control playback and start downloads using the free mobile Cascade app.</p>
+          <p>Control playback and start downloads using the free mobile Film Reel app.</p>
         </div>
         <div class="feature">
           <img src="images/hd.png" alt="HD Player Icon">
@@ -62,7 +62,7 @@
         <div class="feature">
           <img src="images/computer.png" alt="Computer Icon">
           <h2>Cross Platform</h2>
-          <p>The Cascade app is compatible with MacOS, Windows, and Linux.</p>
+          <p>The Film Reel app is compatible with MacOS, Windows, and Linux.</p>
         </div>
       </div>
     </div>
@@ -114,7 +114,7 @@
     </div>
     <script src="https://cdn.rawgit.com/github/fetch/master/fetch.js"></script>
     <script>
-      fetch("https://api.github.com/repos/Kirpal/cascade/releases", {method: "GET"}).then(function (response){
+      fetch("https://api.github.com/repos/Kirpal/filmreel/releases", {method: "GET"}).then(function (response){
         return response.json();
       })
       .then(function (body){
