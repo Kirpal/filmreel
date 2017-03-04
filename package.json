@@ -23,6 +23,10 @@
     "appId": "com.kirpal.filmreel",
     "productName": "FilmReel",
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "files": [
+      "**/*",
+      "!web/*"
+    ],
     "nsis": {
       "artifactName": "${productName} Setup.${ext}"
     },
