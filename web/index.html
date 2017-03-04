@@ -49,11 +49,11 @@
           <h2>Free and Unlimited</h2>
           <p>There's no limit to the number of movies you can watch or download, all for free.</p>
         </div>
-        <div class="feature">
+      <!--  <div class="feature">
           <img src="images/phone.png" alt="Phone Icon">
           <h2>Remote App</h2>
           <p>Control playback and start downloads using the free mobile Film Reel app.</p>
-        </div>
+        </div> -->
         <div class="feature">
           <img src="images/hd.png" alt="HD Player Icon">
           <h2>HD Player</h2>
@@ -76,16 +76,9 @@
       <br>
       <div class="platform">
         <img src="images/windows.png" alt="Windows Logo">
-        <h2>Windows (64-bit)</h2>
+        <h2>Windows</h2>
         <h3>(Windows 7+)</h3>
-        <a href="" name="Windows (64-bit)">Download</a>
-      </div>
-      <br>
-      <div class="platform">
-        <img src="images/windows.png" alt="Windows Logo">
-        <h2>Windows (32-bit)</h2>
-        <h3>(Windows 7+)</h3>
-        <a href="" name="Windows (32-bit)">Download</a>
+        <a href="" name="Windows">Download</a>
       </div>
       <br>
       <div class="platform">
@@ -122,10 +115,8 @@
 
         function findAsset(platform, assetList){
           var platformIdentifiers = [];
-          if(platform === "Windows (64-bit)"){
-            platformIdentifiers = ["64", "exe"];
-          }else if(platform === "Windows (32-bit)"){
-            platformIdentifiers = ["32", "exe"];
+          if(platform === "Windows"){
+            platformIdentifiers = ["exe"];
           }else if(platform === "Mac"){
             platformIdentifiers = ["dmg"];
           }else if(platform === "Linux (.deb)"){
@@ -145,7 +136,7 @@
           return filteredAssets;
         }
 
-        var platformName = "Windows (64-bit)";
+        var platformName = "Windows";
         if(navigator.platform.includes("Linux")){
           document.getElementById("current-platform").innerHTML = stable[0].tag_name + "&nbsp;&nbsp;-&nbsp;&nbsp;Linux (.deb)&nbsp;&nbsp;-&nbsp;";
           platformName = "Linux (.deb)";
@@ -153,12 +144,7 @@
           document.getElementById("current-platform").innerHTML = stable[0].tag_name + "&nbsp;&nbsp;-&nbsp;&nbsp;MacOS&nbsp;&nbsp;-&nbsp;";
           platformName = "Mac";
         }else{
-          if(navigator.platform.includes("32")){
-            document.getElementById("current-platform").innerHTML = stable[0].tag_name + "&nbsp;&nbsp;-&nbsp;&nbsp;Windows (32-bit)&nbsp;&nbsp;-&nbsp;";
-            platformName = "Windows (32-bit)";
-          }else{
-            document.getElementById("current-platform").innerHTML = stable[0].tag_name + "&nbsp;&nbsp;-&nbsp;&nbsp;Windows (64-bit)&nbsp;&nbsp;-&nbsp;";
-          }
+          document.getElementById("current-platform").innerHTML = stable[0].tag_name + "&nbsp;&nbsp;-&nbsp;&nbsp;Windows&nbsp;&nbsp;-&nbsp;";
         }
 
         var filteredAssets = findAsset(platformName, stable[0].assets);
