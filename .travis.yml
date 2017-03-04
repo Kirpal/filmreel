@@ -10,13 +10,6 @@ matrix:
       osx_image: xcode8
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install icnsutils graphicsmagick; fi
-script: node_modules/.bin/build
-deploy:
-  provider: releases
-  api_key:
-    secure:
-  file:
-
-  skip_cleanup: true
-  on:
-    tags: true
+script:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then node_modules/.bin/build --linux deb tar.xz -p "onTagOrDraft"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then node_modules/.bin/build -m -p "onTagOrDraft"; fi
