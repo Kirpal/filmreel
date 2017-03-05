@@ -30,6 +30,9 @@ body {
 	cursor: pointer;
 	text-decoration: none;
 }
+.header-links img {
+	height: 30px;
+}
 @media (max-width: 330px) {
 	.header-links {
 		animation: fadeout 0.2s;
