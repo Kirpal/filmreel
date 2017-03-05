@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Nunito|Open+Sans');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400|BenchNine:700');
 body {
 	margin: 0;
 	min-width: 500px;
@@ -36,33 +36,6 @@ body {
 		display: none;
 	}
 }
-@-webkit-keyframes fadeout {
-	from {
-		opacity: 1;
-	}
-	to {
-		opacity: 0;
-		display: none;
-	}
-}
-@-o-keyframes fadeout {
-	from {
-		opacity: 1;
-	}
-	to {
-		opacity: 0;
-		display: none;
-	}
-}
-@-moz-keyframes fadeout {
-	from {
-		opacity: 1;
-	}
-	to {
-		opacity: 0;
-		display: none;
-	}
-}
 @keyframes fadeout {
 	from {
 		opacity: 1;
@@ -81,6 +54,7 @@ body {
 	box-sizing: border-box;
 	width: 100%;
 	height: 70vh;
+	background: #282C34;
 }
 #hero-background {
 	position: absolute;
@@ -89,9 +63,9 @@ body {
 	width: 100%;
 	height: 100%;
 	background-color: #28f;
-	background-image: url("../images/hero.jpg");
+	background-image: url("https://images.pexels.com/photos/27008/pexels-photo-27008.jpg?w=1260&h=750&auto=compress&cs=tinysrgb");
 	background-size: cover;
-	filter: blur(3px);
+	filter: blur(3px) grayscale(100%) brightness(40%);
 }
 #hero-overlay {
 	position: absolute;
@@ -110,7 +84,8 @@ body {
 	box-sizing: border-box;
 }
 #hero-title {
-	font: 80px Nunito, sans-serif;
+	font: 100px BenchNine, sans-serif;
+	font-weight: 700;
 	color: #fff;
 	text-transform: uppercase;
 	margin: 0;
@@ -120,21 +95,20 @@ body {
 	color: #fff;
 	text-transform: uppercase;
 	margin: 0;
-	margin-bottom: 10px;
 }
 #hero-download {
 	text-align: center;
-	padding: 10px;
+	padding: 15px 30px;
 	display: inline-block;
 	box-sizing: border-box;
-	font: 40px "Open Sans", sans-serif;
+	font: 30px "Open Sans", sans-serif;
+	font-weight: 300;
 	text-decoration: none;
-	border-radius: 2px;
+	border-radius: 100px;
 	color: #fff;
-	border: 4px solid #fff;
-	border-radius: 3px;
+	border: 2px solid #fff;
 	cursor: pointer;
-	margin-top: 60px;
+	margin-top: 30px;
 }
 .hero-platforms {
 	position: relative;
@@ -221,7 +195,7 @@ body {
 }
 .feature img {
 	margin: 0;
-	width: 60px;
+	width: 40px;
 }
 #downloads {
 	margin: 0;
