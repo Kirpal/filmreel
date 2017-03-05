@@ -1,6 +1,7 @@
 'use strict'
 
-const {app, BrowserWindow, ipcMain} = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron');
+const autoUpdater = require("electron-updater").autoUpdater;
 var torrent = require("./torrent"),
   resume = require("./resume"),
   store = require("./store"),
@@ -35,6 +36,14 @@ if(shouldQuit){
   return;
 }
 
+autoUpdater.on("update-downloaded", function(ev, info){
+  dialog.showMessageBox(win, {type: "info", buttons: ["No", "Yes"], defaultId: 1, title:"Update Downloaded", message: "An update has been downloaded. Restart Film Reel to install it. Restart now?", cancelId: 0}, function(response){
+    if(response === 1){
+      autoUpdater.quitAndInstall();
+    }
+  })
+});
+
 function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({
@@ -44,6 +53,7 @@ function createWindow () {
     show: false
   })
   torrents = resume(win);
+  autoUpdater.checkForUpdates();
 
   // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/index.html`)
