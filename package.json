@@ -1,16 +1,20 @@
 {
   "name": "filmreel",
-  "description": "A torrent based video streaming client",
+  "productName": "Film Reel",
   "version": "1.0.0",
+  "description": "A torrent based video streaming and downloading client",
+  "license": "MIT",
+  "homepage": "https://filmreelapp.com",
+  "repository": "Kirpal/filmreel",
+  "bugs": "https://github.com/Kirpal/filmreel/issues",
   "author": {
     "name": "Kirpal Demian",
     "email": "kjdemian@gmail.com",
     "url": "https://kirp.al"
   },
-  "repository": "Kirpal/filmreel",
-  "bugs": "https://github.com/Kirpal/filmreel/issues",
   "main": "index.js",
   "dependencies": {
+    "electron-updater": "^1.8.1",
     "express": "^4.14.0",
     "mv": "^2.1.1",
     "node-notifier": "^4.6.1",
@@ -21,15 +25,10 @@
   },
   "build": {
     "appId": "com.kirpal.filmreel",
-    "productName": "FilmReel",
-    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "files": [
       "**/*",
       "!web${/*}"
     ],
-    "nsis": {
-      "artifactName": "${productName} Setup.${ext}"
-    },
     "mac": {
       "category": "public.app-category.video"
     }
