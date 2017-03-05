@@ -158,8 +158,7 @@ body {
 	padding: 0;
 	margin: 0;
 	position: relative;
-	left: 50%;
-	transform: translate(-50%);
+	display: inline-block;
 }
 .feature {
 	position: relative;
@@ -201,7 +200,7 @@ body {
 }
 #version-selector {
 	position: relative;
-	display: inline-block;
+	display: none;
 }
 #version-selector select{
 	display: inline-block;
@@ -236,9 +235,17 @@ body {
 	width: 0;
 	height: 0;
 }
+#downloads noscript {
+	font-family: "Open Sans", sans-serif;
+	color: #aaa;
+	font-size: 16px;
+}
+#downloads noscript a {
+	color: #ddd;
+}
 .platform {
 	position: relative;
-	display: inline-block;
+	display: none;
 	width: 100%;
 	padding: 30px;
 	box-sizing: border-box;
@@ -295,4 +302,25 @@ body {
 	.platform {
 		text-align: center;
 	}
+}
+#footer {
+	margin: 0;
+	padding: 20px;
+	box-sizing: border-box;
+	position: relative;
+	width: 100%;
+	background: #0d111a;
+	text-align: center;
+	font: 16px "Open Sans", sans-serif;
+	color: #aaa;
+	margin: 0;
+	border-top: 1px dashed #555;
+}
+#footer a {
+	color: #fff;
+}
+#footer svg {
+	margin-bottom: -0.4em;
+	height: 1.5em;
+	fill: #fff;
 }
