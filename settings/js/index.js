@@ -1,6 +1,10 @@
 'use strict'
 const {remote, ipcRenderer} = require("electron");
 
+var version = "v" + ipcRenderer.sendSync("getVersion");
+
+$("#footer").html(version + " | Saved!");
+
 var config = ipcRenderer.sendSync("getConfig");
 
 $("#settings").html("");
@@ -44,13 +48,13 @@ $(".directory .icon").click(function(){
 });
 
 $(".setting input").on("change", function(){
-  $("#footer").html("Saving...");
+  $("#footer").html(version + " | Saving...");
   setTimeout(function(){
-    $("#footer").html("Saved!");
+    $("#footer").html(version + " | Saved!");
   }, 300);
   if($(this).attr("type") != "checkbox"){
     $(this).val(ipcRenderer.sendSync("storeConfig", {"setting": $(this).parents(".setting").data("setting"), "value": $(this).val()}))
-    $("#footer").html("Saved!");
+    $("#footer").html(version + " | Saved!");
   }else{
     if(ipcRenderer.sendSync("storeConfig", {"setting": $(this).parents(".setting").data("setting"), "value": this.checked})){
       $(this).attr("checked", "")

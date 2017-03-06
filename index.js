@@ -133,6 +133,9 @@ function createWindow () {
       //dereference window object
       settingsWin = null
     })
+    ipcMain.on("getVersion", function(event){
+      event.returnValue = app.getVersion();
+    })
     ipcMain.on("getConfig", function(event){
       event.returnValue = storeConfig.getAll();
     })
