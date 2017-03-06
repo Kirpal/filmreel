@@ -188,6 +188,7 @@ var changeTab = function(tab){
 	}else if(tab === "library"){
 		//clear page contents
 		$("#contents").html("");
+		$("#contents").scrollTop(0);
 		var library = ipcRenderer.sendSync("getPage", tab);
 		downloaded = [];
 		downloading = [];
@@ -224,11 +225,13 @@ var changeTab = function(tab){
 	}else if(tab === "search"){
 		//clear page contents
 		$("#contents").html("");
+		$("#contents").scrollTop(0);
 		//search for term
 		$.get("https://yts.ag/api/v2/list_movies.json?query_term=" + $("#search-box").val(), function(response){
 			if(currentTab === "search"){
 				//clear page contents
 				$("#contents").html("");
+				$("#contents").scrollTop(0);
 				response.data.movies.forEach(function(movie){
 					//add all search results to page
 					addMovie(movie);
@@ -305,6 +308,7 @@ $("#search-box").click(function(){
 		$("#nav-item-search").fadeIn(200).addClass("selected");
 		//clear page contents
 		$("#contents").html("");
+		$("#contents").scrollTop(0);
 		resize();
 	}
 })
