@@ -90,7 +90,7 @@ function createWindow () {
       //get template html file from file
       var templateHtml;
       if(storeProgress.getRecent().length > 0){
-        var recentHtml = "<h1>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}";
+        var recentHtml = "<h1 class='header'>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}";
       }else{
         var recentHtml = "";
       }
