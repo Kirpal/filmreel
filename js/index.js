@@ -9,6 +9,30 @@ var currentTab = "home";
 var downloaded = [];
 var downloading = [];
 
+function resize(){
+	if(currentTab === "search"){
+		var changeWidth = 500;
+		var minWidth = 350;
+	}else{
+		var changeWidth = 400;
+		var minWidth = 300;
+	}
+
+	$("body").css("min-width", minWidth + "px");
+	if($(document).width() < changeWidth){
+		$("#nav-item-home").html("<img src='icons/home.svg' alt='Home'>");
+		$("#nav-item-library").html("<img src='icons/library.svg' alt='Library'>");
+		$("#nav-item-search").html("<img src='icons/search.svg' alt='Search'>");
+	}else{
+		$("#nav-item-home").html("Home");
+		$("#nav-item-library").html("Library");
+		$("#nav-item-search").html("Search");
+	}
+}
+
+resize();
+$(window).resize(resize);
+
 //returns each movie's html
 var movieHtml = function(movie){
 	return '\
@@ -16,7 +40,7 @@ var movieHtml = function(movie){
 		<img src="' + movie.large_cover_image + '" alt="' + movie.title + ' Cover">\
 		<svg class="play-circle" viewbox="0 0 500 500">\
 			<g>\
-				<circle cx="250" cy="250" r="250"/>\
+				<circle cx="250" cy="250" r="235"/>\
 				<path d="M 180,115 Q 175,120 175,125 L 175,375 Q 175,380 180,385 Q 185,387.5 190,385 L 350,260 Q 355,255 355,250 Q 355,245 350,240 L 190,115 Q 185,112.5 180,115 z" />\
 			</g>\
 		</svg>' +
@@ -195,7 +219,7 @@ var changeTab = function(tab){
 				});
 			}
 		}else if(currentTab === "library"){
-			$("#contents").html("<h1>Nothing Found :(</h1>");
+			$("#contents").html("<h1 class='placeholder'>Nothing Found :(</h1>");
 		}
 	}else if(tab === "search"){
 		//clear page contents
@@ -273,13 +297,15 @@ $("#search-box").keyup(function(e){
 
 //change to search tab on click but dont search
 $("#search-box").click(function(){
-	if(!$("#nav-item-search").hasClass("selected")){
+	if(currentTab !== "search"){
+		currentTab = "search";
 		//remove selection class from all tabs
 		$(".nav-item").removeClass("selected");
 		//show selected tab and give it selection class
 		$("#nav-item-search").fadeIn(200).addClass("selected");
 		//clear page contents
 		$("#contents").html("");
+		resize();
 	}
 })
 

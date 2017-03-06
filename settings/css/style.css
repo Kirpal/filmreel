@@ -1,20 +1,19 @@
 @import '../../fonts/opensans.css';
 body {
   margin: 0;
-  background: #282C34;
+  background: #2f2f2f;
 }
 
 *::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 8px;
 }
 
 *::-webkit-scrollbar-track {
-  background: #21252B;
+  display: none;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: darkgray;
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 2px;
 }
 *::-webkit-scrollbar-button {
@@ -34,14 +33,14 @@ h1 {
   height: 80px;
   text-align: center;
   color: #fff;
-  background: #1e232d;
+  background: #202020;
   margin: 0;
   box-sizing: border-box;
   padding-top: 16px;
 }
 #footer {
   font: 12px "Open Sans", sans-serif;
-  color: #3e4755;
+  color: #555;
   position: fixed;
   bottom: 10px;
   right: 10px;
@@ -63,7 +62,7 @@ h1 {
   color: #fff;
   background: none;
   border: none;
-  border-bottom: 1px solid #3e4755;
+  border-bottom: 1px solid #555;
   height: 30px;
   position: relative;
   top: 14px;
@@ -93,7 +92,7 @@ h1 {
   color: #fff;
   background: none;
   border: none;
-  border-bottom: 1px solid #3e4755;
+  border-bottom: 1px solid #555;
   height: 30px;
   position: relative;
   top: 14px;
@@ -128,7 +127,7 @@ h1 {
   color: #fff;
   background: none;
   border: none;
-  border-bottom: 1px solid #3e4755;
+  border-bottom: 1px solid #555;
   height: 30px;
   position: relative;
   top: 14px;
@@ -167,7 +166,7 @@ h1 {
   color: #fff;
   background: none;
   border: none;
-  border-bottom: 1px solid #3e4755;
+  border-bottom: 1px solid #555;
   height: 30px;
   position: relative;
   top: 14px;
@@ -187,7 +186,7 @@ h1 {
 	width: 40px;
 	height: 20px;
 	border-radius: 10px;
-	background: #485061;
+	background: #555;
 	transition: 0.2s all;
 }
 .setting.boolean input::after {
@@ -207,7 +206,7 @@ h1 {
 	width: 40px;
 	height: 20px;
 	border-radius: 10px;
-	background: #647495;
+	background: #777;
 	transition: 0.2s all;
 }
 .setting.boolean input:checked::after {

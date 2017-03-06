@@ -1,21 +1,21 @@
 @import '../fonts/opensans.css';
 body {
   margin: 0;
-  background: #282C34;
+  background: #2f2f2f;
   -webkit-user-select: none;
+  overflow: hidden;
 }
 
 *::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 8px;
 }
 
 *::-webkit-scrollbar-track {
-  background: #21252B;
+  display: none;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: darkgray;
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 2px;
 }
 *::-webkit-scrollbar-button {
@@ -28,7 +28,7 @@ body {
 header {
   height: 80px;
   width: 100%;
-  background: #1e232d;
+  background: #202020;
   padding-left: 20px;
   padding-right: 20px;
   box-sizing: border-box;
@@ -60,6 +60,9 @@ header {
   background: none;
   cursor: pointer;
   transition: 0.2s all;
+}
+.nav-item img {
+  margin-bottom: -5px;
 }
 
 .nav-item::after {
@@ -135,11 +138,27 @@ header {
 
 #contents {
   padding: 44px;
+  box-sizing: border-box;
   text-align: center;
+  height: calc(100vh - 80px);
+  overflow-y: scroll;
 }
-#contents h1 {
+#contents h1.placeholder {
   color: #aaa;
   font: 30px "Open Sans", sans-serif;
+}
+#contents h1.header {
+  color: #fff;
+  font: 25px "Open Sans", sans-serif;
+  display: table;
+  padding: 5px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-bottom: 1px dashed #aaa;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
+  margin: 0;
 }
 .movie {
   display: inline-block;
@@ -170,6 +189,8 @@ header {
 }
 .movie .play-circle circle {
   fill: rgba(0, 0, 0, 0.75);
+  stroke: #fff;
+  stroke-width: 15px;
   transition: 0.2s all;
 }
 .movie .play-circle g {
