@@ -53,7 +53,10 @@ function createWindow () {
     show: false
   })
   torrents = resume(win);
-  autoUpdater.checkForUpdates();
+
+  if(storeConfig.get("updates").value){
+    autoUpdater.checkForUpdates();
+  }
 
   var appMenuTemplate = [
     {
