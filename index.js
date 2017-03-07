@@ -1,6 +1,6 @@
 'use strict'
 
-const {app, BrowserWindow, ipcMain} = require('electron');
+const {app, BrowserWindow, ipcMain, Menu} = require('electron');
 const autoUpdater = require("electron-updater").autoUpdater;
 var torrent = require("./torrent"),
   resume = require("./resume"),
@@ -55,12 +55,115 @@ function createWindow () {
   torrents = resume(win);
   autoUpdater.checkForUpdates();
 
+  var appMenuTemplate = [
+    {
+      label: "Film Reel",
+      submenu: [
+        {
+          label: "About Film Reel",
+          click: function(){require('electron').shell.openExternal("https://filmreelapp.com")}
+        },
+        {
+          label: "Settings",
+          click: openSettings
+        },
+        {
+          type: "separator"
+        },
+        {
+          role: "quit"
+        }
+      ]
+    },
+    {
+      label: "Window",
+      submenu: [
+        {
+          role: "minimize"
+        },
+        {
+          label: "Toggle Full Screen",
+          accelerator: "CommandOrControl + F11",
+          click: function(){
+            win.setFullScreen(!isFullscreen);
+            isFullscreen = !isFullscreen;
+            win.webContents.send("fullscreen", null)
+          }
+        }
+      ]
+    },
+    {
+      label: "Controls",
+      submenu: [
+        {
+          enabled: false,
+          label: "Play/Pause",
+          click: function(){
+            setThumbar(null)
+            win.webContents.send("playback", null)
+          }
+        },
+        {
+          enabled: false,
+          label: "Volume",
+          submenu: [
+            {
+              label: "0%",
+              click: function(){
+                win.webContents.send("volume", {volume: 0, update: true});
+              }
+            },
+            {
+              label: "25%",
+              click: function(){
+                win.webContents.send("volume", {volume: 0.25, update: true});
+              }
+            },
+            {
+              label: "50%",
+              click: function(){
+                win.webContents.send("volume", {volume: 0.5, update: true});
+              }
+            },
+            {
+              label: "100%",
+              click: function(){
+                win.webContents.send("volume", {volume: 1, update: true});
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      label: "Help",
+      submenu: [
+        {
+          label: "Report Issue",
+          click: function(){require('electron').shell.openExternal("https://github.com/kirpal/filmreel/issues")}
+        },
+        {
+          label: "View Source Code (GitHub)",
+          click: function(){require('electron').shell.openExternal("https://github.com/kirpal/filmreel")}
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "Check For Updates",
+          click: function(){autoUpdater.checkForUpdates()}
+        }
+      ]
+    }
+  ];
+  var appMenu = Menu.buildFromTemplate(appMenuTemplate);
+  Menu.setApplicationMenu(appMenu)
+
   // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/index.html`)
   win.once('ready-to-show', function(){
     win.show();
   });
-  win.setMenu(null)
 
   win.webContents.on('new-window', function(e, url) {
     e.preventDefault();
@@ -109,7 +212,7 @@ function createWindow () {
     }
   })
 
-  ipcMain.on("openSettings", function(event, page){
+  function openSettings(){
     //new settings window
     settingsWin = new BrowserWindow({
       autoHideMenuBar: true,
@@ -133,51 +236,54 @@ function createWindow () {
       //dereference window object
       settingsWin = null
     })
-    ipcMain.on("getVersion", function(event){
-      event.returnValue = app.getVersion();
-    })
-    ipcMain.on("getConfig", function(event){
-      event.returnValue = storeConfig.getAll();
-    })
-    ipcMain.on("storeConfig", function(event, config){
-      if(Object.keys(storeConfig.getAll()).indexOf(config.setting) !== -1){
-        if(storeConfig.get(config.setting).type === "text"){
-          if(typeof config.value === "string"){
-            storeConfig.store(config.setting, "value", config.value);
-            event.returnValue = config.value;
-          }else{
-            event.returnValue = storeConfig.get(config.setting).value;
-          }
-        }else if(storeConfig.get(config.setting).type === "number"){
-          if(typeof parseInt(config.value) === "number"){
-            storeConfig.store(config.setting, "value", config.value);
-            event.returnValue = config.value;
-          }else{
-            event.returnValue = storeConfig.get(config.setting).value;
-          }
-        }else if(storeConfig.get(config.setting).type === "directory"){
-          try{
-            fs.accessSync(config.value, fs.constants.R_OK | fs.constants.W_OK);
-            var access = true;
-          }catch(err){
-            var access = false;
-          }
-          if(fs.existsSync(config.value) && access){
-            storeConfig.store(config.setting, "value", config.value);
-            event.returnValue = config.value;
-          }else{
-            event.returnValue = storeConfig.get(config.setting).value;
-          }
-        }else if(storeConfig.get(config.setting).type === "boolean"){
-          if(typeof config.value === "boolean"){
-            storeConfig.store(config.setting, "value", config.value);
-            event.returnValue = config.value;
-          }else{
-            event.returnValue = storeConfig.get(config.setting).value;
-          }
+  }
+
+  ipcMain.on("openSettings", openSettings);
+
+  ipcMain.on("getVersion", function(event){
+    event.returnValue = app.getVersion();
+  })
+  ipcMain.on("getConfig", function(event){
+    event.returnValue = storeConfig.getAll();
+  })
+  ipcMain.on("storeConfig", function(event, config){
+    if(Object.keys(storeConfig.getAll()).indexOf(config.setting) !== -1){
+      if(storeConfig.get(config.setting).type === "text"){
+        if(typeof config.value === "string"){
+          storeConfig.store(config.setting, "value", config.value);
+          event.returnValue = config.value;
+        }else{
+          event.returnValue = storeConfig.get(config.setting).value;
+        }
+      }else if(storeConfig.get(config.setting).type === "number"){
+        if(typeof parseInt(config.value) === "number"){
+          storeConfig.store(config.setting, "value", config.value);
+          event.returnValue = config.value;
+        }else{
+          event.returnValue = storeConfig.get(config.setting).value;
+        }
+      }else if(storeConfig.get(config.setting).type === "directory"){
+        try{
+          fs.accessSync(config.value, fs.constants.R_OK | fs.constants.W_OK);
+          var access = true;
+        }catch(err){
+          var access = false;
+        }
+        if(fs.existsSync(config.value) && access){
+          storeConfig.store(config.setting, "value", config.value);
+          event.returnValue = config.value;
+        }else{
+          event.returnValue = storeConfig.get(config.setting).value;
+        }
+      }else if(storeConfig.get(config.setting).type === "boolean"){
+        if(typeof config.value === "boolean"){
+          storeConfig.store(config.setting, "value", config.value);
+          event.returnValue = config.value;
+        }else{
+          event.returnValue = storeConfig.get(config.setting).value;
         }
       }
-    })
+    }
   })
 
   function setThumbar(state){
@@ -213,6 +319,8 @@ function createWindow () {
       torrents[movie.id] = torrent(movie, false, win);
     }
     win.loadURL(`file://${__dirname}/player/index.html`);
+    appMenu.items[2].submenu.items[0].enabled = true;
+    appMenu.items[2].submenu.items[1].enabled = true;
 
     ipcMain.on("exitStreaming", function(event){
       win.setFullScreen(false);
@@ -224,6 +332,8 @@ function createWindow () {
       ipcMain.removeAllListeners("fullscreen");
       ipcMain.removeAllListeners("exitStreaming");
       win.loadURL(`file://${__dirname}/index.html`);
+      appMenu.items[2].submenu.items[0].enabled = false;
+      appMenu.items[2].submenu.items[1].enabled = false;
       win.setThumbarButtons([]);
       if(!downloaded && !torrents[movie.id].download){
         torrents[movie.id].end();
