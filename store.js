@@ -1,6 +1,7 @@
 'use strict'
 var fs = require("fs"),
   path = require("path"),
+  request = require("request"),
   storeConfig = require("./storeConfig"),
   supportedFormats = ["mp4", "mkv", "avi"],
   userData = require("electron").app.getPath("userData"),
@@ -30,7 +31,34 @@ function reload(){
       movies = {}
     }
   }
+
+  var needInfo = library.filter(function(id){
+    return (Object.keys(movies).indexOf(id) === -1);
+  });
+
+  var library = library.filter(function(id){
+    return (Object.keys(movies).indexOf(id) !== -1);
+  })
+
   toStore = {complete: library, incomplete: [], movies: movies};
+
+  var infoCount = 0;
+
+  if(needInfo.length > 0){
+    for(var i = 0; i < needInfo.length; i++){
+      request("https://yts.ag/api/v2/movie_details.json?movie_id=" + needInfo[i], function(error, response, body){
+        if(!error && response.statusCode == 200){
+          body = JSON.parse(body);
+          toStore.movies[body.data.movie.id] = body.data.movie;
+          infoCount += 1;
+
+          if(infoCount === needInfo.length){
+            fs.writeFileSync(path.join(userData, "downloads.json"), JSON.stringify(toStore));
+          }
+        }
+      })
+    }
+  }
 }
 
 reload();
