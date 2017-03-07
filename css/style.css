@@ -186,6 +186,7 @@ header {
 }
 .movie .play-circle path {
   fill: #fff;
+  transition: 0.2s all;
 }
 .movie .play-circle circle {
   fill: rgba(0, 0, 0, 0.75);
@@ -198,6 +199,9 @@ header {
 }
 .movie .play-circle g:hover > circle {
   fill: rgba(0, 0, 0, 0.9);
+}
+.movie .play-circle g:hover > path {
+  fill: #ff2a2a;
 }
 .movie .download-circle {
   opacity: 0;
