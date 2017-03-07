@@ -1,5 +1,3 @@
-<img src="https://filmreelapp.com/images/icon.svg" alt="Icon" style="width: 200px;" />
-
 # Film Reel
 
 [![Build Status](https://travis-ci.org/Kirpal/filmreel.svg?branch=master)](https://travis-ci.org/Kirpal/filmreel) [![Build status](https://ci.appveyor.com/api/projects/status/nv4j8909e4ywdhcr?svg=true)](https://ci.appveyor.com/project/Kirpal/filmreel)
