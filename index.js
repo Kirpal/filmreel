@@ -254,16 +254,16 @@ function createWindow () {
       if(storeConfig.get(config.setting).type === "text"){
         if(typeof config.value === "string"){
           storeConfig.store(config.setting, "value", config.value);
-          event.returnValue = config.value;
+          event.returnValue = {success: true, stored: config.value};
         }else{
-          event.returnValue = storeConfig.get(config.setting).value;
+          event.returnValue = {success: false, stored: storeConfig.get(config.setting).value};
         }
       }else if(storeConfig.get(config.setting).type === "number"){
         if(typeof parseInt(config.value) === "number"){
           storeConfig.store(config.setting, "value", config.value);
-          event.returnValue = config.value;
+          event.returnValue = {success: true, stored: config.value};
         }else{
-          event.returnValue = storeConfig.get(config.setting).value;
+          event.returnValue = {success: false, stored: storeConfig.get(config.setting).value};
         }
       }else if(storeConfig.get(config.setting).type === "directory"){
         try{
@@ -274,16 +274,16 @@ function createWindow () {
         }
         if(fs.existsSync(config.value) && access){
           storeConfig.store(config.setting, "value", config.value);
-          event.returnValue = config.value;
+          event.returnValue = {success: true, stored: config.value};
         }else{
-          event.returnValue = storeConfig.get(config.setting).value;
+          event.returnValue = {success: false, stored: storeConfig.get(config.setting).value};
         }
       }else if(storeConfig.get(config.setting).type === "boolean"){
         if(typeof config.value === "boolean"){
           storeConfig.store(config.setting, "value", config.value);
-          event.returnValue = config.value;
+          event.returnValue = {success: true, stored: config.value};
         }else{
-          event.returnValue = storeConfig.get(config.setting).value;
+          event.returnValue = {success: false, stored: storeConfig.get(config.setting).value};
         }
       }
     }

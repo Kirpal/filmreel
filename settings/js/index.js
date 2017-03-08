@@ -18,13 +18,13 @@ Object.keys(config).forEach(function(setting){
     </div>';
   }else if(config[setting].type === "number"){
     settingHtml = '\
-    <div class="setting number" data-setting="' + setting + '">\
+    <div class="setting number text" data-setting="' + setting + '">\
       <input id="' + setting + '" value="' + config[setting].value + '" type="number" required>\
       <label class="select-none" for="' + setting + '">' + config[setting].name + '</label>\
     </div>';
   }else if(config[setting].type === "directory"){
     settingHtml = '\
-    <div class="setting directory" data-setting="' + setting + '">\
+    <div class="setting directory text" data-setting="' + setting + '">\
       <input id="' + setting + '" value="' + config[setting].value + '" type="text" required>\
       <label class="select-none" for="' + setting + '">' + config[setting].name + '</label>\
       <svg class="icon select-none" viewbox="0 0 300 250">\
@@ -49,17 +49,30 @@ $(".directory .icon").click(function(){
 
 $(".setting input").on("change", function(){
   $("#footer").html(version + " | Saving...");
-  setTimeout(function(){
-    $("#footer").html(version + " | Saved!");
-  }, 300);
-  if($(this).attr("type") != "checkbox"){
-    $(this).val(ipcRenderer.sendSync("storeConfig", {"setting": $(this).parents(".setting").data("setting"), "value": $(this).val()}))
-    $("#footer").html(version + " | Saved!");
-  }else{
-    if(ipcRenderer.sendSync("storeConfig", {"setting": $(this).parents(".setting").data("setting"), "value": this.checked})){
-      $(this).attr("checked", "")
+
+  if($(this).attr("type") !== "checkbox"){
+    var storeConfig = ipcRenderer.sendSync("storeConfig", {"setting": $(this).parents(".setting").data("setting"), "value": $(this).val()});
+    if(storeConfig.success){
+      $(this).parents(".setting").removeClass("error");
+      setTimeout(function(){
+        $("#footer").html(version + " | Saved!");
+      }, 300);
     }else{
-      $(this).removeAttr("checked")
+      $(this).parents(".setting").addClass("error");
+      $("#footer").html(version + " | ERROR");
+    }
+  }else{
+    if(!ipcRenderer.sendSync("storeConfig", {"setting": $(this).parents(".setting").data("setting"), "value": this.checked}).success){
+      $("#footer").html(version + " | ERROR");
+      if(this.checked){
+        $(this).removeAttr("checked");
+      }else{
+        $(this).attr("checked", "");
+      }
+    }else{
+      setTimeout(function(){
+        $("#footer").html(version + " | Saved!");
+      }, 300);
     }
   }
 });
