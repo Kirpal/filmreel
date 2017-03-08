@@ -15,9 +15,15 @@ var torrent = require("./torrent"),
   request = require("request"),
   api = express(),
   torrents = {},
-  isFullscreen = false,
   streamPort = storeConfig.get("port").value,
-  libraryLocation = storeConfig.get("library").value;
+  libraryLocation = storeConfig.get("library").value,
+  current = {
+    movie: {},
+    volume: 0.75,
+    progress: 0,
+    playing: false,
+    fullscreen: false
+  };
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -79,23 +85,6 @@ function createWindow () {
       ]
     },
     {
-      label: "Window",
-      submenu: [
-        {
-          role: "minimize"
-        },
-        {
-          label: "Toggle Full Screen",
-          accelerator: "CommandOrControl + F11",
-          click: function(){
-            win.setFullScreen(!isFullscreen);
-            isFullscreen = !isFullscreen;
-            win.webContents.send("fullscreen", null)
-          }
-        }
-      ]
-    },
-    {
       label: "Controls",
       submenu: [
         {
@@ -135,6 +124,15 @@ function createWindow () {
               }
             }
           ]
+        },
+        {
+          enabled: false,
+          label: "Toggle Full Screen",
+          click: function(){
+            win.setFullScreen(!current.fullscreen);
+            current.fullscreen = !current.fullscreen;
+            win.webContents.send("fullscreen", null)
+          }
         }
       ]
     },
@@ -322,8 +320,10 @@ function createWindow () {
       torrents[movie.id] = torrent(movie, false, win);
     }
     win.loadURL(`file://${__dirname}/player/index.html`);
-    appMenu.items[2].submenu.items[0].enabled = true;
-    appMenu.items[2].submenu.items[1].enabled = true;
+    appMenu.items[1].submenu.items[0].enabled = true;
+    appMenu.items[1].submenu.items[1].enabled = true;
+    appMenu.items[1].submenu.items[2].enabled = true;
+    current.movie = movie;
 
     ipcMain.on("exitStreaming", function(event){
       win.setFullScreen(false);
@@ -335,8 +335,9 @@ function createWindow () {
       ipcMain.removeAllListeners("fullscreen");
       ipcMain.removeAllListeners("exitStreaming");
       win.loadURL(`file://${__dirname}/index.html`);
-      appMenu.items[2].submenu.items[0].enabled = false;
-      appMenu.items[2].submenu.items[1].enabled = false;
+      appMenu.items[1].submenu.items[0].enabled = false;
+      appMenu.items[1].submenu.items[1].enabled = false;
+      appMenu.items[1].submenu.items[2].enabled = false;
       win.setThumbarButtons([]);
       if(!downloaded && !torrents[movie.id].download){
         torrents[movie.id].end();
@@ -360,31 +361,39 @@ function createWindow () {
     //when metadata for video is loaded
     ipcMain.on("metadata", function(event, duration){
       //send starting values
-      event.sender.send("volume", {volume: 0.75, update: true})
-      event.sender.send("progress", {progress: (typeof storeProgress.get(movie.id) === 'undefined') ? 0 : storeProgress.get(movie.id) * duration, total: duration, update: true})
+      current.volume = 0.75;
+      current.progress = (typeof storeProgress.get(movie.id) === 'undefined') ? 0 : storeProgress.get(movie.id) * duration;
+      current.duration = duration;
+      current.playing = true;
+      event.sender.send("volume", {volume: current.volume, update: true})
+      event.sender.send("progress", {progress: current.progress, total: current.duration, update: true})
       event.sender.send("playback", true)
 
       ipcMain.on('playback', function(event, state){
         //play/pause
         setThumbar(state)
+        current.playing = (state === null) ? !current.playing : state;
         event.sender.send("playback", state)
       })
       ipcMain.on('volume', function(event, data){
         //set volume
+        current.volume = data.volume;
         event.sender.send("volume", data)
       })
       ipcMain.on('progress', function(event, data){
         //movie progress
         //store progress in progress.json
         storeProgress.store(data.progress, data.total, data.id);
+        current.progress = data.progress;
+        current.duration = data.total;
         event.sender.send("progress", data);
       })
       ipcMain.on("fullscreen", function(event, state){
         //change fullscreen state
-        var setState = (state === null) ? !isFullscreen : state;
-        isFullscreen = setState;
+        var setState = (state === null) ? !current.fullscreen : state;
+        current.fullscreen = setState;
         win.setFullScreen(setState);
-        event.sender.send("fullscreen", state)
+        event.sender.send("fullscreen", state);
       })
     })
   })
@@ -426,26 +435,29 @@ app.on('activate', () => {
 })
 
 api.post('/playback/', function(req, res){
-  var state = (req.query.state === "play") ? true : (req.query.state === "pause") ? false : null;
+  var state = (req.body.state === "play") ? true : (req.body.state === "pause") ? false : null;
   setThumbar(state)
   win.webContents.send("playback", state)
 })
-api.post('/volume/:volume', function(req, res){
-  var update = (typeof req.query.update === "undefined") ? true : update;
-  var data = {volume: req.params.volume, update: update};
+api.post('/volume/', function(req, res){
+  var update = (typeof req.body.update === "undefined") ? true : update;
+  var data = {volume: req.body.volume, update: update};
   win.webContents.send("volume", data)
 })
-api.post('/progress/:progress/:total', function(req, res){
-  var update = (typeof req.query.update === "undefined") ? true : update;
-  var data = {progress: req.params.progress, total: req.params.total, update: update};
+api.post('/progress/', function(req, res){
+  var update = (typeof req.body.update === "undefined") ? true : update;
+  var data = {progress: req.body.progress, total: req.body.total, update: update};
   win.webContents.send("progress", data)
 })
-api.post('/fullscreen/:state', function(req, res){
-  var state = (req.query.state === "enter") ? true : (req.query.state === "exit") ? false : null;
-  var setState = (state === null) ? !isFullscreen : state;
-  isFullscreen = setState;
+api.post('/fullscreen/', function(req, res){
+  var state = (req.body.state === "enter") ? true : (req.body.state === "exit") ? false : null;
+  var setState = (state === null) ? !current.fullscreen : state;
+  current.fullscreen = setState;
   win.setFullScreen(setState);
   win.webContents.send("fullscreen", state)
+})
+api.get('/current/', function(req, res){
+  res.json(current);
 })
 
 api.all('/stream/:id', function (req, res) {
