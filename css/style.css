@@ -265,7 +265,9 @@ header {
   margin: 0;
 }
 .movie .imdb {
-  color: #5ea8ff;
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px dashed #fff;
 }
 .movie .stars {
   position: relative;
