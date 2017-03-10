@@ -1,6 +1,7 @@
+<img src="https://filmreelapp.com/images/icon.svg" height="64" alt="Icon">
 # Film Reel
 
-[![Build Status](https://travis-ci.org/Kirpal/filmreel.svg?branch=master)](https://travis-ci.org/Kirpal/filmreel) [![Build status](https://ci.appveyor.com/api/projects/status/nv4j8909e4ywdhcr?svg=true)](https://ci.appveyor.com/project/Kirpal/filmreel)
+[![Build Status](https://travis-ci.org/Kirpal/filmreel.svg?branch=master)](https://travis-ci.org/Kirpal/filmreel) [![Build status](https://ci.appveyor.com/api/projects/status/nv4j8909e4ywdhcr?svg=true)](https://ci.appveyor.com/project/Kirpal/filmreel) ![Total Downloads](https://img.shields.io/github/downloads/kirpal/filmreel/total.svg) ![Release](https://img.shields.io/github/release/kirpal/filmreel.svg)
 
 Film Reel is a modern movie watching app, designed with usability in mind. It allows you to stream and download 1000's of movies for free. Using BitTorrent peer-to-peer technology, the movies are delivered at high speed and high quality. The app is cross-platform and open-source.
 
