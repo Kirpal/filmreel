@@ -1,11 +1,13 @@
 @import '../fonts/opensans.css';
 body {
   margin: 0;
-  background: #2f2f2f;
+  background: #fff;
   -webkit-user-select: none;
   overflow: hidden;
+  overflow-y: scroll;
 }
 
+/*SCROLL BAR*/
 *::-webkit-scrollbar {
   width: 8px;
 }
@@ -15,8 +17,8 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
 }
 *::-webkit-scrollbar-button {
   display: none;
@@ -25,292 +27,382 @@ body {
   display: none;
 }
 
-header {
-  height: 80px;
-  width: 100%;
-  background: #202020;
-  padding-left: 20px;
-  padding-right: 20px;
+/*MENU*/
+#menu {
+  position: fixed;
+  width: 80px;
+  height: 100vh;
+  background: #0e0e0e;
+  padding: 20px;
   box-sizing: border-box;
 }
-
-#header-icon {
-  position: relative;
-  display: inline-block;
-  height: 40px;
-  top: 15px;
-  padding-right: 10px;
-}
-
-#nav {
-  display: inline-block;
-  border: none;
-}
-
 .nav-item {
   position: relative;
-  display: inline-block;
-  font: 20px "Open Sans", sans-serif;
-  color: #fff;
-  height: 80px;
+  display: block;
+  width: 40px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 10px;
   box-sizing: border-box;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-top: 25px;
-  background: none;
   cursor: pointer;
   transition: 0.2s all;
+  border-radius: 5px;
 }
 .nav-item img {
-  margin-bottom: -5px;
-}
-
-.nav-item::after {
-  content: "";
-  width: 0;
-  height: 5px;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transition: 0.2s all;
-}
-
-.nav-item.selected::after {
-  content: "";
+  display: block;
   width: 100%;
-  height: 5px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  background: #fff;
 }
-
-.nav-item:hover::after{
-  left: 0;
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.nav-item.selected {
+  background: rgba(255, 255, 255, 0.2)
+}
+#menu-icon {
+  position: relative;
+  display: block;
+  width: 40px;
+  margin-bottom: 15px;
+}
+#menu-icon img {
+  display: block;
   width: 100%;
 }
 
-#search-box {
-  display: inline-block;
-  font: 15px "Open Sans", sans-serif;
-  color: #fff;
-  height: 40px;
-  margin-top: 20px;
+/*PAGE HEADER*/
+#header {
+  position: relative;
+  width: calc(100% - 80px);
+  height: 80px;
+  left: 80px;
   box-sizing: border-box;
-  width: 30%;
-  padding-left: 5px;
-  padding-right: 5px;
-  float: right;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  transition: 0.2s all;
+  padding: 20px;
 }
-
+#header h1 {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  font: 30px "Open Sans", sans-serif;
+  color: #222;
+}
+#settings-info {
+  margin-left: 0.5em;
+  font-size: 12px;
+  color: #aaa;
+}
+#search-box {
+  display: block;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 15px "Open Sans", sans-serif;
+  color: #222;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px;
+  background: #fff;
+  border: none;
+  border-bottom: 2px solid #222;
+}
 #search-box:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.3);
 }
-
 #search-box::-webkit-input-placeholder {
-  color: #fff;
+  color: #222;
 }
 
-#settings {
-  display: inline-block;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 1px;
-  height: 30px;
-  margin-top: 25px;
-  margin-left: 10px;
-  box-sizing: border-box;
-  float: right;
-  border-radius: 2px;
-  border: none;
-  transition: 0.05s all;
-  cursor: pointer;
-}
-#settings:active {
-  background: rgba(255, 255, 255, 0.2);
-}
-
+/*PAGE CONTENTS*/
 #contents {
+  position: relative;
   padding: 44px;
+  padding-top: 0;
   box-sizing: border-box;
-  text-align: center;
-  height: calc(100vh - 80px);
-  overflow-y: scroll;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	text-align: left;
+  height: 100vh;
+  width: calc(100vw - 80px);
+  left: 80px;
 }
 #contents h1.placeholder {
   color: #aaa;
   font: 30px "Open Sans", sans-serif;
 }
 #contents h1.header {
-  color: #fff;
-  font: 25px "Open Sans", sans-serif;
-  display: table;
-  padding: 5px;
-  padding-left: 30px;
-  padding-right: 30px;
-  border-bottom: 1px dashed #aaa;
   position: relative;
-  left: 50%;
-  transform: translate(-50%);
-  margin: 0;
-}
-.movie {
   display: inline-block;
+  width: 100%;
+  font: 25px "Open Sans", sans-serif;
+  color: #222;
+}
+
+/*MOVIE*/
+.movie {
   position: relative;
-  width: 200px;
-  height: 407px;
+  width: 150px;
+  height: 280px;
   overflow: hidden;
-  margin: 10px;
-  margin-bottom: 6px;
+  margin: 6px;
+  margin-bottom: 2px;
   color: #fff;
 }
-.movie img {
+.movie-spacer {
+  position: relative;
+  width: 150px;
+  height: 0;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+.cover {
+  position: relative;
+  display: block;
+  width: 150px;
+  height: 225px;
+  border-radius: 5px;
+  overflow: hidden;
+	box-shadow: 0 14px 12px -10px rgba(0,8,26,0.32);
+  z-index: 2;
+}
+.cover:hover > .cover-image {
+  filter: brightness(20%);
+}
+.cover-image {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
-}
-.movie .play-circle {
-  opacity: 0;
-  position: absolute;
-  width: 100px;
-  left: 50px;
-  top: 100px;
-  transition: 0.2s all linear;
-}
-.movie .play-circle path {
-  fill: #fff;
   transition: 0.2s all;
 }
-.movie .play-circle circle {
-  fill: rgba(0, 0, 0, 0.75);
-  stroke: #fff;
-  stroke-width: 15px;
+.play-circle {
+  opacity: 0;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: #fff;
+  border-radius: 30px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: 0.2s all;
+  cursor: pointer;
+}
+.play-circle-icon {
+  position: absolute;
+  height: 30px;
+  top: 15px;
+  left: 22px;
+  fill: #ff5959;
+}
+.download-button {
+  opacity: 0;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: 5px;
+  bottom: 5px;
+  cursor: pointer;
   transition: 0.2s all;
 }
-.movie .play-circle g {
-  cursor: pointer;
+.download-button-icon {
+  position: absolute;
+  left: 5px;
+  top: 3px;
+  height: 18px;
+  stroke: #ff5959;
+  stroke-width: 2px;
 }
-.movie .play-circle g:hover > circle {
-  fill: rgba(0, 0, 0, 0.9);
-}
-.movie .play-circle g:hover > path {
-  fill: #ff2a2a;
-}
-.movie .download-circle {
+.delete-button {
   opacity: 0;
   position: absolute;
-  width: 25px;
-  left: 87.5px;
-  top: 252px;
-  transition: 0.2s all linear;
-}
-.movie .download-circle rect {
-  fill: #000;
+  width: 24px;
+  height: 24px;
+  right: 5px;
+  top: 5px;
   cursor: pointer;
+  transition: 0.2s all;
 }
-.movie .download-circle circle {
-  fill: #fff;
-  cursor: pointer;
-}
-.movie .delete-circle {
-  opacity: 0;
+.delete-button-icon {
   position: absolute;
-  width: 25px;
-  left: 87.5px;
-  top: 252px;
-  transition: 0.2s all linear;
+  left: 3px;
+  top: 3px;
+  height: 18px;
+  stroke: #ff5959;
+  stroke-width: 2px;
 }
-.movie .delete-circle rect {
-  fill: #000;
-  cursor: pointer;
-}
-.movie .delete-circle circle {
-  fill: #fff;
-  cursor: pointer;
-}
-.movie:hover > .download-circle, .movie:hover > .play-circle, .movie:hover > .delete-circle {
+.cover:hover > .play-circle, .cover:hover > .download-button, .cover:hover > .delete-button {
   opacity: 1;
 }
-.movie .movie-info {
+.title {
   position: relative;
+  display: block;
   text-align: left;
-  padding: 10px;
+  width: 150px;
+  padding: 5px;
   box-sizing: border-box;
-  width: 200px;
   max-height: 110px;
-  top: 297px;
-}
-.movie .title {
-  font: 18px "Open Sans", sans-serif;
-  position: relative;
-  margin: 0;
-  width: 180px;
+  margin-top: 5px;
+  font: 12px "Open Sans", sans-serif;
+  font-weight: bold;
+  color: #222;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2; /* number of lines to show */
   -webkit-box-orient: vertical;
 }
-.movie .subtitle {
-  display: inline-block;
-  font: 12px "Open Sans", sans-serif;
-  position: relative;
-  margin: 0;
-}
-.movie .imdb {
-  color: #fff;
-  text-decoration: none;
-  border-bottom: 1px dashed #fff;
-}
-.movie .stars {
-  position: relative;
-  width: 88px;
-  left: -2px;
-  display: inline-block;
-  margin: 0;
-}
-.movie .stars .star {
-  width: 20%;
-  stroke-width: 15;
-  fill: #ffffff;
-}
-.movie .stars.one .star.one, .movie .stars.two .star.one, .movie .stars.three .star.one, .movie .stars.four .star.one, .movie .stars.five .star.one {
-  fill: #f8d64e;
-}
-.movie .stars.two .star.two, .movie .stars.three .star.two, .movie .stars.four .star.two, .movie .stars.five .star.two {
-  fill: #f8d64e;
-}
-.movie .stars.three .star.three, .movie .stars.four .star.three, .movie .stars.five .star.three {
-  fill: #f8d64e;
-}
-.movie .stars.four .star.four, .movie .stars.five .star.four {
-  fill: #f8d64e;
-}
-.movie .stars.five .star.five {
-  fill: #f8d64e;
-}
 
+/*DOWNLOAD PROGRESS BAR*/
 .download-progress-outer {
   display: none;
   position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 30px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
+}
+.download-progress-total {
+  position: absolute;
   left: 10px;
-  top: 277px;
+  top: 10px;
   height: 10px;
-  width: 180px;
+  width: 130px;
+  border-radius: 5px;
+  overflow: hidden;
   background: #393e4a;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 .download-progress {
   position: absolute;
   left: 0;
   top: 0;
   height: 10px;
-  background: #28f;
+  border-radius: 5px;
+  background: #ff5959;
+}
+
+/*SETTINGS*/
+.setting {
+  position: relative;
+  display: inline-block;
+  height: 44px;
+  width: 100%;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.setting.text input {
+  width: 100%;
+  font: 20px "Open Sans", sans-serif;
+  color: #222;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #555;
+  height: 30px;
+  position: relative;
+  top: 14px;
+  transition: 0.2s all;
+}
+.setting.text input:focus {
+  outline: none;
+}
+.setting.text label {
+  position: absolute;
+  left: 0px;
+  top: 16px;
+  font: 20px "Open Sans", sans-serif;
+  color: #222;
+  transition: 0.2s all;
+}
+.setting.text input:focus ~ label {
+  top: 0px;
+  font-size: 11px;
+}
+.setting.text input:valid ~ label {
+  top: 0px;
+  font-size: 11px;
+}
+.setting.text.error input {
+  color: #ff2a2a;
+  border-bottom-color: #ff2a2a;
+}
+.setting.text.error label {
+  color: #ff2a2a;
+}
+.setting.number input::-webkit-outer-spin-button,
+.setting.number input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.setting.directory .icon {
+  position: absolute;
+  right: 10px;
+  top: 16px;
+  fill: #222;
+  stroke: none;
+  height: 20px;
+  cursor: pointer;
+  transition: 0.2s all;
+}
+.setting.directory.error .icon {
+  fill: #ff2a2a;
+}
+.setting.boolean h2 {
+  width: 100%;
+  font: 20px "Open Sans", sans-serif;
+  color: #222;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #555;
+  height: 30px;
+  position: relative;
+}
+.setting.boolean input {
+  position: absolute;
+  right: 10px;
+  top: 16px;
+  height: 20px;
+  width: 40px;
+  border-radius: 10px;
+  transition: 0.2s all;
+}
+.setting.boolean input::before {
+	position: absolute;
+	content: "";
+	width: 40px;
+	height: 20px;
+	border-radius: 10px;
+	background: #555;
+	transition: 0.2s all;
+}
+.setting.boolean input::after {
+	position: absolute;
+	left: 3px;
+	top: 3px;
+	content: "";
+	width: 14px;
+	height: 14px;
+	border-radius: 7px;
+	background: #fff;
+	transition: 0.2s all;
+}
+.setting.boolean input:checked::before {
+	position: absolute;
+	content: "";
+	width: 40px;
+	height: 20px;
+	border-radius: 10px;
+	background: #999;
+	transition: 0.2s all;
+}
+.setting.boolean input:checked::after {
+	position: absolute;
+	left: 23px;
+	top: 3px;
+	content: "";
+	width: 14px;
+	height: 14px;
+	border-radius: 7px;
+	background: #fff;
+	transition: 0.2s all;
 }

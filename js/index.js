@@ -1,5 +1,5 @@
 'use strict'
-const ipcRenderer = require('electron').ipcRenderer;
+const {remote, ipcRenderer} = require('electron');
 
 var typingTimer;
 var movies = {};
@@ -8,81 +8,40 @@ var oldRawHtml = "";
 var currentTab = "home";
 var downloaded = [];
 var downloading = [];
+var spacerLength = 0;
 
-function resize(){
-	if(currentTab === "search"){
-		var changeWidth = 500;
-		var minWidth = 350;
-	}else{
-		var changeWidth = 400;
-		var minWidth = 300;
-	}
-
-	$("body").css("min-width", minWidth + "px");
-	if($(document).width() < changeWidth){
-		$("#nav-item-home").html("<img src='icons/home.svg' alt='Home'>");
-		$("#nav-item-library").html("<img src='icons/library.svg' alt='Library'>");
-		$("#nav-item-search").html("<img src='icons/search.svg' alt='Search'>");
-	}else{
-		$("#nav-item-home").html("Home");
-		$("#nav-item-library").html("Library");
-		$("#nav-item-search").html("Search");
-	}
-}
-
-resize();
-$(window).resize(resize);
-
-//returns each movie's html
+//Generates each movies html element from their movie object
 var movieHtml = function(movie){
 	return '\
 	<div class="movie" data-id="' + movie.id + '">\
-		<img src="' + movie.large_cover_image + '" alt="' + movie.title + ' Cover">\
-		<svg class="play-circle" viewbox="0 0 500 500">\
-			<g>\
-				<circle cx="250" cy="250" r="235"/>\
-				<path d="M 185,135 Q 180,140 180,145 L 180,355 Q 180,360 185,365 Q 190,367.5 195,365 L 355,260 Q 360,255 360,250 Q 360,245 355,240 L 195,135 Q 190,132.5 185,135 z" />\
-			</g>\
-		</svg>' +
+		<div class="cover">\
+			<img class="cover-image" src="' + movie.large_cover_image + '" alt="' + movie.title + ' Cover">\
+			<div class="play-circle" title="Play Movie">\
+				<svg class="play-circle-icon" viewbox="0 0 182.5 235">\
+						<path d="M 5,2.5 Q 0,5 0,10 L 0,222.5 Q 0,230 5,232.5 Q 10,235 15,232.5 L 175,127.5 Q 182.5,122.5 182.5,117.5 Q 182.5,112.5 175,107.5 L 15,2.5 Q 10,0 5,2.5 z" />\
+				</svg>\
+			</div>' +
 		((downloading.indexOf(parseInt(movie.id)) === -1) ?
 			((downloaded.indexOf(parseInt(movie.id)) === -1) ?
-				'<svg class="download-circle" viewbox="0 0 50 50">\
-					<circle cx="25" cy="25" r="25"/>\
-					<rect x="22.5" y="7.5" width="5" height="25"/>\
-					<rect x="20" y="17.5" transform="rotate(-45, 20, 32.5)" width="5" height="20"/>\
-					<rect x="25" y="17.5" transform="rotate(45, 30, 32.5)" width="5" height="20"/>\
-					<rect x="15" y="37.5" width="20" height="5"/>\
-					<circle cx="25" cy="25" r="25" style="fill:transparent">\
-						<title>Download</title>\
-					</circle>\
-				</svg>' :
-				'<svg class="delete-circle" viewbox="0 0 50 50">\
-					<circle cx="25" cy="25" r="25"/>\
-					<rect x="22.5" y="10" transform="rotate(-45, 25, 25)" width="5" height="30"/>\
-					<rect x="22.5" y="10" transform="rotate(45, 25, 25)" width="5" height="30"/>\
-					<circle cx="25" cy="25" r="25" style="fill:transparent">\
-						<title>Delete</title>\
-					</circle>\
-				</svg>') : ''
-		) +
-		'<div title="Downloading"' + ((downloading.indexOf(parseInt(movie.id)) !== -1)? 'style="display: block;"' : '') + 'class="download-progress-outer"><div class="download-progress"></div></div>\
-		<div class="movie-info">\
-			<h2 class="title">' + movie.title + '</h2>\
-			<h3 class="subtitle">' + movie.mpa_rating+" / "+movie.year+" / "+movie.runtime+"m" + ' / <a class="imdb" target="_blank" href="http://www.imdb.com/title/' + movie.imdb_code + '">IMDB</a></h3><br>\
-			<div class="stars ' + numbers[Math.round(Math.round(movie.rating)/2)-1] + '">\
-				<svg class="star one" viewbox="0 0 269 251">\
-					<polygon points="150,25  179,111 269,111 197,165 223,251 150,200 77,251 103,165 31,111 121,111"/>\
-				</svg><svg class="star two" viewbox="0 0 269 251">\
-					<polygon points="150,25  179,111 269,111 197,165 223,251 150,200 77,251 103,165 31,111 121,111"/>\
-				</svg><svg class="star three" viewbox="0 0 269 251">\
-					<polygon points="150,25  179,111 269,111 197,165 223,251 150,200 77,251 103,165 31,111 121,111"/>\
-				</svg><svg class="star four" viewbox="0 0 269 251">\
-					<polygon points="150,25  179,111 269,111 197,165 223,251 150,200 77,251 103,165 31,111 121,111"/>\
-				</svg><svg class="star five" viewbox="0 0 269 251">\
-					<polygon points="150,25  179,111 269,111 197,165 223,251 150,200 77,251 103,165 31,111 121,111"/>\
-				</svg>\
-			</div>\
-		</div>\
+			//if the movie isn't downloaded or downloading
+				'<div class="download-button" title="Download Movie">\
+					<svg class="download-button-icon" viewbox="0 0 14 18">\
+						<path d="M 7,0 L 7,14 z" />\
+						<path d="M 7,14 L 14,7 z" />\
+						<path d="M 7,14 L 0,7 z" />\
+						<path d="M 0,17 L 14,17 z"/>\
+					</svg>\
+				</div>' :
+				//if the movie is downloaded
+				'<div class="delete-button" title="Delete Movie">\
+					<svg class="delete-button-icon" viewbox="0 0 24 24">\
+						<path d="M 0,0 L 24,24 z" />\
+						<path d="M 0,24 L 24,0 z" />\
+					</svg>\
+				</div>') : '') +
+		//show progress bar if the movie is downloading
+		'<div class="download-progress-outer"><div title="Downloading"' + ((downloading.indexOf(parseInt(movie.id)) !== -1)? 'style="display: block;"' : '') + 'class="download-progress-total"><div class="download-progress"></div></div></div></div>\
+		<h2 class="title">' + movie.title + '</h2>\
 	</div>';
 }
 
@@ -93,19 +52,19 @@ var addMovie = function(movie){
 	//add to page
 	$("#contents").append(movieHtml(movie));
 	//remove old click listeners and add new ones
-	$(".movie .play-circle").off("click");
-	$(".movie .download-circle").off("click");
-	$(".movie .delete-circle").off("click");
+	$(".play-circle").off("click");
+	$(".download-button").off("click");
+	$(".delete-button").off("click");
 
-	$(".movie .play-circle").click(function(){
+	$(".play-circle").click(function(){
 		ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
 	});
-	$(".movie .download-circle").click(function(){
+	$(".download-button").click(function(){
 		$(this).css("display", "none");
 		$(this).siblings(".download-progress-outer").css("display", "block");
 		ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
 	});
-	$(".movie .delete-circle").click(function(){
+	$(".delete-button").click(function(){
 		ipcRenderer.send("delete", movies[$(this).parents(".movie").data("id")]);
 		downloaded.splice(downloaded.indexOf($(this).parents(".movie").data("id")));
 		if(currentTab === "library"){
@@ -115,6 +74,17 @@ var addMovie = function(movie){
 		}
 	});
 }
+
+//add spacers to the end of the container so the last line is aligned left
+var addSpacers = function(number){
+	var spacers = ""
+	for(var i = 0; i < number; i += 1){
+		spacers += "<div class='movie-spacer'></div>";
+	}
+	$("#contents").append(spacers);
+}
+
+//adds movies to home template and adds it to the page
 var addHomeHtml = function(rawHtml, currentTab){
 	if(currentTab === "home"){
 		//replace placeholders with movies' html
@@ -125,37 +95,41 @@ var addHomeHtml = function(rawHtml, currentTab){
 			return movieHtml(movies[x.replace(/\{|\}/g, "")]);
 		});
 		$("#contents").html(newHtml);
-		//remove old click listeners and add new ones
-		$(".movie .play-circle").off("click");
-		$(".movie .download-circle").off("click");
-		$(".movie .delete-circle").off("click");
 
-		$(".movie .play-circle").click(function(){
+		//remove old click listeners and add new ones
+		$(".play-circle").off("click");
+		$(".download-button").off("click");
+		$(".delete-button").off("click");
+
+		$(".play-circle").click(function(){
 			ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
 		});
-		$(".movie .download-circle").click(function(){
+		$(".download-button").click(function(){
 			$(this).css("display", "none");
 			$(this).siblings(".download-progress-outer").css("display", "block");
 			ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
 		});
-		$(".movie .delete-circle").click(function(){
+		$(".delete-button").click(function(){
 			changeTab(currentTab);
 			ipcRenderer.send("delete", movies[$(this).parents(".movie").data("id")]);
 		});
 	}
 }
+
 //changes tab and displayed page
 var changeTab = function(tab){
 	currentTab = tab;
+	//reset scroll
+	$("body").scrollTop(0);
 	//remove selection class from all tabs
 	$(".nav-item").removeClass("selected");
-	//hide search tab
-	if(tab !== "search"){
-		$("#nav-item-search").fadeOut(200);
-	}
-	//show selected tab and give it selection class
-	$("#nav-item-"+tab).fadeIn(200).addClass("selected");
+	//add selectrion class to chosen tab
+	$("#nav-item-"+tab).addClass("selected");
+	//reset contents display to flex from block
+	$("#contents").css("display", "flex");
 	if(tab === "home"){
+		//change header at the top of page to "Home"
+		$("#header").html("<h1>Home</h1>");
 		//get template html
 		var rawHtml = ipcRenderer.sendSync("getPage", tab);
 		if(rawHtml != oldRawHtml){
@@ -177,31 +151,40 @@ var changeTab = function(tab){
 					});
 				}else{
 					homeLength += 1;
+					//if it is the last movie in the template
 					if(homeLength === homeList.length){
 						addHomeHtml(rawHtml, currentTab);
 					}
 				}
 			});
 		}else{
+			//if the newly retrieved template isn't changed, add the old template
 			addHomeHtml(rawHtml, currentTab);
 		}
 	}else if(tab === "library"){
+		//set top header to "Library"
+		$("#header").html("<h1>Library</h1>");
 		//clear page contents
 		$("#contents").html("");
-		$("#contents").scrollTop(0);
+		spacerLength = 0;
+		//get library list
 		var library = ipcRenderer.sendSync("getPage", tab);
 		downloaded = [];
 		downloading = [];
 		if(library.incomplete.length > 0 || library.complete.length > 0 && currentTab === "library"){
 			if(library.incomplete.length > 0){
+				//add downloading movies to the top
 				library.incomplete.forEach(function(id){
 					if(Object.keys(library.movies).indexOf(id) !== -1){
 						downloading.push(parseInt(id));
 						addMovie(library.movies[id]);
+						spacerLength += 1;
 					}
 				});
+				addSpacers(spacerLength);
 			}
 			if(library.complete.length > 0){
+				//add downloaded movies
 				library.complete.sort(function(a, b){
 					if(Object.keys(library.movies).indexOf(a) !== -1 && Object.keys(library.movies).indexOf(b) !== -1){
 						var titleA = library.movies[a].title.toLowerCase(), titleB = library.movies[b].title.toLowerCase();
@@ -216,46 +199,162 @@ var changeTab = function(tab){
 					if(Object.keys(library.movies).indexOf(id) !== -1){
 						downloaded.push(parseInt(id));
 						addMovie(library.movies[id]);
+						spacerLength += 1;
 					}
 				});
+				addSpacers(spacerLength);
 			}
 		}else if(currentTab === "library"){
+			//if the library is empty
 			$("#contents").html("<h1 class='placeholder'>Nothing Found :(</h1>");
 		}
 	}else if(tab === "search"){
-		//clear page contents
+		//set top header to search box
+		$("#header").html("<input id='search-box' placeholder='Search'>");
+		function search(){
+			//clear page contents
+			$("#contents").html("");
+			spacerLength = 0;
+			//search for term
+			$.get("https://yts.ag/api/v2/list_movies.json?query_term=" + $("#search-box").val(), function(response){
+				if(currentTab === "search"){
+					//clear page contents
+					$("#contents").html("");
+					spacerLength = 0;
+					if(typeof response.data.movies !== "undefined" && response.data.movies.length > 0){
+						response.data.movies.forEach(function(movie){
+							//add all search results to page if there are any results
+							addMovie(movie);
+							spacerLength += 1;
+						});
+						addSpacers(spacerLength);
+					}
+				}
+			}).fail(function(){
+				//search library instead
+				var libraryMovies = ipcRenderer.sendSync("getPage", "library").movies
+				if(currentTab === "search"){
+					Object.keys(libraryMovies).filter(function(id){
+						return downloaded.indexOf(libraryMovies[id].id) !== -1 && libraryMovies[id].title.includes($("#search-box").val());
+					}).forEach(function(id){
+						addMovie(libraryMovies[id]);
+						spacerLength += 1;
+					});
+					addSpacers(spacerLength);
+				}
+			});
+		}
+		search();
+		//search for term after 3 seconds of no typing or if enter is pressed
+		$("#search-box").keyup(function(e){
+			//check if pressed key is enter
+			if(e.keyCode == 13){
+				//make search box inactive element
+				$("#search-box").blur();
+				//clear countdown
+				clearTimeout(typingTimer);
+				if ($("#search-box").val() !== ""){
+					search()
+				}
+			}else{
+				//clear previous countdown
+				clearTimeout(typingTimer);
+				if ($("#search-box").val()){
+					//search after 3s
+					typingTimer = setTimeout(search(), 2000);
+				}
+			}
+		});
+	}else if(tab === "settings"){
+		//set top header to "Settings"
+		$("#header").html("<h1>Settings<span id='settings-info'></span></h1>");
+		var version = "v" + ipcRenderer.sendSync("getVersion");
+
+		$("#settings-info").html(version + " | Saved!");
+
+		var config = ipcRenderer.sendSync("getConfig");
+
 		$("#contents").html("");
-		$("#contents").scrollTop(0);
-		//search for term
-		$.get("https://yts.ag/api/v2/list_movies.json?query_term=" + $("#search-box").val(), function(response){
-			if(currentTab === "search"){
-				//clear page contents
-				$("#contents").html("");
-				$("#contents").scrollTop(0);
-				response.data.movies.forEach(function(movie){
-					//add all search results to page
-					addMovie(movie);
-				});
-			}
-		}).fail(function(){
-			var libraryMovies = ipcRenderer.sendSync("getPage", "library").movies
-			if(currentTab === "search"){
-				Object.keys(libraryMovies).filter(function(id){
-					return downloaded.indexOf(libraryMovies[id].id) !== -1 && libraryMovies[id].title.includes($("#search-box").val());
-				}).forEach(function(id){
-					addMovie(libraryMovies[id]);
-				});
-			}
+		$("#contents").css("display", "block");
+		//add options to page based on config
+		Object.keys(config).forEach(function(setting){
+		  var settingHtml = "";
+		  if(config[setting].type === "text"){
+		    settingHtml = '\
+		    <div class="setting text" data-setting="' + setting + '">\
+		      <input id="' + setting + '" value="' + config[setting].value + '" type="text" required>\
+		      <label class="select-none" for="' + setting + '">' + config[setting].name + '</label>\
+		    </div>';
+		  }else if(config[setting].type === "number"){
+		    settingHtml = '\
+		    <div class="setting number text" data-setting="' + setting + '">\
+		      <input id="' + setting + '" value="' + config[setting].value + '" type="number" required>\
+		      <label class="select-none" for="' + setting + '">' + config[setting].name + '</label>\
+		    </div>';
+		  }else if(config[setting].type === "directory"){
+		    settingHtml = '\
+		    <div class="setting directory text" data-setting="' + setting + '">\
+		      <input id="' + setting + '" value="' + config[setting].value + '" type="text" required>\
+		      <label class="select-none" for="' + setting + '">' + config[setting].name + '</label>\
+		      <svg class="icon select-none" viewbox="0 0 300 250">\
+		        <polygon points="0,0 120,0 120,30 300,30 300,220 0,220"></polygon>\
+		      </svg>\
+		    </div>';
+		  }else if(config[setting].type === "boolean"){
+		    settingHtml = '\
+		    <div class="setting boolean" data-setting="' + setting + '">\
+		      <h2 class="select-none">' + config[setting].name + '</h2>\
+		      <input type="checkbox" ' + ((config[setting].value) ? 'checked' : '') + '>\
+		    </div>';
+		  }
+		  $("#contents").append(settingHtml);
+		})
+		//open file picker
+		$(".directory .icon").click(function(){
+		  var $this = $(this)
+		  remote.dialog.showOpenDialog(remote.getCurrentWindow(), {"properties": ["openDirectory", "createDirectory"]}, function(filePaths){
+		    $this.parents(".directory").children("input[type='text']").val(filePaths[0]).change();
+		  });
+		});
+
+		//store settings on change
+		$(".setting input").on("change", function(){
+		  $("#settings-info").html(version + " | Saving...");
+
+		  if($(this).attr("type") !== "checkbox"){
+		    var storeConfig = ipcRenderer.sendSync("storeConfig", {"setting": $(this).parents(".setting").data("setting"), "value": $(this).val()});
+		    if(storeConfig.success){
+		      $(this).parents(".setting").removeClass("error");
+		      setTimeout(function(){
+		        $("#settings-info").html(version + " | Saved!");
+		      }, 300);
+		    }else{
+		      $(this).parents(".setting").addClass("error");
+		      $("#settings-info").html(version + " | ERROR");
+		    }
+		  }else{
+		    if(!ipcRenderer.sendSync("storeConfig", {"setting": $(this).parents(".setting").data("setting"), "value": this.checked}).success){
+		      $("#settings-info").html(version + " | ERROR");
+		      if(this.checked){
+		        $(this).removeAttr("checked");
+		      }else{
+		        $(this).attr("checked", "");
+		      }
+		    }else{
+		      setTimeout(function(){
+		        $("#settings-info").html(version + " | Saved!");
+		      }, 300);
+		    }
+		  }
 		});
 	}
 }
 
-//hide search tab
-$("#nav-item-search").fadeOut(0);
 //get list of downloaded and downloading movies
 var library = ipcRenderer.sendSync("getPage", "library");
 downloaded = [];
 downloading = [];
+//update downloaded and downloading movies lists
 Object.keys(library.movies).forEach(function(id){
 	if(library.complete.indexOf(id) !== -1){
 		downloaded.push(parseInt(id));
@@ -271,54 +370,15 @@ changeTab(currentTab);
 $(".nav-item").click(function(){
 	changeTab($(this).prop("id").replace("nav-item-", ""))
 })
-//open settings window
-$("#settings").click(function(){
-	ipcRenderer.send("openSettings");
-})
-
-//search for term after 3 seconds of no typing or if enter is pressed
-$("#search-box").keyup(function(e){
-	//check if pressed key is enter
-	if(e.keyCode == 13){
-		//make search box inactive element
-		$("#search-box").blur();
-		//clear countdown
-		clearTimeout(typingTimer);
-		if ($("#search-box").val()){
-			//change to search tab
-			changeTab("search");
-		}
-	}else{
-		//clear previous countdown
-		clearTimeout(typingTimer);
-		if ($("#search-box").val()){
-			//change to search tab after 3s
-			typingTimer = setTimeout(changeTab("search"), 2000);
-		}
-	}
-});
-
-//change to search tab on click but dont search
-$("#search-box").click(function(){
-	if(currentTab !== "search"){
-		currentTab = "search";
-		//remove selection class from all tabs
-		$(".nav-item").removeClass("selected");
-		//show selected tab and give it selection class
-		$("#nav-item-search").fadeIn(200).addClass("selected");
-		//clear page contents
-		$("#contents").html("");
-		$("#contents").scrollTop(0);
-		resize();
-	}
-})
 
 ipcRenderer.on("downloadProgress", function(event, data){
-	$("[data-id='" + data.id + "']").children(".download-progress-outer").css("display", "block");
-	$("[data-id='" + data.id + "']").children(".download-progress-outer").children(".download-progress").css("width", ((data.progress <= 1) ? (100 * data.progress) : 100) + "%");
+	//update progress bar on download progress
+	$("[data-id='" + data.id + "']").children(".cover").children(".download-progress-outer").css("display", "block");
+	$("[data-id='" + data.id + "']").children(".cover").children(".download-progress-outer").children(".download-progress-total").children(".download-progress").css("width", ((data.progress <= 1) ? (100 * data.progress) : 100) + "%");
 })
 ipcRenderer.on("downloadFinished", function(event, data){
-	$("[data-id='" + data.movie.id + "']").children(".download-progress-outer").css("display", "none");
+	//remove progress bar and send notification on download finish
+	$("[data-id='" + data.movie.id + "']").children(".cover").children(".download-progress-outer").css("display", "none");
 	if(data.notify){
 		var notification = new window.Notification("Download Complete", {
 			body: data.movie.title,

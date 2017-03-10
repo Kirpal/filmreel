@@ -55,7 +55,7 @@ function createWindow () {
   win = new BrowserWindow({
     autoHideMenuBar: true,
     icon: path.join(__dirname, "icons", "icon.png"),
-    backgroundColor: "#282C34",
+    backgroundColor: "#fff",
     show: false
   })
   torrents = resume(win);
@@ -71,10 +71,6 @@ function createWindow () {
         {
           label: "About Film Reel",
           click: function(){require('electron').shell.openExternal("https://filmreelapp.com")}
-        },
-        {
-          label: "Settings",
-          click: openSettings
         },
         {
           type: "separator"
@@ -212,34 +208,6 @@ function createWindow () {
       event.returnValue = store.get();
     }
   })
-
-  function openSettings(){
-    //new settings window
-    settingsWin = new BrowserWindow({
-      autoHideMenuBar: true,
-      icon: path.join(__dirname, "icons", "icon.png"),
-      backgroundColor: "#282C34",
-      parent: win,
-      show: false,
-      width: ((win.width === 500) ? 400 : 500),
-      height: ((win.height === 600) ? 500 : 600)
-    })
-
-    // and load settings of the app.
-    settingsWin.loadURL(`file://${__dirname}/settings/index.html`)
-    settingsWin.setMenu(null)
-
-    settingsWin.once('ready-to-show', function(){
-      settingsWin.show();
-    });
-    // Emitted when the window is closed.
-    settingsWin.on('closed', () => {
-      //dereference window object
-      settingsWin = null
-    })
-  }
-
-  ipcMain.on("openSettings", openSettings);
 
   ipcMain.on("getVersion", function(event){
     event.returnValue = app.getVersion();
