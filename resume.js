@@ -7,6 +7,7 @@ var fs = require("fs"),
   storedDownloads;
 try{
   storedDownloads = JSON.parse(fs.readFileSync(path.join(userData, "downloads.json")));
+  fs.writeFileSync(path.join(userData, "downloads.json"), JSON.stringify({complete: storedDownloads.complete, incomplete: [], movies: storedDownloads.movies}));
 }catch(err){
   if(err.code === "ENOENT"){
     storedDownloads = {"complete": [], "incomplete": [], "movies": {}};

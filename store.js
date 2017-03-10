@@ -7,6 +7,7 @@ var fs = require("fs"),
   userData = require("electron").app.getPath("userData"),
   libraryLocation = storeConfig.get("library").value,
   movies,
+  incomplete,
   library,
   toStore;
 
@@ -25,10 +26,13 @@ function reload(){
   }
 
   try{
-    movies = JSON.parse(fs.readFileSync(path.join(userData, "downloads.json"))).movies;
+    var downloads = JSON.parse(fs.readFileSync(path.join(userData, "downloads.json")));
+    movies = downloads.movies;
+    incomplete = downloads.incomplete;
   }catch(err){
     if(err.code === "ENOENT"){
-      movies = {}
+      movies = {};
+      incomplete = [];
     }
   }
 
@@ -40,7 +44,7 @@ function reload(){
     return (Object.keys(movies).indexOf(id) !== -1);
   })
 
-  toStore = {complete: library, incomplete: [], movies: movies};
+  toStore = {complete: library, incomplete: incomplete, movies: movies};
 
   var infoCount = 0;
 
