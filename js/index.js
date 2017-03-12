@@ -4,7 +4,7 @@ const {remote, ipcRenderer} = require('electron');
 var typingTimer;
 var movies = {};
 var numbers = ["one", "two", "three", "four", "five"];
-var oldRawHtml = "";
+var oldHomeTemplate = "";
 var currentTab = "home";
 var downloaded = [];
 var downloading = [];
@@ -85,34 +85,166 @@ var addSpacers = function(number){
 }
 
 //adds movies to home template and adds it to the page
-var addHomeHtml = function(rawHtml, currentTab){
+var addHomeHtml = function(homeTemplate, currentTab){
 	if(currentTab === "home"){
-		//replace placeholders with movies' html
-		var newHtml = rawHtml.replace(/\{\{[0-9]+\}\}/g, function(x){
+		//generate html from template
+		var homeHtml = homeTemplate
+		//replace markdown headers with html
+		.replace(/# (.+)/g, "<h1 class='header'>$1</h1>")
+		//replace markdown new lines with html
+		.replace(/\n\n/g, "<br>")
+		//replace movie placeholders with the movie html
+		.replace(/\{\{[0-9]+\}\}/g, function(x){
 			if(Object.keys(movies).indexOf(x.replace(/\{|\}/g, "")) === -1){
 				return "";
 			}
 			return movieHtml(movies[x.replace(/\{|\}/g, "")]);
+		})
+		//add gallery around blocks of movie cards
+		.replace(/\[\[(?:[0-9]+\]\]\[\[)+[0-9]+\]\]/g, "<div class='gallery'><div class='movie-card-container'>$&</div><div class='movie-card-indicator'></div></div>")
+		//replace movie card placeholders with movie cards
+		.replace(/\[\[([0-9]+)\]\]/g, "<img class='movie-card' data-id='$1' title='Play Movie' src='https://filmreelapp.com/cards/$1.png'>");
+		//add generated html to page
+		$("#contents").html(homeHtml);
+		$("#contents").css("justify-content", "flex-start");
+
+		$(".gallery").each(function(){
+			var $movieCardContainer = $(this).children(".movie-card-container");
+			var $movieCardIndicator = $(this).children(".movie-card-indicator");
+			var movieCardWidth = $movieCardContainer.children(".movie-card").width() + 60; //60 is the left and right margins combined
+
+			//add page indicators for every movie
+			for(var i = 0; i < $(this).children(".movie-card-container").children(".movie-card").length; i++){
+				$movieCardIndicator.append("<div data-card='" + (i + 1) + "' class='indicator'></div>");
+			}
+			//add scroll arrows to page indicators
+			$movieCardIndicator.prepend("<div class='movie-card-scroll left'></div>");
+			$movieCardIndicator.append("<div class='movie-card-scroll right'></div>");
+
+			//add duplicate movies at start and end to simulate infinite scrolling
+			$movieCardContainer.prepend($movieCardContainer.children(".movie-card").slice(-2).clone(true));
+			$movieCardContainer.append($movieCardContainer.children(".movie-card").slice(2, 4).clone(true));
+
+			//set current page and move to that card and page indicator
+			$movieCardContainer.data("currentCard", 1);
+			$movieCardIndicator.children(".indicator").filter("[data-card='" + $movieCardContainer.data("currentCard") + "']").addClass("selected");
+			$movieCardContainer.scrollLeft(2 * movieCardWidth - (($movieCardContainer.width() - movieCardWidth)/2));
 		});
-		$("#contents").html(newHtml);
 
 		//remove old click listeners and add new ones
 		$(".play-circle").off("click");
 		$(".download-button").off("click");
 		$(".delete-button").off("click");
+		$(".movie-card").off("click");
+		$(".movie-card-scroll").off("click");
+		$(".movie-card-indicator .indicator").off("click");
 
+		//play icon on movie
 		$(".play-circle").click(function(){
 			ipcRenderer.send("stream", movies[$(this).parents(".movie").data("id")]);
 		});
+
+		//movie cards in home
+		$(".movie-card").click(function(){
+			ipcRenderer.send("stream", movies[$(this).data("id")]);
+		});
+
+		//download icon on movie
 		$(".download-button").click(function(){
 			$(this).css("display", "none");
 			$(this).siblings(".download-progress-outer").css("display", "block");
 			ipcRenderer.send("download", movies[$(this).parents(".movie").data("id")]);
 		});
+
+		//delete icon on movie
 		$(".delete-button").click(function(){
 			changeTab(currentTab);
 			ipcRenderer.send("delete", movies[$(this).parents(".movie").data("id")]);
 		});
+
+		//scroll cards on an interval
+		function movieCardScroll(){
+			$(".movie-card-container").each(function(){
+				var movieCardWidth = $(this).children(".movie-card").width() + 60; //60 is the left and right margins combined
+
+				//don't scroll if user is hovering over any card
+				if($(":hover").filter($(this).children(".movie-card")).length === 0){
+					$(this).data("currentCard", $(this).data("currentCard") + 1);
+
+					//if card is too far to the right
+					if($(this).data("currentCard") >= $(this).children(".movie-card").length - 3){
+						//scroll instantly to beginning and change to first card
+						$(this).scrollLeft(movieCardWidth - (($(this).width() - movieCardWidth)/2));
+						$(this).data("currentCard", 1);
+					}
+
+					//scroll cards, change indicator
+					$(this).animate({scrollLeft: ($(this).data("currentCard") + 1) * movieCardWidth - (($(this).width() - movieCardWidth)/2)}, 600);
+					$(this).siblings(".movie-card-indicator").children(".indicator").removeClass("selected");
+					$(this).siblings(".movie-card-indicator").children(".indicator").filter("[data-card='" + $(this).data("currentCard") + "']").addClass("selected");
+				}
+			});
+		}
+		window.movieCardScroll = setInterval(movieCardScroll, 5000);
+
+		//arrows on side of page indicators
+		$(".movie-card-scroll").click(function(){
+			//reset auto scrolling
+			clearInterval(window.movieCardScroll);
+			window.movieCardScroll = setInterval(movieCardScroll, 5000);
+
+			var $movieCardContainer = $(this).parents(".movie-card-indicator").siblings(".movie-card-container");
+			var movieCardWidth = $movieCardContainer.children(".movie-card").width() + 60; //60 is the left and right margins combined
+
+			//left arrow moves left, right arrow moves right
+			if($(this).hasClass("left")){
+				$movieCardContainer.data("currentCard", $movieCardContainer.data("currentCard") - 1);
+			}else if($(this).hasClass("right")){
+				$movieCardContainer.data("currentCard", $movieCardContainer.data("currentCard") + 1);
+			}
+
+			//if new card is too far right
+			if($movieCardContainer.data("currentCard") >= $movieCardContainer.children(".movie-card").length - 3){
+				//scroll to beginning instantly, change to first page
+				$movieCardContainer.scrollLeft(movieCardWidth - (($movieCardContainer.width() - movieCardWidth)/2));
+				$movieCardContainer.data("currentCard", 1);
+			//if new card is too far left
+			}else if($movieCardContainer.data("currentCard") < 1){
+				//scroll all the way right instantly, change to last page
+				$movieCardContainer.scrollLeft($movieCardContainer.get(0).scrollWidth - (2 * movieCardWidth) - (($movieCardContainer.width() - movieCardWidth)/2));
+				$movieCardContainer.data("currentCard", $movieCardContainer.children(".movie-card").length - 4);
+			}
+
+			//animate card slide, change page indicator
+			$movieCardContainer.animate({scrollLeft: ($movieCardContainer.data("currentCard") + 1) * movieCardWidth - (($movieCardContainer.width() - movieCardWidth)/2)}, 200);
+			$(this).siblings(".indicator").removeClass("selected");
+			$(this).siblings(".indicator").filter("[data-card='" + $movieCardContainer.data("currentCard") + "']").addClass("selected");
+		});
+
+		//click on page indicator
+		$(".movie-card-indicator .indicator").click(function(){
+			//reset autoscroll timer
+			clearInterval(window.movieCardScroll);
+			window.movieCardScroll = setInterval(movieCardScroll, 5000);
+
+			var $movieCardContainer = $(this).parents(".movie-card-indicator").siblings(".movie-card-container");
+			var movieCardWidth = $movieCardContainer.children(".movie-card").width() + 60; //60 is the left and right margins combined
+
+			//change to the indicated card, animate scroll, change indicator
+			$movieCardContainer.data("currentCard", $(this).data("card"));
+			$movieCardContainer.animate({scrollLeft: ($movieCardContainer.data("currentCard") + 1) * movieCardWidth - (($movieCardContainer.width() - movieCardWidth)/2)}, 200);
+			$(this).siblings(".indicator").removeClass("selected");
+			$(this).addClass("selected");
+		});
+
+		//change scroll amount on window resize to keep current card centered
+		$(window).resize(function(){
+			$(".gallery").each(function(){
+				var $movieCardContainer = $(this).children(".movie-card-container");
+				var movieCardWidth = $movieCardContainer.children(".movie-card").width() + 60; //60 is the left and right margins combined
+				$movieCardContainer.scrollLeft(($movieCardContainer.data("currentCard") + 1) * movieCardWidth - (($movieCardContainer.width() - movieCardWidth)/2));
+			});
+		})
 	}
 }
 
@@ -127,39 +259,42 @@ var changeTab = function(tab){
 	$("#nav-item-"+tab).addClass("selected");
 	//reset contents display to flex from block
 	$("#contents").css("display", "flex");
+	//reset contents flex-justify to center from flex-start
+	$("#contents").css("justify-content", "center");
 	if(tab === "home"){
 		//change header at the top of page to "Home"
 		$("#header").html("<h1>Home</h1>");
-		//get template html
-		var rawHtml = ipcRenderer.sendSync("getPage", tab);
-		if(rawHtml != oldRawHtml){
-			oldRawHtml = rawHtml;
-			//list of movies in home template
-			var homeList = rawHtml.match(/\{\{[0-9]+\}\}/g);
+		//get home template
+		var homeTemplate = ipcRenderer.sendSync("getPage", tab);
+		//if the newly retrieved template is changed, get all the needed movie info
+		if(homeTemplate != oldHomeTemplate){
+			oldHomeTemplate = homeTemplate;
+			//make list of movies in home template from {{ID}} or [[ID]]
+			var homeList = homeTemplate.match(/\{\{[0-9]+\}\}|\[\[[0-9]+\]\]/g);
 			var homeLength = 0;
 			homeList.forEach(function(id, index){
 				//get information on all movies in home template
 				if(Object.keys(movies).indexOf(id.replace(/\{|\}/g, "")) === -1){
-					$.get("https://yts.ag/api/v2/movie_details.json?movie_id=" + id.replace(/\{|\}/g, ""), function(response){
+					$.get("https://yts.ag/api/v2/movie_details.json?movie_id=" + id.replace(/\{|\}|\[|\]/g, ""), function(response){
 						//add movie to list
 						movies[response.data.movie.id] = response.data.movie;
 						homeLength += 1;
 						//if it is the last movie in the template
 						if(homeLength === homeList.length){
-							addHomeHtml(rawHtml, currentTab);
+							addHomeHtml(homeTemplate, currentTab);
 						}
 					});
 				}else{
 					homeLength += 1;
 					//if it is the last movie in the template
 					if(homeLength === homeList.length){
-						addHomeHtml(rawHtml, currentTab);
+						addHomeHtml(homeTemplate, currentTab);
 					}
 				}
 			});
 		}else{
 			//if the newly retrieved template isn't changed, add the old template
-			addHomeHtml(rawHtml, currentTab);
+			addHomeHtml(homeTemplate, currentTab);
 		}
 	}else if(tab === "library"){
 		//set top header to "Library"

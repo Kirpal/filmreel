@@ -181,27 +181,27 @@ function createWindow () {
   //get data for the browsing page's windows
   ipcMain.on("getPage", function(event, page){
     if(page === "home"){
-      //get template html file from server
-      request("https://filmreelapp.com/home.html", function(error, response, body){
+      //get template markdown file from server
+      request("https://filmreelapp.com/home.md", function(error, response, body){
         if(!error && response.statusCode == 200){
-          fs.writeFileSync(path.join(app.getPath("userData"), "home.html"), body);
+          fs.writeFileSync(path.join(app.getPath("userData"), "home.md"), body);
         }
-      })
-      //get template html file from file
-      var templateHtml;
+      });
+      //get template markdown from file
+      var homeTemplate;
       if(storeProgress.getRecent().length > 0){
-        var recentHtml = "<h1 class='header'>Recent</h1><br>{{" + storeProgress.getRecent().join("}}{{") + "}}";
+        var recentMovies = "{{" + storeProgress.getRecent().join("}}{{") + "}}";
       }else{
-        var recentHtml = "";
+        var recentMovies = "";
       }
       try{
-        templateHtml = recentHtml + fs.readFileSync(path.join(app.getPath("userData"), "home.html"), "utf8");
+        homeTemplate = fs.readFileSync(path.join(app.getPath("userData"), "home.md"), "utf8").replace(/\{\{RECENT\}\}/g, recentMovies);
       }catch(err){
         if(err.code === "ENOENT"){
-          templateHtml = recentHtml;
+          homeTemplate = "# Recent\n\n" + recentMovies;
         }
       }
-      event.returnValue = templateHtml;
+      event.returnValue = homeTemplate;
     }else if(page === "library"){
       //get torrents
       store.reload();

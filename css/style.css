@@ -134,9 +134,91 @@ body {
 #contents h1.header {
   position: relative;
   display: inline-block;
+  text-align: left;
   width: 100%;
   font: 25px "Open Sans", sans-serif;
   color: #222;
+}
+
+/*MOVIE CARD*/
+.gallery {
+  position: relative;
+  margin-bottom: 44px;
+  width: 100%;
+}
+.movie-card-container {
+  position: relative;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  white-space: nowrap;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+.movie-card-indicator {
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translate(-50%);
+  text-align: center;
+}
+.movie-card-indicator .indicator {
+  position: relative;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border: 1px solid #ff5959;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s all;
+}
+.movie-card-indicator .indicator.selected {
+  background: #ff5959;
+}
+.movie-card-scroll {
+  position: relative;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.movie-card-scroll::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  border: 1px solid transparent;
+  transform: rotate(45deg);
+}
+.movie-card-scroll.left::after {
+  border-bottom-color: #ff5959;
+  border-left-color: #ff5959;
+}
+.movie-card-scroll.right::after {
+  border-top-color: #ff5959;
+  border-right-color: #ff5959;
+}
+.movie-card-container::-webkit-scrollbar {
+  display: none;
+}
+.movie-card {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 680px;
+  margin-left: 30px;
+  margin-right: 30px;
+  cursor: pointer;
+  transition: 0.3s all;
+	box-shadow: 0 14px 12px -10px rgba(0,8,26,0.32);
+}
+.movie-card:hover {
+  transform: scale(1.02);
 }
 
 /*MOVIE*/
