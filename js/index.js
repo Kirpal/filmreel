@@ -187,7 +187,8 @@ var changeTab = function(tab){
 				//add downloaded movies
 				library.complete.sort(function(a, b){
 					if(Object.keys(library.movies).indexOf(a) !== -1 && Object.keys(library.movies).indexOf(b) !== -1){
-						var titleA = library.movies[a].title.toLowerCase(), titleB = library.movies[b].title.toLowerCase();
+						//make titles lowercase, remove leading "the"
+						var titleA = library.movies[a].title.toLowerCase().replace(/^the\s*/g, ""), titleB = library.movies[b].title.toLowerCase().replace(/^the\s*/g, "");
 						if(titleA < titleB)
 							return -1;
 						if(titleA > titleB)
