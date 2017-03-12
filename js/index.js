@@ -77,8 +77,8 @@ var addMovie = function(movie){
 
 //add spacers to the end of the container so the last line is aligned left
 var addSpacers = function(number){
-	var spacers = ""
-	for(var i = 0; i < number; i += 1){
+	var spacers = "";
+	for(var i = 0; i < number; i++){
 		spacers += "<div class='movie-spacer'></div>";
 	}
 	$("#contents").append(spacers);
