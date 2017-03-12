@@ -121,6 +121,7 @@ body {
 	display: flex;
 	justify-content: center;
 	flex-wrap: wrap;
+  align-items: flex-start;
 	text-align: left;
   height: 100vh;
   width: calc(100vw - 80px);
@@ -144,7 +145,7 @@ body {
   width: 150px;
   height: 280px;
   overflow: hidden;
-  margin: 6px;
+  margin: 12px;
   margin-bottom: 2px;
   color: #fff;
 }
@@ -160,7 +161,7 @@ body {
   display: block;
   width: 150px;
   height: 225px;
-  border-radius: 5px;
+  border-radius: 3px;
   overflow: hidden;
 	box-shadow: 0 14px 12px -10px rgba(0,8,26,0.32);
   z-index: 2;
@@ -241,7 +242,7 @@ body {
   width: 150px;
   padding: 5px;
   box-sizing: border-box;
-  max-height: 110px;
+  max-height: 40px;
   margin-top: 5px;
   font: 12px "Open Sans", sans-serif;
   font-weight: bold;
