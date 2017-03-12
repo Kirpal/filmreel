@@ -368,9 +368,10 @@ body {
 /*SETTINGS*/
 .setting {
   position: relative;
-  display: inline-block;
+  display: block;
   height: 44px;
   width: 100%;
+  max-width: 600px;
   margin-bottom: 20px;
   margin-top: 20px;
 }
@@ -439,6 +440,7 @@ body {
   border-bottom: 1px solid #555;
   height: 30px;
   position: relative;
+  top: 14px;
 }
 .setting.boolean input {
   position: absolute;
