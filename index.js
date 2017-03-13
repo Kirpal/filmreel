@@ -2,6 +2,7 @@
 
 const {app, BrowserWindow, ipcMain, Menu, dialog} = require('electron');
 const autoUpdater = require("electron-updater").autoUpdater;
+require('electron-debug')({showDevTools: true});
 var torrent = require("./torrent"),
   resume = require("./resume"),
   store = require("./store"),
