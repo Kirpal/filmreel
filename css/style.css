@@ -123,7 +123,7 @@ body {
 	flex-wrap: wrap;
   align-items: flex-start;
 	text-align: left;
-  height: 100vh;
+  height: calc(100vh - 80px);
   width: calc(100vw - 80px);
   left: 80px;
 }
