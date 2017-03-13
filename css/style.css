@@ -345,6 +345,8 @@ body {
   height: 30px;
   width: 100%;
   background: rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  z-index: 2;
 }
 .download-progress-total {
   position: absolute;
