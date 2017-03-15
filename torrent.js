@@ -101,6 +101,9 @@ module.exports = (movie, download = false, win, showProgressBar = false) => {
       // stop download
       engine.destroy();
 
+      // remove movie from complete and incomplete
+      store.remove(movie.id);
+
       // remove downloaded video if it is in the library and incomplete
       if (download && !engine.complete) {
         rmDir(opts.path);

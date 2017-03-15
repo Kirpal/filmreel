@@ -456,8 +456,9 @@ function createWindow() {
   // when delete button on movie is pressed
   ipcMain.on('delete', (event, movie) => {
     // end download if it's downloading
-    if (torrents[movie.id]) {
-      torrents[movie.id].end();
+    if (Object.keys(torrents).indexOf(movie.id.toString()) !== -1) {
+      torrents[movie.id.toString()].end();
+      delete torrents[movie.id.toString()];
     }
 
     // remove movie if it's already downloaded

@@ -110,6 +110,15 @@ module.exports = {
   reload,
   // remove library movie
   remove: (id) => {
+    // remove movie from incomplete and complete
+    if (toStore.incomplete.indexOf(id.toString()) !== -1) {
+      delete toStore.incomplete[toStore.incomplete.indexOf(id.toString())];
+    } else if (toStore.incomplete.indexOf(id.toString()) !== -1) {
+      delete toStore.complete[toStore.complete.indexOf(id.toString())];
+    }
+    // save to downloads.json
+    fs.writeFileSync(path.join(userData, 'downloads.json'), JSON.stringify(toStore));
+
     try {
       const movieFile = fs.readdirSync(libraryLocation)
       .filter(val => supportedFormats.indexOf(val.split('.')[1]) !== -1)

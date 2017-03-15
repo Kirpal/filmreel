@@ -29,7 +29,7 @@ function movieHtml(movie) {
             <path d='M 0,17 L 14,17 z'/>
           </svg>
         </div>` : ''}
-      ${downloading.indexOf(parseInt(movie.id, 10)) === -1 && downloaded.indexOf(parseInt(movie.id, 10)) !== -1
+      ${downloading.indexOf(parseInt(movie.id, 10)) !== -1 || downloaded.indexOf(parseInt(movie.id, 10)) !== -1
       ? `<div class='delete-button' title='Delete Movie'>
           <svg class='delete-button-icon' viewbox='0 0 24 24'>
             <path d='M 0,0 L 24,24 z' />
@@ -67,7 +67,13 @@ function addMovie(movie) {
   });
   $('.delete-button').click((event) => {
     ipcRenderer.send('delete', movies[$(event.currentTarget).parents('.movie').data('id')]);
-    downloaded.splice(downloaded.indexOf($(event.currentTarget).parents('.movie').data('id')));
+
+    if (downloaded.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)) !== -1) {
+      downloaded.splice(downloaded.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)));
+    } else if (downloading.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)) !== -1) {
+      downloading.splice(downloading.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)));
+    }
+
     if (currentTab === 'library') {
       $(event.currentTarget).parents('.movie').css('display', 'none');
     } else {
@@ -190,8 +196,19 @@ function changeTab(tab) {
 
       // delete icon on movie
       $('.delete-button').click((event) => {
-        changeTab(currentTab);
         ipcRenderer.send('delete', movies[$(event.currentTarget).parents('.movie').data('id')]);
+
+        if (downloaded.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)) !== -1) {
+          downloaded.splice(downloaded.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)));
+        } else if (downloading.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)) !== -1) {
+          downloading.splice(downloading.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)));
+        }
+
+        if (currentTab === 'library') {
+          $(event.currentTarget).parents('.movie').css('display', 'none');
+        } else {
+          $(event.currentTarget).parents('.movie').replaceWith(movieHtml(movies[$(event.currentTarget).parents('.movie').data('id')]));
+        }
       });
 
       // arrows on side of page indicators
