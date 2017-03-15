@@ -7,6 +7,7 @@ let currentTab = 'home';
 let downloaded = [];
 let downloading = [];
 let spacerLength = 0;
+let movieCardScrollInterval;
 
 // Generates each movies html element from their movie object
 function movieHtml(movie) {
@@ -113,6 +114,10 @@ function changeTab(tab) {
     }
 
     if (homeTab === 'home') {
+      // clear gallery scroll interval
+      clearInterval(movieCardScrollInterval);
+      movieCardScrollInterval = setInterval(movieCardScroll, 5000);
+
       // generate html from template
       const homeHtml = homeTemplate
       // replace markdown headers with html
@@ -189,13 +194,11 @@ function changeTab(tab) {
         ipcRenderer.send('delete', movies[$(event.currentTarget).parents('.movie').data('id')]);
       });
 
-      window.movieCardScroll = setInterval(movieCardScroll, 5000);
-
       // arrows on side of page indicators
       $('.movie-card-scroll').click((event) => {
         // reset auto scrolling
-        clearInterval(window.movieCardScroll);
-        window.movieCardScroll = setInterval(movieCardScroll, 5000);
+        clearInterval(movieCardScrollInterval);
+        movieCardScrollInterval = setInterval(movieCardScroll, 5000);
 
         const $movieCardContainer = $(event.currentTarget).parents('.movie-card-indicator').siblings('.movie-card-container');
         const movieCardWidth = $movieCardContainer.children('.movie-card').width() + 60; // 60 is the left and right margins combined
@@ -231,8 +234,8 @@ function changeTab(tab) {
       // click on page indicator
       $('.movie-card-indicator .indicator').click((event) => {
         // reset autoscroll timer
-        clearInterval(window.movieCardScroll);
-        window.movieCardScroll = setInterval(movieCardScroll, 5000);
+        clearInterval(movieCardScrollInterval);
+        movieCardScrollInterval = setInterval(movieCardScroll, 5000);
 
         const $movieCardContainer = $(event.currentTarget).parents('.movie-card-indicator').siblings('.movie-card-container');
         const movieCardWidth = $movieCardContainer.children('.movie-card').width() + 60; // 60 is the left and right margins combined
