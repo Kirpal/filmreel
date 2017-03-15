@@ -353,7 +353,6 @@ function changeTab(tab) {
             spacerLength += 1;
           }
         });
-        addSpacers(spacerLength);
       }
       if (library.complete.length > 0) {
         // add downloaded movies
