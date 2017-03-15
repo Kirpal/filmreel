@@ -2,7 +2,7 @@
   "name": "filmreel",
   "productName": "Film Reel",
   "version": "2.0.0",
-  "description": "A torrent based video streaming and downloading client",
+  "description": "A torrent based movie streaming and downloading client",
   "license": "MIT",
   "homepage": "https://filmreelapp.com",
   "repository": "Kirpal/filmreel",
@@ -14,10 +14,10 @@
   },
   "main": "index.js",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "electron-updater": "^1.8.1",
     "express": "^4.14.0",
     "mv": "^2.1.1",
-    "node-notifier": "^4.6.1",
     "pump": "^1.0.2",
     "range-parser": "^1.2.0",
     "request": "^2.79.0",
@@ -38,7 +38,45 @@
     "dist": "./node_modules/.bin/build"
   },
   "devDependencies": {
+    "devtron": "^1.4.0",
     "electron": "^1.4.13",
-    "electron-builder": "^11.4.4"
+    "electron-builder": "^11.4.4",
+    "electron-debug": "^1.1.0",
+    "eslint": "^3.17.1",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.0"
+  },
+  "eslintConfig": {
+    "extends": "airbnb",
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true,
+      "jquery": true
+    },
+    "rules": {
+      "import/no-extraneous-dependencies": [
+        2,
+        {
+          "devDependencies": true
+        }
+      ],
+      "no-param-reassign": [
+        2,
+        {
+          "props": false
+        }
+      ],
+      "no-bitwise": [
+        2,
+        {
+          "allow": [
+            "|"
+          ]
+        }
+      ]
+    }
   }
 }

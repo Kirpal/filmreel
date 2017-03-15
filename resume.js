@@ -1,26 +1,26 @@
-'use strict'
-var fs = require("fs"),
-  path = require("path"),
-  torrent = require("./torrent"),
-  userData = require("electron").app.getPath("userData"),
-  downloads = {},
-  storedDownloads;
-try{
-  storedDownloads = JSON.parse(fs.readFileSync(path.join(userData, "downloads.json")));
-  fs.writeFileSync(path.join(userData, "downloads.json"), JSON.stringify({complete: storedDownloads.complete, incomplete: [], movies: storedDownloads.movies}));
-}catch(err){
-  if(err.code === "ENOENT"){
-    storedDownloads = {"complete": [], "incomplete": [], "movies": {}};
+const fs = require('fs');
+const path = require('path');
+const torrent = require('./torrent');
+const userData = require('electron').app.getPath('userData');
+
+const downloads = {};
+let storedDownloads;
+
+// get stored downloads, or set to empty if they dont exist
+try {
+  storedDownloads = JSON.parse(fs.readFileSync(path.join(userData, 'downloads.json')));
+} catch (err) {
+  if (err.code === 'ENOENT') {
+    storedDownloads = { complete: [], incomplete: [], movies: {} };
   }
 }
 
-//resume all incomplete downloads
-
-module.exports = function(win){
-  storedDownloads.incomplete.forEach(function(id){
-    if(Object.keys(storedDownloads.movies).indexOf(id) !== -1){
-      downloads[id] = torrent(storedDownloads.movies[id], true, win);
+// resume all incomplete downloads
+module.exports = (win) => {
+  storedDownloads.incomplete.forEach((id, index) => {
+    if (Object.keys(storedDownloads.movies).indexOf(id) !== -1) {
+      downloads[id] = torrent(storedDownloads.movies[id], true, win, index === 0);
     }
-  })
-  return downloads
-}
+  });
+  return downloads;
+};
