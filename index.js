@@ -517,6 +517,12 @@ api.get('/current/', (req, res) => {
   res.json(current);
 });
 
+// get library
+api.get('/library/', (req, res) => {
+  store.reload();
+  res.json(store.get());
+});
+
 // stream movie to player
 api.all('/stream/:id', (req, res) => {
   // if movie is downloaded, stream from download location

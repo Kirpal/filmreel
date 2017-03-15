@@ -3,6 +3,7 @@
 |Endpoint|Method|Response|
 |----|----
 |/current|GET|JSON|
+|/library|GET|JSON|
 |/controls/playback|POST|None|
 |/controls/volume|POST|None|
 |/controls/progress|POST|None|
@@ -12,6 +13,17 @@
 
 #### /current
 Returns the currently playing movie object, as well as the current control states, such as volume, progress, playback state, fullscreen state, and movie duration.
+
+###### Method
+
+`GET`
+
+###### Response
+
+`JSON`
+
+#### /library
+Returns a list of the incomplete movie downloads, the complete movie downloads, and movie information for all movies, complete or incomplete.
 
 ###### Method
 
