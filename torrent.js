@@ -23,6 +23,7 @@ function rmDir(rmPath) {
 module.exports = (movie, download = false, win, showProgressBar = false) => {
   let chosenTorrent = false;
   let magnet = '';
+  let ready = false;
   const opts = {};
   const library = storeConfig.get('library').value;
 
@@ -63,6 +64,7 @@ module.exports = (movie, download = false, win, showProgressBar = false) => {
       // select largest file in torrent
       const file = engine.files.reduce((a, b) => ((a.length > b.length) ? a : b));
       file.select();
+      ready = true;
 
       // set total length and file properties
       engine.totalLength = engine.files.map(val => val.length).reduce((a, b) => a + b);
@@ -122,6 +124,7 @@ module.exports = (movie, download = false, win, showProgressBar = false) => {
     });
     engine.download = download;
     engine.movie = movie;
+    engine.ready = ready;
     return engine;
   }
   return false;

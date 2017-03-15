@@ -366,7 +366,7 @@ function createWindow() {
     ipcMain.on('playMovie', (playEvent) => {
       // respond with movie object and streaming port once torrent is ready
       // or immediately if torrent has already started or finished downloading
-      if (!downloaded) {
+      if (!downloaded && !torrents[movie.id].ready) {
         torrents[movie.id].on('ready', () => {
           playEvent.sender.send('playMovie', movie);
           playEvent.sender.send('streamPort', streamPort);
