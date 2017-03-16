@@ -33,20 +33,17 @@ body {
   width: 80px;
   height: 100vh;
   background: #0e0e0e;
-  padding: 20px;
+  padding-top: 20px;
   box-sizing: border-box;
 }
 .nav-item {
   position: relative;
   display: block;
-  width: 40px;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  padding: 10px;
+  width: 80px;
+  padding: 30px;
   box-sizing: border-box;
   cursor: pointer;
   transition: 0.2s all;
-  border-radius: 5px;
 }
 .nav-item img {
   display: block;
@@ -60,6 +57,7 @@ body {
 }
 #menu-icon {
   position: relative;
+  left: 20px;
   display: block;
   width: 40px;
   margin-bottom: 15px;
