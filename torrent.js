@@ -100,14 +100,16 @@ module.exports = (movie, download = false, win, showProgressBar = false) => {
     engine.end = () => {
       // stop download
       engine.destroy();
+      // remove downloaded pieces
+      engine.remove(false, () => {
+        // remove downloaded video if it is in the library and incomplete
+        if (download && !engine.complete) {
+          rmDir(opts.path);
+        }
+      });
 
       // remove movie from complete and incomplete
       store.remove(movie.id);
-
-      // remove downloaded video if it is in the library and incomplete
-      if (download && !engine.complete) {
-        rmDir(opts.path);
-      }
     };
 
     // download progress
