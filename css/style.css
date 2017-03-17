@@ -233,8 +233,8 @@ body {
   position: relative;
   width: 150px;
   height: 0;
-  margin-left: 6px;
-  margin-right: 6px;
+  margin-left: 12px;
+  margin-right: 12px;
 }
 .cover {
   position: relative;
