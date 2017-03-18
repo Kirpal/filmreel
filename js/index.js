@@ -36,8 +36,8 @@ function movieHtml(movie) {
             <path d='M 0,24 L 24,0 z' />
           </svg>
         </div>` : ''}
-      <div class='download-progress-outer'>
-        <div title='Downloading' ${downloading.indexOf(parseInt(movie.id, 10)) !== -1 ? 'style="display: block;"' : ''} class='download-progress-total'>
+      <div class='download-progress-outer' ${downloading.indexOf(parseInt(movie.id, 10)) !== -1 ? 'style="display:block;"' : ''}>
+        <div title='Downloading' class='download-progress-total'>
           <div class='download-progress'></div>
         </div>
       </div>
