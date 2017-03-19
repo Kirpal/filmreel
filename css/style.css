@@ -372,49 +372,42 @@ body {
 .setting {
   position: relative;
   display: block;
-  height: 44px;
+  height: 60px;
   width: 100%;
   max-width: 600px;
   margin-bottom: 20px;
   margin-top: 20px;
 }
 .setting.text input {
-  width: 100%;
-  font: 20px "Open Sans", sans-serif;
-  color: #222;
-  background: none;
-  border: none;
-  border-bottom: 1px solid #555;
-  height: 30px;
   position: relative;
-  top: 14px;
+  top: 26px;
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+  font: 18px "Open Sans", sans-serif;
+  color: #222;
+  background: #ddd;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   transition: 0.2s all;
 }
 .setting.text input:focus {
   outline: none;
+  border: 1px solid #ccc;
 }
 .setting.text label {
   position: absolute;
-  left: 0px;
-  top: 16px;
-  font: 20px "Open Sans", sans-serif;
+  left: 0;
+  top: 0;
+  font: 15px "Open Sans", sans-serif;
   color: #222;
   transition: 0.2s all;
 }
-.setting.text input:focus ~ label {
-  top: 0px;
-  font-size: 11px;
-}
-.setting.text input:valid ~ label {
-  top: 0px;
-  font-size: 11px;
-}
 .setting.text.error input {
-  color: #ff2a2a;
-  border-bottom-color: #ff2a2a;
+  color: #ff4040;
 }
 .setting.text.error label {
-  color: #ff2a2a;
+  color: #ff4040;
 }
 .setting.number input::-webkit-outer-spin-button,
 .setting.number input::-webkit-inner-spin-button {
@@ -424,35 +417,35 @@ body {
 .setting.directory .icon {
   position: absolute;
   right: 10px;
-  top: 16px;
-  fill: #222;
+  top: 35px;
+  fill: #555;
   stroke: none;
   height: 20px;
   cursor: pointer;
   transition: 0.2s all;
 }
 .setting.directory.error .icon {
-  fill: #ff2a2a;
+  fill: #ff4040;
 }
 .setting.boolean h2 {
-  width: 100%;
-  font: 20px "Open Sans", sans-serif;
-  color: #222;
-  background: none;
-  border: none;
-  border-bottom: 1px solid #555;
-  height: 30px;
   position: relative;
-  top: 14px;
+  width: 100%;
+  padding: 5px;
+  top: 26px;
+  box-sizing: border-box;
+  font: 18px "Open Sans", sans-serif;
+  color: #222;
+  transition: 0.2s all;
 }
 .setting.boolean input {
   position: absolute;
   right: 10px;
-  top: 16px;
+  top: 35px;
   height: 20px;
   width: 40px;
   border-radius: 10px;
   transition: 0.2s all;
+  cursor: pointer;
 }
 .setting.boolean input::before {
 	position: absolute;
@@ -460,7 +453,7 @@ body {
 	width: 40px;
 	height: 20px;
 	border-radius: 10px;
-	background: #555;
+	background: #aaa;
 	transition: 0.2s all;
 }
 .setting.boolean input::after {
@@ -480,7 +473,7 @@ body {
 	width: 40px;
 	height: 20px;
 	border-radius: 10px;
-	background: #999;
+	background: #ff8080;
 	transition: 0.2s all;
 }
 .setting.boolean input:checked::after {

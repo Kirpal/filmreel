@@ -463,7 +463,7 @@ function changeTab(tab) {
       } else if (config[setting].type === 'boolean') {
         settingHtml = `<div class='setting boolean' data-setting='${setting}'>
           <h2 class='select-none'>${config[setting].name}</h2>
-          <input type='checkbox ${config[setting].value ? 'checked' : ''}'>
+          <input type='checkbox' ${config[setting].value ? 'checked' : ''}>
         </div>`;
       }
       $('#contents').append(settingHtml);
