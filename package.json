@@ -16,6 +16,7 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "electron-updater": "^1.8.1",
+    "electron-window-state": "^4.1.0",
     "express": "^4.14.0",
     "mv": "^2.1.1",
     "pump": "^1.0.2",

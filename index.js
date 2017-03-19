@@ -6,6 +6,7 @@ const pump = require('pump');
 const rangeParser = require('range-parser');
 const express = require('express');
 const request = require('request');
+const windowStateKeeper = require('electron-window-state');
 const bodyParser = require('body-parser');
 const torrent = require('./torrent');
 const resume = require('./resume');
@@ -84,7 +85,16 @@ function setThumbar(state, window) {
 
 // Create the browser window.
 function createWindow() {
+  // load saved window state with fallback to defaults
+  const winState = windowStateKeeper({
+    defaultWidth: 1000,
+    defaultHeight: 800,
+  });
   win = new BrowserWindow({
+    x: winState.x,
+    y: winState.y,
+    width: winState.width,
+    height: winState.height,
     autoHideMenuBar: true,
     icon: path.join(__dirname, 'icons', 'icon.png'),
     backgroundColor: '#fff',
@@ -92,6 +102,9 @@ function createWindow() {
   });
   // resumes all incomplete torrents
   torrents = resume(win);
+
+  // manage window events, state, and size
+  winState.manage(win);
 
   // check for updates if autoaupdates are on
   if (storeConfig.get('updates').value) {
