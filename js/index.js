@@ -20,22 +20,20 @@ function movieHtml(movie) {
           <path d='M 5,2.5 Q 0,5 0,10 L 0,222.5 Q 0,230 5,232.5 Q 10,235 15,232.5 L 175,127.5 Q 182.5,122.5 182.5,117.5 Q 182.5,112.5 175,107.5 L 15,2.5 Q 10,0 5,2.5 z' />
         </svg>
       </div>
-      ${downloading.indexOf(parseInt(movie.id, 10)) === -1 && downloaded.indexOf(parseInt(movie.id, 10)) === -1
-      ? `<div class='download-button' title='Download Movie'>
-          <svg class='download-button-icon' viewbox='0 0 14 18'>
-            <path d='M 7,0 L 7,14 z' />
-            <path d='M 7,14 L 14,7 z' />
-            <path d='M 7,14 L 0,7 z' />
-            <path d='M 0,17 L 14,17 z'/>
-          </svg>
-        </div>` : ''}
-      ${downloading.indexOf(parseInt(movie.id, 10)) !== -1 || downloaded.indexOf(parseInt(movie.id, 10)) !== -1
-      ? `<div class='delete-button' title='Delete Movie'>
-          <svg class='delete-button-icon' viewbox='0 0 24 24'>
-            <path d='M 0,0 L 24,24 z' />
-            <path d='M 0,24 L 24,0 z' />
-          </svg>
-        </div>` : ''}
+      <div class='download-button' title='Download Movie' style='display:${downloading.indexOf(parseInt(movie.id, 10)) === -1 && downloaded.indexOf(parseInt(movie.id, 10)) === -1 ? 'block' : 'none'}'>
+        <svg class='download-button-icon' viewbox='0 0 14 18'>
+          <path d='M 7,0 L 7,14 z' />
+          <path d='M 7,14 L 14,7 z' />
+          <path d='M 7,14 L 0,7 z' />
+          <path d='M 0,17 L 14,17 z'/>
+        </svg>
+      </div>
+      <div class='delete-button' title='Delete Movie' style='display:${downloading.indexOf(parseInt(movie.id, 10)) !== -1 || downloaded.indexOf(parseInt(movie.id, 10)) !== -1 ? 'block' : 'none'}'>
+        <svg class='delete-button-icon' viewbox='0 0 24 24'>
+          <path d='M 0,0 L 24,24 z' />
+          <path d='M 0,24 L 24,0 z' />
+        </svg>
+      </div>
       <div class='download-progress-outer' ${downloading.indexOf(parseInt(movie.id, 10)) !== -1 ? 'style="display:block;"' : ''}>
         <div title='Downloading' class='download-progress-total'>
           <div class='download-progress'></div>
@@ -44,6 +42,40 @@ function movieHtml(movie) {
     </div>
     <h2 class='title'>${movie.title}</h2>
   </div>`);
+}
+
+// function for play button on movie click listener
+function playClick(event) {
+  ipcRenderer.send('stream', movies[$(event.currentTarget).parents('.movie').data('id')]);
+}
+
+// function for download button on movie click listener
+function downloadClick(event) {
+  $(event.currentTarget).css('display', 'none');
+  $(event.currentTarget).siblings('.download-progress-outer').css('display', 'block');
+  $(event.currentTarget).siblings('.delete-button').css('display', 'block');
+  ipcRenderer.send('download', movies[$(event.currentTarget).parents('.movie').data('id')]);
+}
+
+// function for delete button on movie click listener
+function deleteClick(event) {
+  ipcRenderer.send('delete', movies[$(event.currentTarget).parents('.movie').data('id')]);
+
+  if (downloaded.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)) !== -1) {
+    downloaded.splice(downloaded.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)));
+  } else if (downloading.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)) !== -1) {
+    downloading.splice(downloading.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)));
+  }
+
+  if (currentTab === 'library') {
+    $(event.currentTarget).parents('.movie').css('display', 'none');
+  } else {
+    $(event.currentTarget).css('display', 'none');
+    $(event.currentTarget).siblings('.download-progress-outer').css('display', 'none');
+    $(event.currentTarget).siblings('.download-progress-outer').children('.download-progress-total').children('.download-progress')
+      .css('width', '0');
+    $(event.currentTarget).siblings('.download-button').css('display', 'block');
+  }
 }
 
 // adds movie to list of movies
@@ -57,29 +89,11 @@ function addMovie(movie) {
   $('.download-button').off('click');
   $('.delete-button').off('click');
 
-  $('.play-circle').click((event) => {
-    ipcRenderer.send('stream', movies[$(event.currentTarget).parents('.movie').data('id')]);
-  });
-  $('.download-button').click((event) => {
-    $(event.currentTarget).css('display', 'none');
-    $(event.currentTarget).siblings('.download-progress-outer').css('display', 'block');
-    ipcRenderer.send('download', movies[$(event.currentTarget).parents('.movie').data('id')]);
-  });
-  $('.delete-button').click((event) => {
-    ipcRenderer.send('delete', movies[$(event.currentTarget).parents('.movie').data('id')]);
+  $('.play-circle').click(playClick);
 
-    if (downloaded.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)) !== -1) {
-      downloaded.splice(downloaded.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)));
-    } else if (downloading.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)) !== -1) {
-      downloading.splice(downloading.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)));
-    }
+  $('.download-button').click(downloadClick);
 
-    if (currentTab === 'library') {
-      $(event.currentTarget).parents('.movie').css('display', 'none');
-    } else {
-      $(event.currentTarget).parents('.movie').replaceWith(movieHtml(movies[$(event.currentTarget).parents('.movie').data('id')]));
-    }
-  });
+  $('.delete-button').click(deleteClick);
 }
 
 // add spacers to the end of the container so the last line is aligned left
@@ -177,39 +191,16 @@ function changeTab(tab) {
       $('.movie-card-scroll').off('click');
       $('.movie-card-indicator .indicator').off('click');
 
-      // play icon on movie
-      $('.play-circle').click((event) => {
-        ipcRenderer.send('stream', movies[$(event.currentTarget).parents('.movie').data('id')]);
-      });
-
       // movie cards in home
       $('.movie-card').click((event) => {
         ipcRenderer.send('stream', movies[$(event.currentTarget).data('id')]);
       });
 
-      // download icon on movie
-      $('.download-button').click((event) => {
-        $(event.currentTarget).css('display', 'none');
-        $(event.currentTarget).siblings('.download-progress-outer').css('display', 'block');
-        ipcRenderer.send('download', movies[$(event.currentTarget).parents('.movie').data('id')]);
-      });
+      $('.play-circle').click(playClick);
 
-      // delete icon on movie
-      $('.delete-button').click((event) => {
-        ipcRenderer.send('delete', movies[$(event.currentTarget).parents('.movie').data('id')]);
+      $('.download-button').click(downloadClick);
 
-        if (downloaded.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)) !== -1) {
-          downloaded.splice(downloaded.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)));
-        } else if (downloading.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)) !== -1) {
-          downloading.splice(downloading.indexOf(parseInt($(event.currentTarget).parents('.movie').data('id'), 10)));
-        }
-
-        if (currentTab === 'library') {
-          $(event.currentTarget).parents('.movie').css('display', 'none');
-        } else {
-          $(event.currentTarget).parents('.movie').replaceWith(movieHtml(movies[$(event.currentTarget).parents('.movie').data('id')]));
-        }
-      });
+      $('.delete-button').click(deleteClick);
 
       // arrows on side of page indicators
       $('.movie-card-scroll').click((event) => {
