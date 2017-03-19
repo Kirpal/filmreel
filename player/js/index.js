@@ -36,68 +36,32 @@ function resize() {
 
 $(window).resize(resize);
 
-// loading animation
-function Animation($elm, $par) {
-  const minTranslate = -160;
-  let frameRate = 100;
-  let translate = 0;
-  let stop = false;
-
-  function timeFrame() {
-    $elm.attr('transform', `translate(${translate}, 0)`);
-    translate -= 8;
-    if (translate < minTranslate) {
-      translate = 0;
-    }
-    if (stop) {
-      frameRate -= 5;
-    }
-    if (frameRate >= 1) {
-      setTimeout(timeFrame, 1000 / frameRate);
-    } else {
-      $par.fadeOut(200);
-    }
-  }
-  timeFrame();
-  this.stop = () => {
-    stop = true;
-  };
-}
-
-const loadingAnimation = new Animation($('#strip-hole-group'), $('#loading-animation'));
-
 // keep an array of control hide time outs
 const controlHide = [];
 let moveCount = 1;
 
-controlHide[0] = setTimeout(() => {
-  if ($('#controls:hover')[0] === undefined) {
-    $('#controls').slideUp(400);
-    $('#controls').css('opacity', 0);
-    $('html').css('cursor', 'none');
-  }
-}, 2000);
-
-$('body').mousemove(() => {
+function hideControls() {
   // end previous control hide timeout
   clearTimeout(controlHide[moveCount - 1]);
   // show controls
-  $('#controls').slideDown(100);
-  $('#controls').css('opacity', 1);
+  $('.control').css('opacity', 1);
+  $('#control-overlay').css('opacity', 1);
   // show cursor
   $('html').css('cursor', 'auto');
   // hide controls after 2s
   controlHide[moveCount] = setTimeout(() => {
     // if controls aren't being hovered over
-    if ($('#controls:hover')[0] === undefined) {
+    if ($('.control:hover').length === 0 && $('.control:active').length === 0) {
       // hide controls and mouse
-      $('#controls').slideUp(200);
-      $('#controls').css('opacity', 0);
+      $('.control').css('opacity', 0);
+      $('#control-overlay').css('opacity', 0);
       $('html').css('cursor', 'none');
+    } else {
+      hideControls();
     }
   }, 2000);
   moveCount += 1;
-});
+}
 
 // tell main that render is ready for movie info
 ipcRenderer.send('playMovie');
@@ -106,7 +70,13 @@ ipcRenderer.send('playMovie');
 ipcRenderer.on('streamPort', (event, port) => {
   streamPort = port;
 });
-ipcRenderer.on('playMovie', (playMovieEvent, movie) => {
+ipcRenderer.on('playMovie', (playMovieEvent, { movie, downloaded }) => {
+  // set download or checkmark icon
+  if (downloaded) {
+    $('#download-container').html('<img src="../icons/player/check.svg" alt="Check Icon" id="check-icon" title="In Library">');
+  } else {
+    $('#download-container').html('<img src="../icons/player/download.svg" alt="Download Icon" id="download-icon" title="Download Movie">');
+  }
   // set title
   $('#title').html(movie.title);
   // set video source
@@ -115,7 +85,13 @@ ipcRenderer.on('playMovie', (playMovieEvent, movie) => {
     // call resize when metadata is ready
     resize();
     // hide loading animation
-    loadingAnimation.stop();
+    $('#loading').fadeOut(200);
+
+    // start hiding controls and mouse
+    controlHide[0] = setTimeout(hideControls, 2000);
+
+    $('body').mousemove(hideControls);
+
     // tell main that metadata is ready
     ipcRenderer.send('metadata', $video.duration);
   });
@@ -154,44 +130,56 @@ ipcRenderer.on('playMovie', (playMovieEvent, movie) => {
       if (playing) {
         $video.pause();
         playing = false;
-        $('#playback').removeClass('pause').addClass('play');
+        $('#playback')
+          .attr('src', '../icons/player/play.svg')
+          .attr('alt', 'Play Icon')
+          .attr('title', 'Play');
       } else {
         $video.play();
         playing = true;
-        $('#playback').removeClass('play').addClass('pause');
+        $('#playback')
+          .attr('src', '../icons/player/pause.svg')
+          .attr('alt', 'Pause Icon')
+          .attr('title', 'Pause');
       }
     } else if (state) {
       // change playback to specific state
       $video.play();
       playing = true;
-      $('#playback').removeClass('play').addClass('pause');
+      $('#playback')
+        .attr('src', '../icons/player/pause.svg')
+        .attr('alt', 'Pause Icon')
+        .attr('title', 'Pause');
     } else {
       $video.pause();
       playing = false;
-      $('#playback').removeClass('pause').addClass('play');
+      $('#playback')
+        .attr('src', '../icons/player/play.svg')
+        .attr('alt', 'Play Icon')
+        .attr('title', 'Play');
     }
   });
 
-  function setVolume(volume, update) {
-    // send volume to main
-    ipcRenderer.send('volume', { volume, update });
-  }
   $('#volume').on('input change', () => {
-    // change volume on volume slider change
-    setVolume($('#volume').val(), false);
+    // send volume to main
+    ipcRenderer.send('volume', { volume: $('#volume').val(), update: false });
   });
 
   // main tells render to change volume
   ipcRenderer.on('volume', (event, data) => {
-    const volume = data.volume;
+    const volume = parseFloat(data.volume);
     const update = data.update;
     // set video volume
     $video.volume = volume;
     // change to mute icon if volume is zero
     if (volume === 0) {
-      $('.volume-icon-waves').attr('style', 'stroke-opacity: 0');
+      $('#volume-icon').attr('src', '../icons/player/volume-empty.svg');
+    } else if (volume > 0 && volume <= 0.25) {
+      $('#volume-icon').attr('src', '../icons/player/volume-low.svg');
+    } else if (volume > 0.25 && volume <= 0.75) {
+      $('#volume-icon').attr('src', '../icons/player/volume-medium.svg');
     } else {
-      $('.volume-icon-waves').attr('style', 'stroke-opacity: 1');
+      $('#volume-icon').attr('src', '../icons/player/volume-high.svg');
     }
     // set volume slider position if told to
     if (update) {
@@ -212,7 +200,7 @@ ipcRenderer.on('playMovie', (playMovieEvent, movie) => {
     // find progress percent
     const percentage = (progress / total) * 100;
     // set progress bar width
-    $('#progress-elapsed').css('width', `${percentage}%`);
+    $('#progress').css('width', `${percentage}%`);
     // set time display
     $('#time-elapsed').html(timeFormat($video.duration * (progress / total)));
     $('#time-duration').html(timeFormat($video.duration));
@@ -224,61 +212,17 @@ ipcRenderer.on('playMovie', (playMovieEvent, movie) => {
 
   // if mouse is pressed/over the progress bar
   let progressMouseDown = false;
-  let progressMouseOver = false;
   // mouse moved
   function progressTextMove(e) {
     // set progress if mouse is down
     if (progressMouseDown) {
-      setProgress(e.clientX, $(e.currentTarget).width(), true);
+      setProgress(e.clientX - $('#progress-total').offset().left, $('#progress-total').width(), true);
     }
-    // set seeking marker centered over mouseX
-    $('#progress-marker').css('left', `${e.clientX}px`);
-    // set time label text
-    $('#progress-text').html(timeFormat($video.duration * (e.clientX / $('#progress').width())));
-    // set time label position to mouseX, unless that makes it off the screen
-    let progressTextPos = 5;
-    if (e.clientX > (($('#progress-text').width() + 12) / 2) + 5) {
-      if (e.clientX < $(window).width() - (($('#progress-text').width() + 12) / 2) - 5) {
-        progressTextPos = e.clientX - (($('#progress-text').width() + 12) / 2);
-      } else {
-        progressTextPos = $(window).width() - $('#progress-text').width() - 12 - 5;
-      }
-    }
-    $('#progress-text').css('left', `${progressTextPos}px`);
-    // set time label arrow position to mouseX, unluss that is off screen
-    let progressArrowPos = 9;
-    if (e.clientX > 14) {
-      if (e.clientX < $(window).width() - 14) {
-        progressArrowPos = e.clientX - 5;
-      } else {
-        progressArrowPos = $(window).width() - 19;
-      }
-    }
-    $('#progress-marker-arrow').css('left', `${progressArrowPos}px`);
-  }
-
-  // show time label
-  function progressTextShow() {
-    // show that mouse is over progress bar
-    progressMouseOver = true;
-    $('#progress-marker').css('opacity', 1);
-    $('#progress-marker-arrow polygon').css('fill-opacity', 1);
-    $('#progress-text').css('opacity', 1);
-  }
-  // hide time label
-  function progressTextHide() {
-    // show that mouse isn't over progress bar
-    progressMouseOver = false;
-    $('#progress-marker').css('opacity', 0);
-    $('#progress-marker-arrow polygon').css('fill-opacity', 0);
-    $('#progress-text').css('opacity', 0);
   }
 
   $('body').mousemove(progressTextMove);
-  $('#progress').mouseenter(progressTextShow);
-  $('#progress').mouseleave(progressTextHide);
 
-  $('#progress').mousedown((e) => {
+  $('#progress-total').mousedown((e) => {
     if (e.preventDefault) {
       e.preventDefault();
     } else {
@@ -289,19 +233,8 @@ ipcRenderer.on('playMovie', (playMovieEvent, movie) => {
       // pause video while seeking
       $video.pause();
     }
-    // show time label
-    progressTextShow();
-    // if mouse leaves progress bar, don't hide time label
-    $('#progress').off('mouseenter');
-    $('#progress').off('mouseleave');
-    $('#progress').mouseenter(() => {
-      progressMouseOver = true;
-    });
-    $('#progress').mouseleave(() => {
-      progressMouseOver = false;
-    });
     // set progress
-    setProgress(e.clientX, $(e.currentTarget).width(), true);
+    setProgress(e.clientX - $('#progress-total').offset().left, $('#progress-total').width(), true);
   });
   $('body').mouseup(() => {
     // show that mouse is released
@@ -310,42 +243,47 @@ ipcRenderer.on('playMovie', (playMovieEvent, movie) => {
       // if video should be playing, play it
       $video.play();
     }
-    // hide time label if mouse has left the progress bar since it was pressed
-    if (!progressMouseOver) {
-      progressTextHide();
-    }
-    // allow time label to hide if mouse leaves progress bar
-    $('#progress').mouseenter(progressTextShow);
-    $('#progress').mouseleave(progressTextHide);
   });
+
   $('#video video').on('timeupdate', () => {
     // set progress when video progress moves
     setProgress($video.currentTime, $video.duration);
   });
+
   // fullscreen state
   let isFullscreen = false;
   function fullscreen(state) {
     // tell main to enter fullscreen
     ipcRenderer.send('fullscreen', state);
   }
+
   ipcRenderer.on('fullscreen', (event, state) => {
     // change button based on fullscreen state
     if (state === null) {
       if (isFullscreen) {
         isFullscreen = false;
-        $('#fullscreen').removeClass('exit').addClass('enter');
+        $('#fullscreen')
+          .attr('src', '../icons/player/fullscreen-enter.svg')
+          .attr('title', 'Enter Fullscreen');
       } else {
         isFullscreen = true;
-        $('#fullscreen').removeClass('enter').addClass('exit');
+        $('#fullscreen')
+          .attr('src', '../icons/player/fullscreen-exit.svg')
+          .attr('title', 'Exit Fullscreen');
       }
     } else if (state) {
       isFullscreen = true;
-      $('#fullscreen').removeClass('enter').addClass('exit');
+      $('#fullscreen')
+        .attr('src', '../icons/player/fullscreen-exit.svg')
+        .attr('title', 'Exit Fullscreen');
     } else {
       isFullscreen = false;
-      $('#fullscreen').removeClass('exit').addClass('enter');
+      $('#fullscreen')
+        .attr('src', '../icons/player/fullscreen-enter.svg')
+        .attr('title', 'Enter Fullscreen');
     }
   });
+
   // fullscreen on button press or double click
   $('#fullscreen').click(() => {
     fullscreen();
@@ -353,6 +291,7 @@ ipcRenderer.on('playMovie', (playMovieEvent, movie) => {
   $('video').dblclick(() => {
     fullscreen();
   });
+
   // exit fullscreen on escape press
   $('body').keyup((e) => {
     if (e.keyCode === 27) {
@@ -364,11 +303,15 @@ ipcRenderer.on('playMovie', (playMovieEvent, movie) => {
       fullscreen(false);
     }
   });
+
+  $('#download-icon').click((event) => {
+    ipcRenderer.send('player-download', movie.id);
+    $(event.currentTarget).parents('#download-container').html('<img src="../icons/player/check.svg" alt="Check Icon" id="check-icon" title="In Library">');
+  });
 });
 
 ipcRenderer.on('downloadFinished', (event, data) => {
-  // remove progress bar and send notification on download finish
-  $(`[data-id='${data.movie.id}']`).children('.cover').children('.download-progress-outer').css('display', 'none');
+  // send notification on download finish
   if (data.notify) {
     const notification = new window.Notification('Download Complete', {
       body: data.movie.title,

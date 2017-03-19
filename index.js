@@ -381,11 +381,11 @@ function createWindow() {
       // or immediately if torrent has already started or finished downloading
       if (!downloaded && !torrents[movie.id].ready) {
         torrents[movie.id].on('ready', () => {
-          playEvent.sender.send('playMovie', movie);
+          playEvent.sender.send('playMovie', { movie, downloaded });
           playEvent.sender.send('streamPort', streamPort);
         });
       } else {
-        playEvent.sender.send('playMovie', movie);
+        playEvent.sender.send('playMovie', { movie, downloaded });
         playEvent.sender.send('streamPort', streamPort);
       }
     });
@@ -448,6 +448,11 @@ function createWindow() {
         // reply to player
         event.sender.send('fullscreen', state);
       });
+
+      // download
+      ipcMain.on('player-download', (event, id) => {
+        torrents[id].makeDownload();
+      });
     });
   });
 
@@ -471,6 +476,7 @@ function createWindow() {
     // end download if it's downloading
     if (Object.keys(torrents).indexOf(movie.id.toString()) !== -1) {
       torrents[movie.id.toString()].end();
+      store.remove(movie.id);
       delete torrents[movie.id.toString()];
     }
 
