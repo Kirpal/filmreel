@@ -123,11 +123,10 @@ module.exports = (movie, download = false, win, showProgressBar = false) => {
       // stop download
       engine.destroy();
       // remove downloaded pieces
-      engine.remove(!engine.download, () => {
-        if (!engine.complete) {
-          rmDir(opts.path);
-        }
-      });
+      engine.remove((engine.download && engine.complete), () => {});
+      if (!(engine.download && engine.complete)) {
+        rmDir(opts.path);
+      }
     };
 
     // makes streaming movie into downloading movie
