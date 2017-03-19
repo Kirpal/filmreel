@@ -32,7 +32,7 @@ body {
   position: fixed;
   width: 80px;
   height: 100vh;
-  background: #0e0e0e;
+  background: #1b1b1b;
   padding-top: 20px;
   box-sizing: border-box;
 }
@@ -94,14 +94,15 @@ body {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
-  font: 20px "Open Sans", sans-serif;
+  font: 18px "Open Sans", sans-serif;
   color: #222;
   box-sizing: border-box;
   width: 100%;
-  padding: 5px;
+  padding: 10px;
   background: #ddd;
   border: none;
   border-radius: 4px;
+	box-shadow: 0 14px 12px -10px rgba(0,0,0,0.08);
 }
 #search-box:focus {
   outline: none;
