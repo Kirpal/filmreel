@@ -24,6 +24,11 @@ const template = {
     type: 'boolean',
     value: true,
   },
+  dark: {
+    name: 'Dark Theme',
+    type: 'boolean',
+    value: false,
+  },
 };
 
 // get stored settings or set to default

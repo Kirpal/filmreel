@@ -1,0 +1,489 @@
+@import '../fonts/opensans.css';
+body {
+  margin: 0;
+  background: #fff;
+  -webkit-user-select: none;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+/*SCROLL BAR*/
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  display: none;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-button {
+  display: none;
+}
+*::-webkit-scrollbar-corner {
+  display: none;
+}
+
+/*MENU*/
+#menu {
+  position: fixed;
+  width: 80px;
+  height: 100vh;
+  background: #1b1b1b;
+  padding-top: 20px;
+  box-sizing: border-box;
+}
+.nav-item {
+  position: relative;
+  display: block;
+  width: 80px;
+  padding: 30px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: 0.2s all;
+}
+.nav-item img {
+  display: block;
+  width: 100%;
+}
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.nav-item.selected {
+  background: rgba(255, 255, 255, 0.2)
+}
+#menu-icon {
+  position: relative;
+  left: 20px;
+  display: block;
+  width: 40px;
+  margin-bottom: 15px;
+}
+#menu-icon img {
+  display: block;
+  width: 100%;
+}
+
+/*PAGE HEADER*/
+#header {
+  position: relative;
+  width: calc(100% - 80px);
+  height: 80px;
+  left: 80px;
+  box-sizing: border-box;
+  padding: 20px;
+}
+#header h1 {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  font: 30px "Open Sans", sans-serif;
+  color: #222;
+}
+#settings-info {
+  margin-left: 0.5em;
+  font-size: 12px;
+  color: #aaa;
+}
+#search-box {
+  display: block;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 18px "Open Sans", sans-serif;
+  color: #222;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  background: #ddd;
+  border: none;
+  border-radius: 4px;
+	box-shadow: 0 14px 12px -10px rgba(0,0,0,0.08);
+}
+#search-box:focus {
+  outline: none;
+}
+#search-box::-webkit-input-placeholder {
+  color: #888;
+}
+
+/*PAGE CONTENTS*/
+#contents {
+  position: relative;
+  padding: 44px;
+  padding-top: 0;
+  box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+  align-items: flex-start;
+	text-align: left;
+  height: calc(100vh - 80px);
+  width: calc(100vw - 80px);
+  left: 80px;
+}
+#contents h1.placeholder {
+  color: #aaa;
+  font: 30px "Open Sans", sans-serif;
+}
+#contents h1.header {
+  position: relative;
+  display: inline-block;
+  text-align: left;
+  width: 100%;
+  font: 25px "Open Sans", sans-serif;
+  color: #222;
+}
+
+/*MOVIE CARD*/
+.gallery {
+  position: relative;
+  margin-bottom: 44px;
+  width: 100%;
+}
+.movie-card-container {
+  position: relative;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  white-space: nowrap;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+.movie-card-indicator {
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translate(-50%);
+  text-align: center;
+}
+.movie-card-indicator .indicator {
+  position: relative;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border: 1px solid #ff5959;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s all;
+}
+.movie-card-indicator .indicator.selected {
+  background: #ff5959;
+}
+.movie-card-scroll {
+  position: relative;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.movie-card-scroll::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  border: 1px solid transparent;
+  transform: rotate(45deg);
+}
+.movie-card-scroll.left::after {
+  border-bottom-color: #ff5959;
+  border-left-color: #ff5959;
+}
+.movie-card-scroll.right::after {
+  border-top-color: #ff5959;
+  border-right-color: #ff5959;
+}
+.movie-card-container::-webkit-scrollbar {
+  display: none;
+}
+.movie-card {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 680px;
+  margin-left: 30px;
+  margin-right: 30px;
+  cursor: pointer;
+  transition: 0.3s all;
+	box-shadow: 0 14px 12px -10px rgba(0,8,26,0.32);
+}
+.movie-card:hover {
+  transform: scale(1.02);
+}
+
+/*MOVIE*/
+.movie {
+  position: relative;
+  width: 150px;
+  height: 280px;
+  overflow: hidden;
+  margin: 12px;
+  margin-bottom: 2px;
+  color: #fff;
+}
+.movie-spacer {
+  position: relative;
+  width: 150px;
+  height: 0;
+  margin-left: 12px;
+  margin-right: 12px;
+}
+.cover {
+  position: relative;
+  display: block;
+  width: 150px;
+  height: 225px;
+  border-radius: 3px;
+  overflow: hidden;
+	box-shadow: 0 14px 12px -10px rgba(0,8,26,0.32);
+  z-index: 2;
+}
+.cover:hover > .cover-image {
+  filter: brightness(20%);
+}
+.cover-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  transition: 0.2s all;
+}
+.play-circle {
+  opacity: 0;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: #fff;
+  border-radius: 30px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: 0.2s all;
+  cursor: pointer;
+}
+.play-circle-icon {
+  position: absolute;
+  height: 30px;
+  top: 15px;
+  left: 22px;
+  fill: #ff5959;
+}
+.download-button {
+  opacity: 0;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: 5px;
+  bottom: 5px;
+  cursor: pointer;
+  transition: 0.2s all;
+}
+.download-button-icon {
+  position: absolute;
+  left: 5px;
+  top: 3px;
+  height: 18px;
+  stroke: #ff5959;
+  stroke-width: 2px;
+}
+.delete-button {
+  opacity: 0;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
+  transition: 0.2s all;
+}
+.delete-button-icon {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  height: 18px;
+  stroke: #ff5959;
+  stroke-width: 2px;
+}
+.cover:hover > .play-circle, .cover:hover > .download-button, .cover:hover > .delete-button {
+  opacity: 1;
+}
+.title {
+  position: relative;
+  display: block;
+  text-align: left;
+  width: 150px;
+  padding: 5px;
+  box-sizing: border-box;
+  max-height: 40px;
+  margin-top: 5px;
+  font: 12px "Open Sans", sans-serif;
+  font-weight: bold;
+  color: #222;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+/*DOWNLOAD PROGRESS BAR*/
+.download-progress-outer {
+  display: none;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 30px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  z-index: 2;
+}
+.download-progress-total {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  height: 10px;
+  width: 130px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #393e4a;
+}
+.download-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 10px;
+  border-radius: 5px;
+  background: #ff5959;
+  transition: 0.6s all;
+}
+
+/*SETTINGS*/
+.setting {
+  position: relative;
+  display: block;
+  height: 60px;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.setting.text input {
+  position: relative;
+  top: 26px;
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+  font: 18px "Open Sans", sans-serif;
+  color: #222;
+  background: #ddd;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: 0.2s all;
+}
+.setting.text input:focus {
+  outline: none;
+  border: 1px solid #ccc;
+}
+.setting.text label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font: 15px "Open Sans", sans-serif;
+  color: #222;
+  transition: 0.2s all;
+}
+.setting.text.error input {
+  color: #ff4040;
+}
+.setting.text.error label {
+  color: #ff4040;
+}
+.setting.number input::-webkit-outer-spin-button,
+.setting.number input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.setting.directory .icon {
+  position: absolute;
+  right: 10px;
+  top: 35px;
+  fill: #555;
+  stroke: none;
+  height: 20px;
+  cursor: pointer;
+  transition: 0.2s all;
+}
+.setting.directory.error .icon {
+  fill: #ff4040;
+}
+.setting.boolean h2 {
+  position: relative;
+  width: 100%;
+  padding: 5px;
+  top: 26px;
+  box-sizing: border-box;
+  font: 18px "Open Sans", sans-serif;
+  color: #222;
+  transition: 0.2s all;
+}
+.setting.boolean input {
+  position: absolute;
+  right: 10px;
+  top: 35px;
+  height: 20px;
+  width: 40px;
+  border-radius: 10px;
+  transition: 0.2s all;
+  cursor: pointer;
+}
+.setting.boolean input::before {
+	position: absolute;
+	content: "";
+	width: 40px;
+	height: 20px;
+	border-radius: 10px;
+	background: #aaa;
+	transition: 0.2s all;
+}
+.setting.boolean input::after {
+	position: absolute;
+	left: 3px;
+	top: 3px;
+	content: "";
+	width: 14px;
+	height: 14px;
+	border-radius: 7px;
+	background: #fff;
+	transition: 0.2s all;
+}
+.setting.boolean input:checked::before {
+	position: absolute;
+	content: "";
+	width: 40px;
+	height: 20px;
+	border-radius: 10px;
+	background: #ff8080;
+	transition: 0.2s all;
+}
+.setting.boolean input:checked::after {
+	position: absolute;
+	left: 23px;
+	top: 3px;
+	content: "";
+	width: 14px;
+	height: 14px;
+	border-radius: 7px;
+	background: #fff;
+	transition: 0.2s all;
+}

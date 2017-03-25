@@ -83,6 +83,19 @@ function setThumbar(state, window) {
   }
 }
 
+
+// change the theme by overwriting the css file
+function changeTheme(dark) {
+  if (dark) {
+    fs.unlinkSync('./css/style.css');
+    fs.linkSync('./css/style-dark.css', './css/style.css');
+  } else {
+    fs.unlinkSync('./css/style.css');
+    fs.linkSync('./css/style-light.css', './css/style.css');
+  }
+  win.webContents.reload();
+}
+
 // Create the browser window.
 function createWindow() {
   // load saved window state with fallback to defaults
@@ -318,6 +331,10 @@ function createWindow() {
         } else {
           event.returnValue = { success: false, stored: storeConfig.get(config.setting).value };
         }
+      }
+
+      if (config.setting === 'dark') {
+        changeTheme(config.value);
       }
     }
   });
