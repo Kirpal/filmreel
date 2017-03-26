@@ -1,7 +1,7 @@
 {
   "name": "filmreel",
   "productName": "Film Reel",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A torrent based movie streaming and downloading client",
   "license": "MIT",
   "homepage": "https://filmreelapp.com",
