@@ -585,7 +585,11 @@ api.post('/controls/fullscreen/', ({ body: { state = null } }) => {
 
 // get currently playing info
 api.get('/current/', (req, res) => {
-  res.json(current);
+  if (BrowserWindow.getFocusedWindow()) {
+    res.json(current[BrowserWindow.getFocusedWindow().id]);
+  } else {
+    res.json({});
+  }
 });
 
 // get library
