@@ -22,7 +22,8 @@
     "pump": "^1.0.2",
     "range-parser": "^1.2.0",
     "request": "^2.79.0",
-    "torrent-stream": "^1.0.3"
+    "torrent-stream": "^1.0.3",
+    "electron-debug": "^1.1.0"
   },
   "build": {
     "appId": "com.kirpal.filmreel",
@@ -42,7 +43,6 @@
     "devtron": "^1.4.0",
     "electron": "^1.4.13",
     "electron-builder": "^11.4.4",
-    "electron-debug": "^1.1.0",
     "eslint": "^3.17.1",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-import": "^2.2.0",
