@@ -1,7 +1,7 @@
 @import '../fonts/opensans.css';
 body {
   margin: 0;
-  background: #fff;
+  background: #303030;
   -webkit-user-select: none;
   overflow: hidden;
   overflow-y: scroll;
@@ -17,7 +17,7 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(255, 255, 255, 0.4);
   border-radius: 4px;
 }
 *::-webkit-scrollbar-button {
@@ -82,7 +82,7 @@ body {
   transform: translateY(-50%);
   margin: 0;
   font: 30px "Open Sans", sans-serif;
-  color: #222;
+  color: #fff;
 }
 #settings-info {
   margin-left: 0.5em;
@@ -95,11 +95,11 @@ body {
   top: 50%;
   transform: translateY(-50%);
   font: 18px "Open Sans", sans-serif;
-  color: #222;
+  color: #fff;
   box-sizing: border-box;
   width: 100%;
   padding: 10px;
-  background: #ddd;
+  background: #1b1b1b;
   border: none;
   border-radius: 4px;
 	box-shadow: 0 14px 12px -10px rgba(0,0,0,0.08);
@@ -108,7 +108,7 @@ body {
   outline: none;
 }
 #search-box::-webkit-input-placeholder {
-  color: #888;
+  color: #aaa;
 }
 
 /*PAGE CONTENTS*/
@@ -136,7 +136,7 @@ body {
   text-align: left;
   width: 100%;
   font: 25px "Open Sans", sans-serif;
-  color: #222;
+  color: #aaa;
 }
 
 /*MOVIE CARD*/
@@ -167,13 +167,13 @@ body {
   height: 10px;
   margin-left: 5px;
   margin-right: 5px;
-  border: 1px solid #ff5959;
+  border: 1px solid #aaa;
   border-radius: 5px;
   cursor: pointer;
   transition: 0.2s all;
 }
 .movie-card-indicator .indicator.selected {
-  background: #ff5959;
+  background: #aaa;
 }
 .movie-card-scroll {
   position: relative;
@@ -195,12 +195,12 @@ body {
   transform: rotate(45deg);
 }
 .movie-card-scroll.left::after {
-  border-bottom-color: #ff5959;
-  border-left-color: #ff5959;
+  border-bottom-color: #aaa;
+  border-left-color: #aaa;
 }
 .movie-card-scroll.right::after {
-  border-top-color: #ff5959;
-  border-right-color: #ff5959;
+  border-top-color: #aaa;
+  border-right-color: #aaa;
 }
 .movie-card-container::-webkit-scrollbar {
   display: none;
@@ -327,7 +327,7 @@ body {
   margin-top: 5px;
   font: 12px "Open Sans", sans-serif;
   font-weight: bold;
-  color: #222;
+  color: #fff;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -385,22 +385,22 @@ body {
   padding: 5px;
   box-sizing: border-box;
   font: 18px "Open Sans", sans-serif;
-  color: #222;
-  background: #ddd;
-  border: 1px solid #ddd;
+  color: #fff;
+  background: #1b1b1b;
+  border: 1px solid #1b1b1b;
   border-radius: 4px;
   transition: 0.2s all;
 }
 .setting.text input:focus {
   outline: none;
-  border: 1px solid #ccc;
+  border: 1px solid #222222;
 }
 .setting.text label {
   position: absolute;
   left: 0;
   top: 0;
   font: 15px "Open Sans", sans-serif;
-  color: #222;
+  color: #fff;
   transition: 0.2s all;
 }
 .setting.text.error input {
@@ -418,7 +418,7 @@ body {
   position: absolute;
   right: 10px;
   top: 35px;
-  fill: #555;
+  fill: #fff;
   stroke: none;
   height: 20px;
   cursor: pointer;
@@ -434,7 +434,7 @@ body {
   top: 26px;
   box-sizing: border-box;
   font: 18px "Open Sans", sans-serif;
-  color: #222;
+  color: #fff;
   transition: 0.2s all;
 }
 .setting.boolean input {
@@ -453,7 +453,7 @@ body {
 	width: 40px;
 	height: 20px;
 	border-radius: 10px;
-	background: #aaa;
+	background: #1b1b1b;
 	transition: 0.2s all;
 }
 .setting.boolean input::after {
@@ -464,7 +464,7 @@ body {
 	width: 14px;
 	height: 14px;
 	border-radius: 7px;
-	background: #fff;
+	background: #ddd;
 	transition: 0.2s all;
 }
 .setting.boolean input:checked::before {

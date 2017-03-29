@@ -66,16 +66,9 @@ function setThumbar(state, window) {
 }
 
 
-// change the theme by overwriting the css file
-function changeTheme(dark, webContents) {
-  if (dark) {
-    fs.unlinkSync('./css/style.css');
-    fs.linkSync('./css/style-dark.css', './css/style.css');
-  } else {
-    fs.unlinkSync('./css/style.css');
-    fs.linkSync('./css/style-light.css', './css/style.css');
-  }
-  webContents.reload();
+// change the theme by changing the html file
+function changeTheme(dark, win) {
+  win.loadURL(`file://${__dirname}/index-${dark ? 'dark' : 'light'}.html`);
 }
 
 // Create the browser window.
@@ -216,7 +209,7 @@ function createWindow() {
   Menu.setApplicationMenu(appMenu);
 
   // and load the index.html of the app.
-  win.loadURL(`file://${__dirname}/index.html`);
+  win.loadURL(`file://${__dirname}/index-${storeConfig.get('dark').value ? 'dark' : 'light'}.html`);
   win.once('ready-to-show', () => {
     win.show();
   });
@@ -355,7 +348,7 @@ ipcMain.on('storeConfig', (event, config) => {
     }
 
     if (config.setting === 'dark') {
-      changeTheme(config.value);
+      changeTheme(config.value, BrowserWindow.fromWebContents(event.sender));
     }
   }
 });
