@@ -529,13 +529,4 @@ ipcRenderer.on('downloadProgress', (event, data) => {
 ipcRenderer.on('downloadFinished', (event, data) => {
   // remove progress bar and send notification on download finish
   $(`[data-id='${data.movie.id}']`).children('.cover').children('.download-progress-outer').css('display', 'none');
-  if (data.notify) {
-    const notification = new window.Notification('Download Complete', {
-      body: data.movie.title,
-      icon: data.movie.small_cover_image,
-    });
-    notification.onclick(() => {
-      ipcRenderer.send('stream', data.movie);
-    });
-  }
 });

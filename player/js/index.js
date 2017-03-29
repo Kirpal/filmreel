@@ -309,16 +309,3 @@ ipcRenderer.on('playMovie', (playMovieEvent, { movie, downloaded }) => {
     $(event.currentTarget).parents('#download-container').html('<img src="../icons/player/check.svg" alt="Check Icon" id="check-icon" title="In Library">');
   });
 });
-
-ipcRenderer.on('downloadFinished', (event, data) => {
-  // send notification on download finish
-  if (data.notify) {
-    const notification = new window.Notification('Download Complete', {
-      body: data.movie.title,
-      icon: data.movie.small_cover_image,
-    });
-    notification.onclick(() => {
-      ipcRenderer.send('stream', data.movie);
-    });
-  }
-});

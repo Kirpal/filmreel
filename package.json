@@ -15,15 +15,16 @@
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "electron-debug": "^1.1.0",
     "electron-updater": "^1.8.1",
     "electron-window-state": "^4.1.0",
     "express": "^4.14.0",
+    "menubar": "^5.2.3",
     "mv": "^2.1.1",
     "pump": "^1.0.2",
     "range-parser": "^1.2.0",
     "request": "^2.79.0",
-    "torrent-stream": "^1.0.3",
-    "electron-debug": "^1.1.0"
+    "torrent-stream": "^1.0.3"
   },
   "build": {
     "appId": "com.kirpal.filmreel",

@@ -8,6 +8,7 @@ const express = require('express');
 const request = require('request');
 const windowStateKeeper = require('electron-window-state');
 const bodyParser = require('body-parser');
+const menubar = require('menubar');
 const torrent = require('./torrent');
 const resume = require('./resume');
 const store = require('./store');
@@ -28,15 +29,6 @@ api.use(bodyParser.urlencoded({ extended: true }));
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 const windows = [];
-
-// when an update is downloaded ask the user if they would like to quit and install
-autoUpdater.on('update-downloaded', () => {
-  dialog.showMessageBox(BrowserWindow.getFocusedWindow(), { type: 'info', buttons: ['No', 'Yes'], defaultId: 1, title: 'Update Downloaded', message: 'An update has been downloaded. Restart Film Reel to install it. Restart now?', cancelId: 0 }, (response) => {
-    if (response === 1) {
-      autoUpdater.quitAndInstall();
-    }
-  });
-});
 
 // sets buttons on taskbar hover (windows)
 function setThumbar(state, window) {
@@ -101,11 +93,6 @@ function createWindow() {
 
   // manage window events, state, and size
   winState.manage(win);
-
-  // check for updates if autoaupdates are on
-  if (storeConfig.get('updates').value) {
-    autoUpdater.checkForUpdates();
-  }
 
   // create and set application menu
   const appMenuTemplate = [
@@ -230,7 +217,32 @@ function createWindow() {
 }
 
 // ready to make windows
-app.on('ready', createWindow);
+app.on('ready', () => {
+  // check for updates if autoaupdates are on
+  if (storeConfig.get('updates').value) {
+    autoUpdater.checkForUpdates();
+  }
+  // when an update is downloaded ask the user if they would like to quit and install
+  autoUpdater.on('update-downloaded', () => {
+    dialog.showMessageBox(BrowserWindow.getFocusedWindow(), { type: 'info', buttons: ['No', 'Yes'], defaultId: 1, title: 'Update Downloaded', message: 'An update has been downloaded. Restart Film Reel to install it. Restart now?', cancelId: 0 }, (response) => {
+      if (response === 1) {
+        autoUpdater.quitAndInstall();
+      }
+    });
+  });
+
+  // make menubar app that displays active downloads
+  const dir = path.join(__dirname, 'menubar');
+  let icon = path.join(__dirname, 'menubar', 'icon.png');
+
+  if (process.platform === 'darwin') {
+    icon = path.join(__dirname, 'menubar', 'icon-mac.png');
+  }
+
+  menubar({ dir, icon });
+
+  createWindow();
+});
 
 // when another instance is created, stop it and make a new window
 const shouldQuit = app.makeSingleInstance(createWindow);
@@ -238,14 +250,6 @@ const shouldQuit = app.makeSingleInstance(createWindow);
 if (shouldQuit) {
   app.quit();
 }
-
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-  // quit app (except on macOS);
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
 
 app.on('activate', () => {
   // create window on mac if icon pressed
