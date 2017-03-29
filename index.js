@@ -13,7 +13,7 @@ const resume = require('./resume');
 const store = require('./store');
 const storeProgress = require('./storeProgress');
 const storeConfig = require('./storeConfig');
-require('electron-debug')({ showDevTools: true });
+require('electron-debug')();
 
 const api = express();
 const streamPort = storeConfig.get('port').value;
