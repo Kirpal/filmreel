@@ -6,24 +6,28 @@ function hideMovie($movie) {
   });
 }
 
+function addMovie(movie) {
+  $('body').append(`<div class='movie' data-id='${movie.id}'>
+    <img class='cover' src='${movie.large_cover_image}' alt='${movie.title} Cover'/>
+    <div class='info'>
+      <h3 class='title'>${movie.title}</h3>
+      <div class='progress-total'>
+        <div class='progress'></div>
+      </div>
+      <svg class='stop-button' viewbox='0 0 24 24'>
+        <path d='M 0,0 L 24,24 z' />
+        <path d='M 0,24 L 24,0 z' />
+      </svg>
+    </div>
+  </div>`);
+}
+
 const library = ipcRenderer.sendSync('getPage', 'library');
 
 $('body').html('');
 library.incomplete.forEach((id) => {
   if (Object.keys(library.movies).indexOf(id) !== -1) {
-    $('body').append(`<div class='movie' data-id='${id}'>
-      <img class='cover' src='${library.movies[id].large_cover_image}' alt='${library.movies[id].title} Cover'/>
-      <div class='info'>
-        <h3 class='title'>${library.movies[id].title}</h3>
-        <div class='progress-total'>
-          <div class='progress'></div>
-        </div>
-        <svg class='stop-button' viewbox='0 0 24 24'>
-          <path d='M 0,0 L 24,24 z' />
-          <path d='M 0,24 L 24,0 z' />
-        </svg>
-      </div>
-    </div>`);
+    addMovie(library.movies[id]);
   }
 });
 
@@ -34,8 +38,12 @@ $('.stop-button').click((e) => {
 
 ipcRenderer.on('downloadProgress', (event, data) => {
   // update progress bar on download progress
-  $(`[data-id='${data.id}']`).children('.progress-total').children('.download-progress')
-    .css('width', `${data.progress <= 1 ? (100 * data.progress) : 100}%`);
+  if ($(`[data-id='${data.id}']`).length >= 0) {
+    $(`[data-id='${data.id}']`).children('.progress-total').children('.download-progress')
+      .css('width', `${data.progress <= 1 ? (100 * data.progress) : 100}%`);
+  } else {
+    addMovie(data.movie);
+  }
 });
 
 ipcRenderer.on('downloadFinished', (event, data) => {
