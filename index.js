@@ -29,6 +29,7 @@ api.use(bodyParser.urlencoded({ extended: true }));
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 const windows = [];
+let mb;
 
 // sets buttons on taskbar hover (windows)
 function setThumbar(state, window) {
@@ -239,7 +240,7 @@ app.on('ready', () => {
     icon = path.join(__dirname, 'menubar', 'icon-mac.png');
   }
 
-  menubar({ dir, icon });
+  mb = menubar({ dir, icon });
 
   createWindow();
 });
