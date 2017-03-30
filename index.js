@@ -367,7 +367,7 @@ ipcMain.on('stream', (event, movie) => {
 
   // start download if it isn't started or already downloaded
   if (!torrents[movie.id] && !downloaded) {
-    torrents[movie.id] = torrent(movie, false, win);
+    torrents[movie.id] = torrent(movie, false, ipcMain);
   }
   // open player
   win.loadURL(`file://${__dirname}/player/index.html`);
@@ -523,7 +523,6 @@ ipcMain.on('player-download', (event, id) => {
 
 // when download button on movie is pressed
 ipcMain.on('download', (event, movie) => {
-  const win = BrowserWindow.fromWebContents(event.sender);
   // if the movie is already being played, stop that download
   if (torrents[movie.id] && !torrents[movie.id].download) {
     torrents[movie.id].end();
@@ -532,8 +531,7 @@ ipcMain.on('download', (event, movie) => {
   // if movie isn't already downloaded, download it
   // set DE progress bar if it is the only movie downloading
   if (store.get().complete.indexOf(movie.id.toString()) === -1) {
-    torrents[movie.id] = torrent(movie, true, win, (Object.keys(torrents)
-    .filter(id => torrents[id].download).length >= 1));
+    torrents[movie.id] = torrent(movie, true, ipcMain);
   }
 });
 

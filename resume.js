@@ -16,10 +16,10 @@ try {
 }
 
 // resume all incomplete downloads
-module.exports = (win) => {
-  storedDownloads.incomplete.forEach((id, index) => {
+module.exports = (ipcMain) => {
+  storedDownloads.incomplete.forEach((id) => {
     if (Object.keys(storedDownloads.movies).indexOf(id) !== -1) {
-      downloads[id] = torrent(storedDownloads.movies[id], true, win, index === 0);
+      downloads[id] = torrent(storedDownloads.movies[id], true, ipcMain);
     }
   });
   return downloads;
