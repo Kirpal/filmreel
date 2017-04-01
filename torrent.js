@@ -20,7 +20,7 @@ function rmDir(rmPath) {
   }
 }
 
-module.exports = (movie, download = false, ipcMain) => {
+module.exports = (movie, download = false, sendToWindows) => {
   let chosenTorrent = false;
   let magnet = '';
   const opts = {};
@@ -81,7 +81,7 @@ module.exports = (movie, download = false, ipcMain) => {
     const onIdle = () => {
       engine.complete = true;
       // tell render that download is finished, so it can send notification
-      ipcMain.send('downloadFinished', { movie: engine.movie, notify: storeConfig.get('notify').value });
+      sendToWindows('downloadFinished', { movie: engine.movie, notify: storeConfig.get('notify').value });
       if (engine.download) {
         store.complete(engine.movie);
 
@@ -100,7 +100,7 @@ module.exports = (movie, download = false, ipcMain) => {
     const onDownload = () => {
       if (engine.download) {
         // send to render to update progress bar
-        ipcMain.send('downloadProgress', { id: engine.movie.id, progress: engine.getProgress() });
+        sendToWindows('downloadProgress', { id: engine.movie.id, progress: engine.getProgress() });
       }
     };
 

@@ -58,6 +58,11 @@ function setThumbar(state, window) {
   }
 }
 
+function sendToWindows(message, content) {
+  windows.forEach((win) => {
+    win.webContents.send(message, content);
+  });
+}
 
 // change the theme by changing the html file
 function changeTheme(dark, win) {
@@ -89,8 +94,6 @@ function createWindow() {
     playing: false,
     fullscreen: false,
   };
-  // resumes all incomplete torrents
-  torrents = resume(win);
 
   // manage window events, state, and size
   winState.manage(win);
@@ -242,6 +245,9 @@ app.on('ready', () => {
 
   mb = menubar({ dir, icon });
 
+  // resumes all incomplete torrents
+  torrents = resume(sendToWindows);
+
   createWindow();
 });
 
@@ -368,7 +374,7 @@ ipcMain.on('stream', (event, movie) => {
 
   // start download if it isn't started or already downloaded
   if (!torrents[movie.id] && !downloaded) {
-    torrents[movie.id] = torrent(movie, false, ipcMain);
+    torrents[movie.id] = torrent(movie, false, sendToWindows);
   }
   // open player
   win.loadURL(`file://${__dirname}/player/index.html`);
@@ -532,7 +538,7 @@ ipcMain.on('download', (event, movie) => {
   // if movie isn't already downloaded, download it
   // set DE progress bar if it is the only movie downloading
   if (store.get().complete.indexOf(movie.id.toString()) === -1) {
-    torrents[movie.id] = torrent(movie, true, ipcMain);
+    torrents[movie.id] = torrent(movie, true, sendToWindows);
   }
 });
 
