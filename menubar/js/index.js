@@ -32,7 +32,7 @@ library.incomplete.forEach((id) => {
 });
 
 $('.stop-button').click((e) => {
-  ipcRenderer.send('delete', $(e.currentTarget).parents('.movie').data('id'));
+  ipcRenderer.send('delete', library.movies[$(e.currentTarget).parents('.movie').data('id')]);
   hideMovie($(e.currentTarget).parents('.movie'));
 });
 
