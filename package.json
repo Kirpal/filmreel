@@ -1,7 +1,7 @@
 {
   "name": "filmreel",
   "productName": "Film Reel",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A torrent based movie streaming and downloading client",
   "license": "MIT",
   "homepage": "https://filmreelapp.com",
@@ -15,6 +15,7 @@
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "devtron": "^1.4.0",
     "electron-debug": "^1.1.0",
     "electron-updater": "^1.8.1",
     "electron-window-state": "^4.1.0",
@@ -41,7 +42,6 @@
     "dist": "./node_modules/.bin/build"
   },
   "devDependencies": {
-    "devtron": "^1.4.0",
     "electron": "^1.4.13",
     "electron-builder": "^11.4.4",
     "eslint": "^3.18.0",
