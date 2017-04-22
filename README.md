@@ -1,4 +1,5 @@
 <img src="https://filmreelapp.com/images/icon.svg" height="64" alt="Icon">
+
 # Film Reel
 
 [![Build Status](https://travis-ci.org/Kirpal/filmreel.svg?branch=master)](https://travis-ci.org/Kirpal/filmreel) [![Build status](https://ci.appveyor.com/api/projects/status/nv4j8909e4ywdhcr?svg=true)](https://ci.appveyor.com/project/Kirpal/filmreel) ![Total Downloads](https://img.shields.io/github/downloads/kirpal/filmreel/total.svg) ![Release](https://img.shields.io/github/release/kirpal/filmreel.svg)
