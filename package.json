@@ -29,10 +29,6 @@
   },
   "build": {
     "appId": "com.kirpal.filmreel",
-    "files": [
-      "**/*",
-      "!web${/*}"
-    ],
     "mac": {
       "category": "public.app-category.video"
     }
