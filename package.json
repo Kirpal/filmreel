@@ -14,18 +14,19 @@
   },
   "main": "index.js",
   "dependencies": {
-    "body-parser": "^1.15.2",
+    "body-parser": "^1.18.2",
     "devtron": "^1.4.0",
-    "electron-debug": "^1.1.0",
-    "electron-updater": "^1.8.1",
+    "electron-debug": "^1.5.0",
+    "electron-updater": "^2.20.1",
     "electron-window-state": "^4.1.0",
-    "express": "^4.14.0",
+    "express": "^4.16.2",
     "menubar": "^5.2.3",
     "mv": "^2.1.1",
-    "pump": "^1.0.2",
+    "pump": "^3.0.0",
     "range-parser": "^1.2.0",
-    "request": "^2.79.0",
-    "torrent-stream": "^1.0.3"
+    "request": "^2.83.0",
+    "torrent-stream": "^1.0.3",
+    "updater": "0.0.1"
   },
   "build": {
     "appId": "com.kirpal.filmreel",
@@ -46,11 +47,11 @@
   "devDependencies": {
     "electron": "^1.8.2",
     "electron-builder": "^20.0.5",
-    "eslint": "^3.18.0",
-    "eslint-config-airbnb": "^14.1.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-react": "^6.10.3"
+    "eslint": "^4.18.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0"
   },
   "eslintConfig": {
     "extends": "airbnb",
