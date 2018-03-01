@@ -39,8 +39,9 @@
     }
   },
   "scripts": {
-    "pack": "./node_modules/.bin/build --dir",
-    "dist": "./node_modules/.bin/build"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "release": "electron-builder"
   },
   "devDependencies": {
     "electron": "^1.4.13",
