@@ -44,7 +44,7 @@
     "release": "electron-builder"
   },
   "devDependencies": {
-    "electron": "^1.4.13",
+    "electron": "^1.8.2",
     "electron-builder": "^20.0.5",
     "eslint": "^3.18.0",
     "eslint-config-airbnb": "^14.1.0",
