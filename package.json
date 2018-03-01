@@ -33,7 +33,7 @@
     "mac": {
       "category": "public.app-category.video"
     },
-    "appImage": {
+    "linux": {
       "synopsis": "A movie streaming app",
       "description": "A torrent based movie streaming and downloading client",
       "category": "AudioVideo"

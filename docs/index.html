@@ -98,16 +98,9 @@
       <br>
       <div class="platform">
         <img src="images/linux.png" alt="Linux Logo">
-        <h2>Linux (.deb)</h2>
-        <h3>(Ubuntu LTS 12.04+, Debian 8+)</h3>
-        <a href="" name="Linux (.deb)">Download</a>
-      </div>
-      <br>
-      <div class="platform">
-        <img src="images/linux.png" alt="Linux Logo">
-        <h2>Linux (Gzip)</h2>
-        <h3>(Ubuntu LTS 12.04+, Debian 8+)</h3>
-        <a href="" name="Linux (Gzip)">Download</a>
+        <h2>Linux (AppImage)</h2>
+        <h3>(All major distros)</h3>
+        <a href="" name="Linux (AppImage)">Download</a>
       </div>
     </div>
     <div id="footer">
@@ -133,10 +126,8 @@
             platformIdentifiers = ["exe"];
           }else if(platform === "Mac"){
             platformIdentifiers = ["dmg"];
-          }else if(platform === "Linux (.deb)"){
-            platformIdentifiers = ["deb"];
-          }else if(platform === "Linux (Gzip)"){
-            platformIdentifiers = ["tar", "gz"];
+          }else if(platform === "Linux (AppImage)"){
+            platformIdentifiers = ["AppImage"];
           }
           var filteredAssets = assetList.filter(function(asset){
             var matches = 0;
@@ -152,8 +143,8 @@
 
         var platformName = "Windows";
         if(navigator.platform.includes("Linux")){
-          document.getElementById("current-platform").innerHTML = stable[0].tag_name + "&nbsp;&nbsp;-&nbsp;&nbsp;Linux (.deb)&nbsp;&nbsp;-&nbsp;";
-          platformName = "Linux (.deb)";
+          document.getElementById("current-platform").innerHTML = stable[0].tag_name + "&nbsp;&nbsp;-&nbsp;&nbsp;Linux (AppImage)&nbsp;&nbsp;-&nbsp;";
+          platformName = "Linux (AppImage)";
         }else if(navigator.platform.includes("Mac")){
           document.getElementById("current-platform").innerHTML = stable[0].tag_name + "&nbsp;&nbsp;-&nbsp;&nbsp;MacOS&nbsp;&nbsp;-&nbsp;";
           platformName = "Mac";
