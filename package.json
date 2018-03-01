@@ -31,6 +31,11 @@
     "appId": "com.kirpal.filmreel",
     "mac": {
       "category": "public.app-category.video"
+    },
+    "appImage": {
+      "synopsis": "A movie streaming app",
+      "description": "A torrent based movie streaming and downloading client",
+      "category": "AudioVideo"
     }
   },
   "scripts": {
