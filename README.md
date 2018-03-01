@@ -1,4 +1,4 @@
-<img src="https://filmreelapp.com/images/icon.svg" height="64" alt="Icon">
+<img src="https://kirpal.github.io/filmreel/images/icon.svg" height="64" alt="Icon">
 
 # Film Reel
 
@@ -8,19 +8,19 @@
 
 Film Reel is a modern movie watching app, designed with usability in mind. It allows you to stream and download 1000's of movies for free. Using BitTorrent peer-to-peer technology, the movies are delivered at high speed and high quality. The app is cross-platform and open-source.
 
-Visit [filmreelapp.com](https://filmreelapp.com) to learn more.
+Visit [https://kirpal.github.io/filmreel/](https://kirpal.github.io/filmreel/) to learn more.
 
 ## Installation
 
 ### macOS
 
-Download the latest release from the [downloads section](https://filmreelapp.com/#downloads).
+Download the latest release from the [downloads section](https://kirpal.github.io/filmreel/#downloads).
 
 Film Reel automatically updates when a new version is released.
 
 ### Windows
 
-Download the latest from the [downloads section](https://filmreelapp.com/#downloads).
+Download the latest from the [downloads section](https://kirpal.github.io/filmreel/#downloads).
 
 The installer works for both 32-bit and 64-bit systems.
 
@@ -28,7 +28,7 @@ Film Reel automatically updates when a new version is released.
 
 ### Debian Linux (Ubuntu)
 
-1. Download the .deb from the [downloads section](https://filmreelapp.com/#downloads).
+1. Download the .deb from the [downloads section](https://kirpal.github.io/filmreel/#downloads).
 2. Run `sudo dpkg --install filmreel_<version>_amd64.deb` on the downloaded package.
 3. Use Film Reel!
 
@@ -39,7 +39,7 @@ The Linux version of Film Reel does not automatically update (yet), so you will 
 The archive enables you to install multiple versions of Film Reel, and allows you to not install Film Reel as root. It was built for 64-bit Ubuntu, but should be compatible with other Linux distributions.
 
 1. Install dependencies.
-2. Download the Gzip from the [downloads section](https://filmreelapp.com/#downloads)
+2. Download the Gzip from the [downloads section](https://kirpal.github.io/filmreel/#downloads)
 3. Run `tar xf filmreel-<version>.tar.gz` in the directory where you want to extract Film Reel.
 4. Use Film Reel!
 

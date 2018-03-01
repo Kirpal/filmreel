@@ -154,7 +154,7 @@ function changeTab(tab) {
       // add gallery around blocks of movie cards
       .replace(/\[\[(?:[0-9]+\]\]\[\[)+[0-9]+\]\]/g, '<div class="gallery"><div class="movie-card-container">$&</div><div class="movie-card-indicator"></div></div>')
       // replace movie card placeholders with movie cards
-      .replace(/\[\[([0-9]+)\]\]/g, '<img class="movie-card" data-id="$1" title="Play Movie" src="https://filmreelapp.com/cards/$1.png">');
+      .replace(/\[\[([0-9]+)\]\]/g, '<img class="movie-card" data-id="$1" title="Play Movie" src="https://kirpal.github.io/filmreel/cards/$1.png">');
       // add generated html to page
       $('#contents').html(homeHtml);
       $('#contents').css('justify-content', 'flex-start');

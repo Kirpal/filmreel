@@ -106,7 +106,7 @@ function createWindow() {
         {
           label: 'About Film Reel',
           click: () => {
-            shell.openExternal('https://filmreelapp.com');
+            shell.openExternal('https://kirpal.github.io/filmreel/');
           },
         },
         {
@@ -277,7 +277,7 @@ app.on('will-quit', () => {
 ipcMain.on('getPage', (event, page) => {
   if (page === 'home') {
     // get template markdown file from server and store locally
-    request('https://filmreelapp.com/home.md', (error, response, body) => {
+    request('https://kirpal.github.io/filmreel/home.md', (error, response, body) => {
       if (!error && response.statusCode === 200) {
         fs.writeFileSync(path.join(app.getPath('userData'), 'home.md'), body);
       }
