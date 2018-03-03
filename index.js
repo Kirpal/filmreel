@@ -83,7 +83,7 @@ function createWindow() {
     height: winState.height,
     autoHideMenuBar: true,
     icon: path.join(__dirname, 'icons', 'icon.png'),
-    backgroundColor: '#fff',
+    backgroundColor: storeConfig.get('dark').value ? '#3030303' : '#fff',
     show: false,
   });
 
@@ -407,7 +407,7 @@ ipcMain.on('exitStreaming', (event) => {
   win.setFullScreen(false);
 
   // load main part of app
-  win.loadURL(`file://${__dirname}/index.html`);
+  win.loadURL(`file://${__dirname}/index-${storeConfig.get('dark').value ? 'dark' : 'light'}.html`);
 
   // disable controls section of app menu
   Menu.getApplicationMenu().items[1].submenu.items.forEach(() => {
